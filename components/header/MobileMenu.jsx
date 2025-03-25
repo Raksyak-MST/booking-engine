@@ -78,7 +78,7 @@ const MobileMenu = () => {
         <Sidebar width="400" backgroundColor="#fff">
 
           <Menu>
-            <SubMenu label="Home" className={ homeItems.some((item=>item.routePath?.split('/')[1] == pathname.split('/')[1])) ? "menu-active-link":''}>
+            <SubMenu label="Hotels" className={ homeItems.some((item=>item.routePath?.split('/')[1] == pathname.split('/')[1])) ? "menu-active-link":''}>
               {homeItems.map((item, i) => (
                 <MenuItem
                   key={i}
@@ -130,11 +130,30 @@ const MobileMenu = () => {
             }
               
             >
-              Desitinations
+              Experiences
             </MenuItem>
             {/* End  Desitinations Menu */}
 
-            <SubMenu label="Blog" className={ blogItems.some((item=>item.routePath?.split('/')[1] == pathname.split('/')[1])) ? "menu-active-link":''}>
+            <MenuItem
+             onClick={()=>router.push("/contact")}
+             className={
+              pathname === "/contact" ? "menu-active-link" : ""
+            }
+            >
+             Offers 
+            </MenuItem>
+
+            <MenuItem
+             onClick={()=>router.push("/contact")}
+             className={
+              pathname === "/contact" ? "menu-active-link" : ""
+            }
+            >
+             Loyalty 
+            </MenuItem>
+            {/* End Contact  Menu */}
+
+            <SubMenu label="Our Story" className={ blogItems.some((item=>item.routePath?.split('/')[1] == pathname.split('/')[1])) ? "menu-active-link":''}>
               {blogItems.map((item, i) => (
                 <MenuItem
                   key={i}
@@ -151,7 +170,16 @@ const MobileMenu = () => {
             </SubMenu>
             {/* End  All Blog Menu */}
 
-            <SubMenu label="Pages" className={ pageItems.some((item=>item.routePath?.split('/')[1] == pathname.split('/')[1])) ? "menu-active-link":''}>
+            <MenuItem
+             onClick={()=>router.push("/contact")}
+             className={
+              pathname === "/contact" ? "menu-active-link" : ""
+            }
+            >
+              Sustainability 
+            </MenuItem>
+
+            <SubMenu label="Investors" className={ pageItems.some((item=>item.routePath?.split('/')[1] == pathname.split('/')[1])) ? "menu-active-link":''}>
               {pageItems.map((item, i) => (
                 <MenuItem
                   key={i}
@@ -168,33 +196,6 @@ const MobileMenu = () => {
             </SubMenu>
             {/* End  All Pages Menu */}
 
-            <SubMenu label="Dashboard" className={ pathname.split('/')[1] == 'dashboard'  || pathname.split('/')[1] == 'vendor-dashboard' ? "menu-active-link":''}>
-              {dashboardItems.map((item, i) => (
-                <MenuItem
-                  key={i}
-                  onClick={()=>router.push(item.routePath)}
-                  className={
-                    isActiveLink(item.routePath, pathname)
-                      ? "menu-active-link"
-                      : "inactive-menu"
-                  }
-                >
-                  {item.name}
-                </MenuItem>
-              ))}
-            </SubMenu>
-            {/* End  All Dashboard Menu */}
-
-            <MenuItem
-             onClick={()=>router.push("/contact")}
-             className={
-              pathname === "/contact" ? "menu-active-link" : ""
-            }
-             
-            >
-              Contact
-            </MenuItem>
-            {/* End Contact  Menu */}
           </Menu>
         </Sidebar>
 
