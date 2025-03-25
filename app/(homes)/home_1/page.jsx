@@ -33,7 +33,7 @@ const Home_1 = () => {
       <section className="layout-pt-lg layout-pb-md" data-aos="fade-up">
         <div>
           <h2 className="text-center">Authentic Indigenous Luxury Experiences </h2>
-          <p></p>
+          <p className="w-50 mx-auto text-center">The Oterra, 5-start deluxe luxury hotel nested in the heart of the Electronic City amidst 2.5 acres of landscaped lawns, with premium accommodations, a variety of luxurious restaurants featuring signature cuisine and dedicated event and meeting spaces. This unique location places you within easy reach of the city's dynamic business center and IT hubs. This luxurious 271-room hotel is ideally situated for business travelers and discerning to cater to your every need, featuring center equipped with cutting-edge equipment and personalized training programs is available for fitness enthusiasts.</p>
         </div>
         <div className="">
         </div>
