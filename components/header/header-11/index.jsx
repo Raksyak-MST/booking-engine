@@ -50,79 +50,113 @@ const Header1 = () => {
               {/* End d-flex */}
             </div>
             {/* End col */}
-
             <div className="col-auto">
-              <div className="d-flex items-center">
-                <div className="row x-gap-20 items-center xxl:d-none">
-                  <CurrenctyMegaMenu textClass="text-white" />
-                  {/* End Megamenu for Currencty */}
-
-                  {/* Start vertical devider*/}
-                  <div className="col-auto">
-                    <div className="w-1 h-20 bg-white-20" />
-                  </div>
-                  {/* End vertical devider*/}
-
-                  <LanguageMegaMenu textClass="text-white" />
-                  {/* End Megamenu for Language */}
-                </div>
-                {/* End language and currency selector */}
-
-                {/* Start btn-group */}
-                <div className="d-flex items-center ml-20 is-menu-opened-hide md:d-none">
+              {/* Start mobile menu icon */}
+              <div className="d-none xl:d-flex x-gap-20 items-center pl-30 text-white">
+                <div>
                   <Link
                     href="/login"
-                    className="button px-30 fw-400 text-14 -white bg-white h-50 text-dark-1"
-                  >
-                    Become An Expert
-                  </Link>
-                  <Link
-                    href="/signup"
-                    className="button px-30 fw-400 text-14 border-white -outline-white h-50 text-white ml-20"
-                  >
-                    Sign In / Register
-                  </Link>
+                    className="d-flex items-center icon-user text-inherit text-22"
+                  />
                 </div>
-                {/* End btn-group */}
+                <div>
+                  <button
+                    className="d-flex items-center icon-menu text-inherit text-20"
+                    data-bs-toggle="offcanvas"
+                    aria-controls="mobile-sidebar_menu"
+                    data-bs-target="#mobile-sidebar_menu"
+                  />
 
-                {/* Start mobile menu icon */}
-                <div className="d-none xl:d-flex x-gap-20 items-center pl-30 text-white">
-                  <div>
-                    <Link
-                      href="/login"
-                      className="d-flex items-center icon-user text-inherit text-22"
-                    />
-                  </div>
-                  <div>
-                    <button
-                      className="d-flex items-center icon-menu text-inherit text-20"
-                      data-bs-toggle="offcanvas"
-                      aria-controls="mobile-sidebar_menu"
-                      data-bs-target="#mobile-sidebar_menu"
-                    />
-
-                    <div
-                      className="offcanvas offcanvas-start  mobile_menu-contnet"
-                      tabIndex="-1"
-                      id="mobile-sidebar_menu"
-                      aria-labelledby="offcanvasMenuLabel"
-                      data-bs-scroll="true"
-                    >
-                      <MobileMenu />
-                      {/* End MobileMenu */}
-                    </div>
+                  <div
+                    className="offcanvas offcanvas-start  mobile_menu-contnet"
+                    tabIndex="-1"
+                    id="mobile-sidebar_menu"
+                    aria-labelledby="offcanvasMenuLabel"
+                    data-bs-scroll="true"
+                  >
+                    <MobileMenu />
+                    {/* End MobileMenu */}
                   </div>
                 </div>
-                {/* End mobile menu icon */}
               </div>
+              {/* End mobile menu icon */}
             </div>
-            {/* End col-auto */}
           </div>
           {/* End .row */}
         </div>
         {/* End header_container */}
       </header>
     </>
+  );
+};
+
+const MegaMenu = () => {
+  return (
+    <div className="col-auto">
+      <div className="d-flex items-center">
+        <div className="row x-gap-20 items-center xxl:d-none">
+          <CurrenctyMegaMenu textClass="text-white" />
+          {/* End Megamenu for Currencty */}
+
+          {/* Start vertical devider*/}
+          <div className="col-auto">
+            <div className="w-1 h-20 bg-white-20" />
+          </div>
+          {/* End vertical devider*/}
+
+          <LanguageMegaMenu textClass="text-white" />
+          {/* End Megamenu for Language */}
+        </div>
+        {/* End language and currency selector */}
+
+        {/* Start btn-group */}
+        <div className="d-flex items-center ml-20 is-menu-opened-hide md:d-none">
+          <Link
+            href="/login"
+            className="button px-30 fw-400 text-14 -white bg-white h-50 text-dark-1"
+          >
+            Become An Expert
+          </Link>
+          <Link
+            href="/signup"
+            className="button px-30 fw-400 text-14 border-white -outline-white h-50 text-white ml-20"
+          >
+            Sign In / Register
+          </Link>
+        </div>
+        {/* End btn-group */}
+
+        {/* Start mobile menu icon */}
+        <div className="d-none xl:d-flex x-gap-20 items-center pl-30 text-white">
+          <div>
+            <Link
+              href="/login"
+              className="d-flex items-center icon-user text-inherit text-22"
+            />
+          </div>
+          <div>
+            <button
+              className="d-flex items-center icon-menu text-inherit text-20"
+              data-bs-toggle="offcanvas"
+              aria-controls="mobile-sidebar_menu"
+              data-bs-target="#mobile-sidebar_menu"
+            />
+
+            <div
+              className="offcanvas offcanvas-start  mobile_menu-contnet"
+              tabIndex="-1"
+              id="mobile-sidebar_menu"
+              aria-labelledby="offcanvasMenuLabel"
+              data-bs-scroll="true"
+            >
+              <MobileMenu />
+              {/* End MobileMenu */}
+            </div>
+          </div>
+        </div>
+        {/* End mobile menu icon */}
+      </div>
+    </div>
   );
 };
 
