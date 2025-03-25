@@ -11,7 +11,7 @@ export const isActiveParent = (data = [], path) => {
 };
 
 // is active parent childe check
-export const isActiveParentChaild = (data = [], path) => {
+export const isActiveParentChild = (data = [], path) => {
   if (data?.length !== 0) {
     return data?.some(
       (menu) =>
