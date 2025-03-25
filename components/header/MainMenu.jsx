@@ -10,7 +10,7 @@ import CategoriesMegaMenu from "./CategoriesMegaMenu";
 import {
   isActiveParent,
   isActiveLink,
-  isActiveParentChaild,
+  isActiveParentChild,
 } from "../../utils/linkActiveChecker";
 
 import { usePathname } from "next/navigation";
@@ -25,11 +25,11 @@ const MainMenu = ({ style = "" }) => {
       <ul className={`menu__nav ${style} -is-active`}>
         <li
           className={`${
-            isActiveParentChaild(homeItems, pathname) ? "current" : ""
+            isActiveParentChild(homeItems, pathname) ? "current" : ""
           } menu-item-has-children`}
         >
           <a href="#">
-            <span className="mr-10">Home</span>
+            <span className="mr-10">Hotels</span>
             <i className="icon icon-chevron-sm-down" />
           </a>
           <ul className="subnav">
@@ -49,27 +49,27 @@ const MainMenu = ({ style = "" }) => {
 
         <li className={isActiveParent ? "menu-item-has-children -has-mega-menu current":'menu-item-has-children -has-mega-menu'}>
           <a href="#">
-            <span className="mr-10">Categories</span>
-            <i className="icon icon-chevron-sm-down" />
+            <span className="mr-10">Experiences</span>
           </a>
-          <div className="mega">
-            <CategoriesMegaMenu setIsActiveParent={setIsActiveParent} />
-          </div>
         </li>
         {/* End categories menu items */}
 
         <li className={pathname === "/destinations" ? "current" : ""}>
-          <Link href="/destinations">Destinations</Link>
+          <Link href="/destinations">Offers</Link>
         </li>
         {/* End Destinatinos single menu */}
 
+        <li className={pathname === "/destinations" ? "current" : ""}>
+          <Link href="/destinations">Loyalty</Link>
+        </li>
+
         <li
           className={`${
-            isActiveParentChaild(blogItems, pathname) ? "current" : ""
+            isActiveParentChild(blogItems, pathname) ? "current" : ""
           } menu-item-has-children`}
         >
           <a href="#">
-            <span className="mr-10">Blog</span>
+            <span className="mr-10">Our Story</span>
             <i className="icon icon-chevron-sm-down" />
           </a>
           <ul className="subnav">
@@ -87,13 +87,17 @@ const MainMenu = ({ style = "" }) => {
         </li>
         {/* End blogIems */}
 
+        <li className={pathname === "/contact" ? "current" : ""}>
+          <Link href="/contact">Sustainability</Link>
+        </li>
+
         <li
           className={`${
-            isActiveParentChaild(pageItems, pathname) ? "current" : ""
+            isActiveParentChild(pageItems, pathname) ? "current" : ""
           } menu-item-has-children`}
         >
           <a href="#">
-            <span className="mr-10">Pages</span>
+            <span className="mr-10">Investors</span>
             <i className="icon icon-chevron-sm-down" />
           </a>
           <ul className="subnav">
@@ -111,33 +115,6 @@ const MainMenu = ({ style = "" }) => {
         </li>
         {/* End pages items */}
 
-        <li
-          className={`${
-            pathname.split('/')[1] == 'dashboard'  || pathname.split('/')[1] == 'vendor-dashboard' ? "current" : ""
-          } menu-item-has-children`}
-        >
-          <a href="#">
-            <span className="mr-10">Dashboard</span>
-            <i className="icon icon-chevron-sm-down" />
-          
-          </a>
-          <ul className="subnav ">
-            {dashboardItems.map((menu, i) => (
-              <li
-                key={i}
-                className={
-                  isActiveLink(menu.routePath, pathname) ? "current" : ""
-                }
-              >
-                <Link href={menu.routePath}>{menu.name}</Link>
-              </li>
-            ))}
-          </ul>
-        </li>
-
-        <li className={pathname === "/contact" ? "current" : ""}>
-          <Link href="/contact">Contact</Link>
-        </li>
       </ul>
     </nav>
   );
