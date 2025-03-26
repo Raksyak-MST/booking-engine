@@ -1001,6 +1001,22 @@ $_displays: none, inline-block, block, flex;
       border-top: 1px solid var(--color-border);
     }
   }
+
+  &.-content--compact {
+
+    display: grid;
+    grid-template-columns: 1fr 170px 140px;
+    gap: 30px;
+
+    @include media-below(md) {
+      grid-template-columns: 1fr;
+      gap: 20px;
+    }
+
+    &:nth-child(1n + 2) {
+      border-top: 1px solid var(--color-border);
+    }
+  }
 }
 
 .progressBar {
