@@ -1,3 +1,4 @@
+import { pluralRule } from "@/utils/textFormatter"
 export const hotelsData = [
   {
     id: 1,
@@ -12,6 +13,7 @@ export const hotelsData = [
     delayAnimation: "100",
     city: "new_york",
     category: "hotel",
+    availableRooms: 10,
   },
   {
     id: 2,
@@ -26,6 +28,7 @@ export const hotelsData = [
     delayAnimation: "200",
     city: "london",
     category: "tour",
+    availableRooms: 5,
   },
   {
     id: 3,
@@ -40,6 +43,7 @@ export const hotelsData = [
     delayAnimation: "300",
     city: "new_york",
     category: "activity",
+    availableRooms: 8,
   },
   {
     id: 4,
@@ -54,6 +58,7 @@ export const hotelsData = [
     delayAnimation: "400",
     city: "new_york",
     category: "cruise",
+    availableRooms: 12,
   },
   {
     id: 5,
@@ -68,6 +73,7 @@ export const hotelsData = [
     delayAnimation: "500",
     city: "london",
     category: "holiday_rentals",
+    availableRooms: 7,
   },
   {
     id: 6,
@@ -227,4 +233,4 @@ export const hotelsData = [
     city: "new_york",
     category: "hotel",
   },
-];
+].map((item) => ({ ...item, availableRooms: pluralRule(item.availableRooms) }));
