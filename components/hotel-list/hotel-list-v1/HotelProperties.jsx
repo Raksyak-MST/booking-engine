@@ -211,7 +211,7 @@ const HotelPropertyDetails = (props) => {
           </div>
         </div>
         <div>
-          <p className="text-16 fw-500 text-black pl-4 mb-2">Select meat plan</p>
+          <p className="text-16 fw-500 text-black pl-4 mb-2">Select meal plan</p>
           <div class="radio-group">
             <input type="radio" id="AB" name="meal" class="radio-input" />
             <label htmlFor="AB" class="radio-label">
@@ -229,10 +229,8 @@ const HotelPropertyDetails = (props) => {
             </label>
           </div>
         </div>
-        <div style={{ gridColumn: "-3/-1", alignSelf: "end" }}>
-          <div className="button -md -dark-1 bg-blue-1 text-white">
-            <Link href={`/booking-page`}>BOOK NOW</Link>
-          </div>
+        <div className="button -md -dark-1 bg-blue-1 text-white">
+          <Link href={`/booking-page`}>BOOK NOW</Link>
         </div>
       </div>
       {/* End romm Grid horizontal content */}
