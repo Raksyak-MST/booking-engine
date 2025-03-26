@@ -213,18 +213,18 @@ const HotelPropertyDetails = (props) => {
         <div>
           <p className="text-16 fw-500 text-black pl-4 mb-2">Select meal plan</p>
           <div class="radio-group">
-            <input type="radio" id="AB" name="meal" class="radio-input" />
-            <label htmlFor="AB" class="radio-label">
+            <input type="radio" id="AB" name="meal" className="radio-input" />
+            <label htmlFor="AB" className="radio-label">
               Room only
             </label>
 
-            <input type="radio" id="CP" name="meal" class="radio-input" />
-            <label htmlFor="CP" class="radio-label">
+            <input type="radio" id="CP" name="meal" className="radio-input" />
+            <label htmlFor="CP" className="radio-label">
               Breakfast included
             </label>
 
-            <input type="radio" id="ABCP" name="meal" class="radio-input" />
-            <label htmlFor="ABCP" class="radio-label">
+            <input type="radio" id="ABCP" name="meal" className="radio-input" />
+            <label htmlFor="ABCP" className="radio-label">
               Breakfast and dinner included
             </label>
           </div>

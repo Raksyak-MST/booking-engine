@@ -1,13 +1,60 @@
 
 'use client'
 
+import {useEffect} from "react";
+import { useDispatch, useSelector } from "react-redux";
 import DateSearch from "../DateSearch";
 import GuestSearch from "./GuestSearch";
 import LocationSearch from "./LocationSearch";
 import { useRouter } from "next/navigation";
+import { URL } from "@/data/urls"
+import { setIsUserLogin, setBookingData, useGetDataForWebBookingMutation } from "@/store/store"
 
 const MainFilterSearchBox = () => {
   const Router = useRouter()
+  const dispatch = useDispatch();
+  const state = useSelector(state => state.auth)
+  const bookingState = useSelector(state => state.booking);
+  const [getDataForWebBooking, options] = useGetDataForWebBookingMutation()
+
+  useEffect(() => {
+    const fetchUserCookies = async () => {
+      const myHeaders = new Headers();
+      myHeaders.append("Content-Type", "application/x-www-form-urlencoded");
+      myHeaders.append("Cookie", "w2sw6tuWPa=s%3AHfXyfMilMKghKs7ToV2it6VhPhQcc2BV.e5fpUmdLL51v5Vi%2Fzh79%2BNrL86HfADcGJ0p6WeDnk7A");
+
+      const urlencoded = new URLSearchParams();
+      urlencoded.append("userName", "ramesh");
+      urlencoded.append("password", "ramesh@123");
+      urlencoded.append("hotelid", "10");
+      urlencoded.append("companyCode", "ALLILAD");
+
+      const requestOptions = {
+        method: "POST",
+        headers: myHeaders,
+        body: urlencoded,
+        redirect: "follow"
+      };
+
+      fetch(URL.LOGIN, requestOptions)
+        .then((response) => {
+          if(response.ok){
+            return response.json();
+          }else{
+            throw new Error("Not logged in.", response)
+          }
+        })
+        .then((result) => {
+          console.log(result);
+          dispatch(setIsUserLogin(true))
+        })
+        .catch((error) => console.error(error));
+   }
+    console.log(state)
+    if(!state.isLogin){
+      fetchUserCookies()
+    }
+  })
 
   return (
     <>
@@ -32,7 +79,10 @@ const MainFilterSearchBox = () => {
             <div className="button-item">
               <button
                 className="mainSearch__submit button -dark-1 h-60 px-35 col-12 rounded bg-blue-1 text-white"
-                onClick={() => Router.push("/hotel-list-v1")}
+                onClick={() => {
+                  dispatch(setBookingData({hotelId: 10}))
+                  getDataForWebBooking(bookingState)
+                }}
               >
                 <i className="icon-search text-20 mr-10" />
                 Book Now 
