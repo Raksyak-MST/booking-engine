@@ -1003,18 +1003,27 @@ $_displays: none, inline-block, block, flex;
   }
 
   &.-content--compact {
-
     display: grid;
     grid-template-columns: 1fr 170px 140px;
     gap: 30px;
 
     @include media-below(md) {
-      grid-template-columns: 1fr;
-      gap: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 20px
     }
 
     &:nth-child(1n + 2) {
       border-top: 1px solid var(--color-border);
+    }
+
+    & .button{
+      grid-column: 2/-1;
+      align-self: end;
+
+      @include media-below(md){
+        align-self: stretch;
+      }
     }
   }
 }
