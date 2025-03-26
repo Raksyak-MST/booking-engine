@@ -11,8 +11,8 @@ const HotelProperties = () => {
   return (
     <>
       {hotelsData.slice(0, 7).map((item) => (
-        <div className="col-12" key={item?.id}>
-          <div className="border-top-light pt-30">
+        <div className="col-12 border-light mb-3 rounded p-3" key={item?.id}>
+          <div>
             <div className="row x-gap-20 y-gap-20">
               <div className="col-md-auto">
                 <div className="cardImage ratio ratio-1:1 w-250 md:w-1/1 rounded-4">
@@ -152,21 +152,91 @@ const HotelProperties = () => {
                   <div className="text-14 text-light-1 mt-5">
                     +US$828 taxes and charges
                   </div>
-
-                  <Link
-                    href={`/hotel-single-v1/${item.id}`}
-                    className="button -md -dark-1 bg-blue-1 text-white mt-24"
-                  >
-                    See Availability{" "}
-                    <div className="icon-arrow-top-right ml-15"></div>
-                  </Link>
                 </div>
               </div>
             </div>
           </div>
+          <div className="border-light p-3 rounded mt-2">
+            <HotelPropertyDetails hotel={item}/>
+          </div>
         </div>
       ))}
     </>
+  );
+};
+
+const HotelPropertyDetails = (props) => {
+  const { hotel } = props;
+  return (
+    <div className="y-gap-30">
+      <div className="roomGrid -content--compact">
+        <div>
+          <div className="text-15 fw-500 mb-10">Your price includes:</div>
+          <div className="y-gap-8">
+            <div className="d-flex items-center text-green-2">
+              <i className="icon-check text-12 mr-10" />
+              <div className="text-15">Pay at the hotel</div>
+            </div>
+            <div className="d-flex items-center text-green-2">
+              <i className="icon-check text-12 mr-10" />
+              <div className="text-15">Pay nothing until March 30, 2022</div>
+            </div>
+            <div className="d-flex items-center text-green-2">
+              <i className="icon-check text-12 mr-10" />
+              <div className="text-15">
+                Free cancellation before April 1, 2022
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div>
+          <div className="text-18 lh-15 fw-500">US${hotel?.price}</div>
+          <div className="text-14 lh-18 text-light-1">
+            Includes taxes and charges
+          </div>
+        </div>
+
+        <div>
+          <div className="dropdown js-dropdown js-price-1-active">
+            <select className="form-select dropdown__button d-flex items-center rounded-4 border-light px-15 h-50 text-14">
+              <option value="1" defaultValue>
+                1 (US$ 3,120)
+              </option>
+              <option value="2">2 (US$ 3,120)</option>
+              <option value="3"> 3 (US$ 3,120)</option>
+              <option value="4"> 4 (US$ 3,120)</option>
+              <option value="5"> 5 (US$ 3,120)</option>
+            </select>
+          </div>
+        </div>
+        <div>
+          <p className="text-16 fw-500 text-black pl-4 mb-2">Select meat plan</p>
+          <div class="radio-group">
+            <input type="radio" id="AB" name="meal" class="radio-input" />
+            <label htmlFor="AB" class="radio-label">
+              Room only
+            </label>
+
+            <input type="radio" id="CP" name="meal" class="radio-input" />
+            <label htmlFor="CP" class="radio-label">
+              Breakfast included
+            </label>
+
+            <input type="radio" id="ABCP" name="meal" class="radio-input" />
+            <label htmlFor="ABCP" class="radio-label">
+              Breakfast and dinner included
+            </label>
+          </div>
+        </div>
+        <div style={{ gridColumn: "-3/-1", alignSelf: "end" }}>
+          <div className="button -md -dark-1 bg-blue-1 text-white">
+            <Link href={`/booking-page`}>BOOK NOW</Link>
+          </div>
+        </div>
+      </div>
+      {/* End romm Grid horizontal content */}
+    </div>
   );
 };
 
