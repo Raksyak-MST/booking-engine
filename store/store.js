@@ -34,7 +34,7 @@ const authSlice = createSlice({
 })
 
 const bookingInitialState = {
-  hotelId: null,
+  hotelId: 10,
   arrivalDate: null,
   departureDate: null,
   bookingLocation: null,
