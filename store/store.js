@@ -14,6 +14,18 @@ const api = createApi({
         body: data,
       }),
     }),
+    webLogin: builder.mutation({
+      query: () => ({
+        url: "/webLogin",
+        method: "POST",
+        body: {
+          userName: "ramesh",
+          password: "ramesh@123",
+          hotelid: "10",
+          companyCode: "ALLILAD"
+        }
+      })
+    })
   }),
 });
 

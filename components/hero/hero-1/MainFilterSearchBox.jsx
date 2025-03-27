@@ -17,44 +17,6 @@ const MainFilterSearchBox = () => {
   const bookingState = useSelector(state => state.booking);
   const [getDataForWebBooking, options] = useGetDataForWebBookingMutation()
 
-  useEffect(() => {
-    const fetchUserCookies = async () => {
-      const myHeaders = new Headers();
-      myHeaders.append("Content-Type", "application/x-www-form-urlencoded");
-
-      const urlencoded = new URLSearchParams();
-      urlencoded.append("userName", "ramesh");
-      urlencoded.append("password", "ramesh@123");
-      urlencoded.append("hotelid", "10");
-      urlencoded.append("companyCode", "ALLILAD");
-
-      const requestOptions = {
-        method: "POST",
-        headers: myHeaders,
-        body: urlencoded,
-      };
-
-      fetch(URL.LOGIN, requestOptions)
-        .then((response) => {
-          if(response.ok){
-            console.log("Login response: ", response)
-            return response.json();
-          }else{
-            throw new Error("Not logged in.", response)
-          }
-        })
-        .then((result) => {
-          console.log(result);
-          dispatch(setIsUserLogin(true))
-        })
-        .catch((error) => console.error(error));
-   }
-    console.log(state)
-    if(!state.isLogin){
-      fetchUserCookies()
-    }
-  })
-
   return (
     <>
       <div className="position-relative mt-30 md:mt-20">
@@ -81,10 +43,11 @@ const MainFilterSearchBox = () => {
                 onClick={() => {
                   dispatch(setBookingData({hotelId: 10}))
                   getDataForWebBooking(bookingState)
+                  Router.push("/hotel-list-v1")
                 }}
               >
                 <i className="icon-search text-20 mr-10" />
-                Book Now 
+                Search 
               </button>
             </div>
             {/* End search button_item */}
