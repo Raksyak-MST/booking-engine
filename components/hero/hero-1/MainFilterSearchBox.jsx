@@ -21,7 +21,6 @@ const MainFilterSearchBox = () => {
     const fetchUserCookies = async () => {
       const myHeaders = new Headers();
       myHeaders.append("Content-Type", "application/x-www-form-urlencoded");
-      myHeaders.append("Cookie", "w2sw6tuWPa=s%3AHfXyfMilMKghKs7ToV2it6VhPhQcc2BV.e5fpUmdLL51v5Vi%2Fzh79%2BNrL86HfADcGJ0p6WeDnk7A");
 
       const urlencoded = new URLSearchParams();
       urlencoded.append("userName", "ramesh");
@@ -33,12 +32,12 @@ const MainFilterSearchBox = () => {
         method: "POST",
         headers: myHeaders,
         body: urlencoded,
-        redirect: "follow"
       };
 
       fetch(URL.LOGIN, requestOptions)
         .then((response) => {
           if(response.ok){
+            console.log("Login response: ", response)
             return response.json();
           }else{
             throw new Error("Not logged in.", response)
