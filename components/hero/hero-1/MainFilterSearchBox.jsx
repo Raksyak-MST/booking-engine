@@ -2,20 +2,22 @@
 'use client'
 
 import {useEffect} from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 import DateSearch from "../DateSearch";
 import GuestSearch from "./GuestSearch";
 import LocationSearch from "./LocationSearch";
 import { useRouter } from "next/navigation";
-import { URL } from "@/data/urls"
-import { setIsUserLogin, setBookingData, useGetDataForWebBookingMutation } from "@/store/store"
+import { useGetDataForWebBookingMutation , useWebLoginMutation} from "@/store/store"
 
 const MainFilterSearchBox = () => {
   const Router = useRouter()
-  const dispatch = useDispatch();
-  const state = useSelector(state => state.auth)
   const bookingState = useSelector(state => state.booking);
   const [getDataForWebBooking, options] = useGetDataForWebBookingMutation()
+  const [getWebLogin, webLoginOptions] = useWebLoginMutation()
+
+  useEffect(() => {
+    getWebLogin();
+  }, [])
 
   return (
     <>
@@ -44,7 +46,6 @@ const MainFilterSearchBox = () => {
               <button
                 className="mainSearch__submit button -dark-1 h-60 px-35 col-12 rounded bg-blue-1 text-white"
                 onClick={() => {
-                  dispatch(setBookingData({hotelId: 10}))
                   getDataForWebBooking(bookingState)
                   Router.push("/hotel-list-v1")
                 }}

@@ -11,21 +11,21 @@ const api = createApi({
       query: (data) => ({
         url: "getDataforWebBooking",
         method: "POST",
-        body: data,
+        body: new URLSearchParams(data),
       }),
     }),
     webLogin: builder.mutation({
       query: () => ({
         url: "/webLogin",
         method: "POST",
-        body: {
+        body: new URLSearchParams({
           userName: "ramesh",
           password: "ramesh@123",
           hotelid: "10",
-          companyCode: "ALLILAD"
-        }
-      })
-    })
+          companyCode: "ALLILAD",
+        }),
+      }),
+    }),
   }),
 });
 
@@ -83,7 +83,7 @@ export const store = configureStore({
     getDefaultMiddleware().concat(api.middleware),
 });
 
-export const { useGetDataForWebBookingMutation } = api
+export const { useGetDataForWebBookingMutation, useWebLoginMutation } = api
 
 export const { setIsUserLogin } = authSlice.actions
 export const { setBookingData, updateGuest } = bookingSlice.actions
