@@ -21,9 +21,12 @@ const MainFilterSearchBox = () => {
     <>
       <div className="position-relative mt-30 md:mt-20">
         <div className="mainSearch bg-white px-10 py-10 lg:px-20 lg:pt-5 lg:pb-20 rounded">
-          <div className="button-grid items-center">
+          <div className="button-grid --compact-5 items-center">
             <LocationSearch />
             {/* End Location */}
+            <div className="px-30 lg:py-20 lg:px-0 js-form-dd js-liverSearch">
+              <input placeholder="Enter company code" />
+            </div>
             <div className="searchMenu-date px-30 lg:py-20 lg:px-0 js-form-dd js-calendar">
               <div>
                 <h4 className="text-15 fw-500 ls-2 lh-16">
