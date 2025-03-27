@@ -212,7 +212,7 @@ const HotelPropertyDetails = (props) => {
         </div>
         <div>
           <p className="text-16 fw-500 text-black pl-4 mb-2">Select meal plan</p>
-          <div class="radio-group">
+          <div className="radio-group">
             <input type="radio" id="AB" name="meal" className="radio-input" />
             <label htmlFor="AB" className="radio-label">
               Room only

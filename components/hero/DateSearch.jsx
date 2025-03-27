@@ -2,34 +2,32 @@
 'use client'
 
 import React, { useState } from "react";
-import DatePicker, { DateObject } from "react-multi-date-picker";
-import { useDispatch } from 'react-redux'
+import DatePicker from "react-multi-date-picker";
+import { useDispatch, useSelector } from 'react-redux'
 import { setBookingData } from "@/store/store"
-import { dateFormatter } from "@/utils/textFormatter"
 
 const DateSearch = () => {
-  // const [dates, setDates] = useState([
-  //   new DateObject({ year: 2023, month: 1, day: 22 }),
-  //   "December 09 2020",
-  //   1597994736000, //unix time in milliseconds (August 21 2020)
-  // ]);
   const dispatch = useDispatch();
-  const [dates, setDates] = useState([
-    new DateObject().setDay(5),
-    new DateObject().setDay(14).add(1, "month"),
-  ]);
+  const {arrivalDate, departureDate } = useSelector(state => state.booking)
+  const [dates, setDates] = useState(() => {
+    // fetch from the store if uer has picked date from previous page
+    if (arrivalDate && departureDate) {
+      console.log(new Date(departureDate))
+      return [new Date(arrivalDate), new Date(departureDate)];
+    }
+    return [new Date(), new Date()];
+  });
 
   const handleDatePick = (event) => {
-    console.log(event)
-    setDates(event)
     if (!Array.isArray(event)) return;
     const checkInCheckout = event.map((date) => new Date(date));
     const checkIn = checkInCheckout[0],
       checkOut = checkInCheckout[1];
+      setDates([checkIn, checkOut])
     dispatch(
       setBookingData({
-        arrivalDate: dateFormatter(checkIn),
-        departureDate: dateFormatter(checkOut),
+        arrivalDate: checkIn?.toISOString(),
+        departureDate: checkOut?.toISOString(),
       })
     );
   }
@@ -41,7 +39,7 @@ const DateSearch = () => {
         containerClassName="custom_container-picker"
         value={dates}
         onChange={handleDatePick}
-        numberOfMonths={2}
+        numberOfMonths={1}
         offsetY={10}
         range
         rangeHover
