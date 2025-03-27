@@ -14,3 +14,8 @@ export const dateFormatter = function(date, defaultFormat="YYYY-MM-DD") {
   const formatter = moment(date);
   return formatter.format(defaultFormat)
 }
+
+export const priceFormatter = function(value, defaultCurrency="INR") {
+  const formatter = new Intl.NumberFormat("en", { currency: defaultCurrency, style: "currency", currencyDisplay: "code"})
+  return formatter.format(value) 
+}
