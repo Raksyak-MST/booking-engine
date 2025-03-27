@@ -263,16 +263,25 @@ export const HotelProperties2 = () => {
 
 const HotelPropertyDetails = (props) => {
   const { hotel } = props;
+  const roomPackages = hotel?.perNightCharges.map((roomPackage) => ({
+    packageCode: roomPackage.packageCode,
+    packageId: roomPackage.packageId
+  }));
+  const roomRates = hotel?.perNightCharges.map((roomPackage) =>
+    roomPackage?.rooms?.map((room, index) => (
+      <option key={index} value={index}>
+        ({room?.packageCode}) {priceFormatter(room?.TotalAmountBeforeTax)}
+      </option>
+    ))
+  );
   return (
     <div className="y-gap-30">
       <div className="roomGrid -content--compact">
         <div>
-          <div className="text-15 fw-500 mb-10">Per Night Charges</div>
+          <div className="text-15 fw-500 mb-10">Per night charges packages</div>
           <div className="dropdown js-dropdown js-price-1-active">
             <select className="form-select dropdown__button d-flex items-center rounded-4 border-light px-15 h-50 text-14">
-              {hotel?.perNightCharges[0]?.rooms?.map((room, index) => (
-                <option key={index} value={index}>({room?.packageCode}) {priceFormatter(room?.TotalAmountBeforeTax)}</option>
-              ))}
+              {...roomRates}
             </select>
           </div>
         </div>
@@ -281,39 +290,22 @@ const HotelPropertyDetails = (props) => {
             Select meal plan
           </p>
           <div className="radio-group">
-            <input type="radio" id="AB" name="meal" className="radio-input" />
-            <label
-              htmlFor="AB"
-              className="radio-label border-light rounded-100 px-3 text-14"
-            >
-              Room only
-            </label>
-
-            <input
-              type="radio"
-              id="CP"
-              name="meal"
-              className="radio-input border-light rounded-100 px-2 text-12 bg-light-2"
-            />
-            <label
-              htmlFor="CP"
-              className="radio-label border-light rounded-100 px-2 text-12"
-            >
-              Breakfast included
-            </label>
-
-            <input
-              type="radio"
-              id="ABCP"
-              name="meal"
-              className="radio-input border-light rounded-100 px-2 text-12 bg-light-2"
-            />
-            <label
-              htmlFor="ABCP"
-              className="radio-label border-light rounded-100 px-2 text-12"
-            >
-              Breakfast and dinner included
-            </label>
+            {roomPackages?.map((pack, index) => (
+              <div key={index}>
+                <input
+                  type="radio"
+                  id="AB"
+                  name="meal"
+                  className="radio-input"
+                />
+                <label
+                  htmlFor="AB"
+                  className="radio-label border-light rounded-100 px-3 text-14"
+                >
+                  {pack?.packageCode}
+                </label>
+              </div>
+            ))}
           </div>
         </div>
         <div className="button -md -dark-1 bg-blue-1 text-white">
