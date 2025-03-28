@@ -65,7 +65,7 @@ const MainFilterSearchBox = () => {
                 onClick={handleSubmit}
               >
                 {options.isLoading ? (
-                  <div className="spinner-border" role="status">
+                  <div className="spinner-border spinner-border-sm" role="status">
                     <span className="sr-only"></span>
                   </div>
                 ) : (

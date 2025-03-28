@@ -8,8 +8,9 @@ import Image from "next/image";
 import { priceFormatter } from "@/utils/textFormatter"
 import { useSelector } from "react-redux"
 import { useDispatch } from "react-redux"
-import { roomSelectionActions } from "@/store/store"
+import { bookingQueryActions, roomSelectionActions } from "@/store/store"
 import { useRouter } from "next/navigation"
+import { useState } from "react"
 
 const HotelProperties = () => {
   return (
@@ -269,17 +270,34 @@ const HotelPropertyDetails = (props) => {
   const Router = useRouter();
 
   const { hotel } = props;
+
+  const [selectedMealPlan, setSelectedMealPlan] = useState({});
+
   const roomPackages = hotel?.perNightCharges.map((roomPackage) => ({
     packageCode: roomPackage.packageCode,
-    packageId: roomPackage.packageId
+    packageId: roomPackage.packageID
   }));
+
   const roomRates = hotel?.perNightCharges.map((roomPackage) =>
     roomPackage?.rooms?.map((room, index) => (
       <option key={index} value={index}>
-        ({room?.packageCode}) {priceFormatter(room?.TotalAmountBeforeTax)}
+        ({room?.packageCode}){" "}
+        {new Intl.NumberFormat("en", {
+          style: "currency",
+          currency: "INR",
+        }).format(room?.TotalAmountBeforeTax)}
       </option>
     ))
   );
+
+  const handleMealPlanSelection = (e) => {
+    const mealPlan = e.target.getAttribute("name");
+    const packageId = e.target.getAttribute("id");
+    setSelectedMealPlan({[mealPlan]: true});
+    dispatch(
+      bookingQueryActions.setBookingQuery({ selectedPackageID: packageId, selectedRoomTypeID: hotel?.roomTypeID })
+    );
+  }
 
   const handleRoomSelection = () => {
     dispatch(roomSelectionActions.setRoomSelection(hotel));
@@ -301,19 +319,18 @@ const HotelPropertyDetails = (props) => {
           <p className="text-15 fw-500 mb-10">Select meal plan</p>
           <div className="radio-group">
             {roomPackages?.map((pack, index) => (
-              <div key={index}>
-                <input
-                  type="radio"
-                  id="AB"
-                  name="meal"
-                  className="radio-input"
-                />
-                <label
-                  htmlFor="AB"
-                  className="radio-label border-light rounded-100 px-3 text-14"
+              <div key={index} onClick={handleMealPlanSelection}>
+                <p
+                id={`${pack?.packageId}`}
+                  className={`radio-label border-light rounded-100 px-3 text-14 ${
+                    selectedMealPlan[pack.packageCode]
+                      ? "bg-blue-1 text-white"
+                      : ""
+                  }`}
+                  name={pack.packageCode}
                 >
                   {pack?.packageCode}
-                </label>
+                </p>
               </div>
             ))}
           </div>
