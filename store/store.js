@@ -79,7 +79,7 @@ const bookingSlice = createSlice({
   name: "booking",
   initialState: bookingInitialState,
   reducers: {
-    setBookingQuery: (state, action) => {
+    setBookingQuery: (state, acuseroutertion) => {
       console.log(action.payload);
       return Object.assign(state.bookingQuery, action.payload);
     },
@@ -106,6 +106,16 @@ const availableRooms = createSlice({
   }
 });
 
+const roomSelection = createSlice({
+  name: "roomSelection",
+  initialState: {},
+  reducers: {
+    setRoomSelection: (state, action) => {
+      return Object.assign(state, action.payload);
+    },
+  },
+})
+
 export const store = configureStore({
   reducer: {
     hero: findPlaceSlice,
@@ -113,6 +123,7 @@ export const store = configureStore({
     booking: bookingSlice.reducer,
     bookingQuery: bookingQuerySlice.reducer,
     availableRooms: availableRooms.reducer,
+    roomSelection: roomSelection.reducer,
     [api.reducerPath]: api.reducer,
   },
   middleware: (getDefaultMiddleware) =>
@@ -126,3 +137,4 @@ export const { setBookingQuery, updateGuest } = bookingSlice.actions
 export const bookingQueryActions = bookingQuerySlice.actions
 export const bookingActions = bookingSlice.actions
 export const availableRoomsActions = availableRooms.actions
+export const roomSelectionActions = roomSelection.actions

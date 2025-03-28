@@ -1,7 +1,33 @@
 import Link from "next/link";
+import { useState } from "react";
+
 import BookingDetails from "./sidebar/BookingDetails";
+import { bookingActions  } from "@/store/store"
+import { useDispatch, useSelector } from "react-redux";
 
 const CustomerInfo = () => {
+
+  const [customerInfo, setCustomerInfo] = useState({
+    firstName: "",
+    lastName: "",
+    email: "",
+    password: "",
+    companyCode: "",
+  });
+
+  // const customerInfo = useSelector((state) => state.booking.customerInfo);
+
+  const dispatch = useDispatch();
+  const { firstName, lastName, email, password, companyCode } = customerInfo;
+
+  const handleChange = (e) => {
+    const fieldName = e.target.name;
+    const fieldValue = e.target.value;
+
+    // dispatch(bookingActions.setCustomerInfo({ ...customerInfo, [fieldName]: fieldValue }));
+    setCustomerInfo((state) => ({ ...state, [fieldName]: fieldValue }));
+  };
+
   return (
     <>
       <div className="col-xl-7 col-lg-8 mt-30">
@@ -18,18 +44,26 @@ const CustomerInfo = () => {
           Let us know who you are
         </h2>
 
-        <div className="row x-gap-20 y-gap-20 pt-20">
+        <form className="row x-gap-20 y-gap-20 pt-20">
           <div className="col-12">
             <div className="form-input ">
-              <input type="text" required />
-              <label className="lh-1 text-16 text-light-1">Full Name</label>
+              <input type="text" name="firstName" value={firstName} onChange={handleChange} required />
+              <label className="lh-1 text-16 text-light-1">First name</label>
             </div>
           </div>
           {/* End col-12 */}
 
-          <div className="col-md-6">
+          <div className="col-12">
             <div className="form-input ">
-              <input type="text" required />
+              <input type="text" name="lastName" value={lastName} onChange={handleChange} required />
+              <label className="lh-1 text-16 text-light-1">Last name</label>
+            </div>
+          </div>
+          {/* End col-12 */}
+
+          <div className="col-md-12">
+            <div className="form-input ">
+              <input type="text" name="email" value={email} onChange={handleChange} required />
               <label className="lh-1 text-16 text-light-1">Email</label>
             </div>
           </div>
@@ -37,58 +71,22 @@ const CustomerInfo = () => {
 
           <div className="col-md-6">
             <div className="form-input ">
-              <input type="text" required />
-              <label className="lh-1 text-16 text-light-1">Phone Number</label>
-            </div>
-          </div>
-          {/* End col-12 */}
-
-          <div className="col-12">
-            <div className="form-input ">
-              <input type="text" required />
-              <label className="lh-1 text-16 text-light-1">
-                Address line 1
-              </label>
-            </div>
-          </div>
-          {/* End col-12 */}
-
-          <div className="col-12">
-            <div className="form-input ">
-              <input type="text" required />
-              <label className="lh-1 text-16 text-light-1">
-                Address line 2
-              </label>
+              <input type="text" name="password" value={password} onChange={handleChange} required />
+              <label className="lh-1 text-16 text-light-1">Password</label>
             </div>
           </div>
           {/* End col-12 */}
 
           <div className="col-md-6">
             <div className="form-input ">
-              <input type="text" required />
-              <label className="lh-1 text-16 text-light-1">
-                State/Province/Region
-              </label>
-            </div>
-          </div>
-          {/* End col-12 */}
-
-          <div className="col-md-6">
-            <div className="form-input ">
-              <input type="text" required />
-              <label className="lh-1 text-16 text-light-1">
-                ZIP code/Postal code
-              </label>
-            </div>
-          </div>
-          {/* End col-12 */}
-
-          <div className="col-12">
-            <div className="form-input ">
-              <textarea required rows={6} defaultValue={""} />
-              <label className="lh-1 text-16 text-light-1">
-                Special Requests
-              </label>
+              <input
+                type="text"
+                name="companyCode"
+                onChange={handleChange}
+                value={companyCode}
+                required
+              />
+              <label className="lh-1 text-16 text-light-1">Company code</label>
             </div>
           </div>
           {/* End col-12 */}
@@ -105,7 +103,7 @@ const CustomerInfo = () => {
             </div>
           </div>
           {/* End col-12 */}
-        </div>
+        </form>
         {/* End .row */}
       </div>
       {/* End .col-xl-7 */}

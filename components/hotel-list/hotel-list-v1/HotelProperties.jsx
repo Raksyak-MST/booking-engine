@@ -7,6 +7,9 @@ import { Navigation, Pagination } from "swiper";
 import Image from "next/image";
 import { priceFormatter } from "@/utils/textFormatter"
 import { useSelector } from "react-redux"
+import { useDispatch } from "react-redux"
+import { roomSelectionActions } from "@/store/store"
+import { useRouter } from "next/navigation"
 
 const HotelProperties = () => {
   return (
@@ -262,6 +265,9 @@ export const HotelProperties2 = () => {
 }
 
 const HotelPropertyDetails = (props) => {
+  const dispatch = useDispatch();
+  const Router = useRouter();
+
   const { hotel } = props;
   const roomPackages = hotel?.perNightCharges.map((roomPackage) => ({
     packageCode: roomPackage.packageCode,
@@ -274,6 +280,12 @@ const HotelPropertyDetails = (props) => {
       </option>
     ))
   );
+
+  const handleRoomSelection = () => {
+    dispatch(roomSelectionActions.setRoomSelection(hotel));
+    Router.push("/booking-page")
+  }
+
   return (
     <div className="y-gap-30">
       <div className="roomGrid -content--compact">
@@ -308,9 +320,7 @@ const HotelPropertyDetails = (props) => {
         </div>
         <div
           className="button -md -dark-1 bg-blue-1 text-white cursor-pointer"
-          onClick={() => {
-            console.log(hotel);
-          }}
+          onClick={handleRoomSelection}
         >
           BOOK NOW
         </div>
