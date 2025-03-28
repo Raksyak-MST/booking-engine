@@ -1,6 +1,18 @@
+"use client"
+
 import MainFilterSearchBox from "./MainFilterSearchBox";
+import { useWebLoginMutation } from "@/store/store"
+import { useEffect } from "react";
 
 const index = () => {
+  const [webLogin] = useWebLoginMutation();
+
+  useEffect(() => {
+    webLogin()
+    return () => {
+    }
+  }, [])
+
   return (
     <section className="masthead -type-1 z-5">
       <div className="masthead__bg">
