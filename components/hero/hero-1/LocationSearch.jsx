@@ -2,10 +2,15 @@
 'use client'
 
 import { useState } from "react";
+import { setBookingData } from "@/store/store"
+import { useSelector, useDispatch } from "react-redux"
 
 const SearchBar = () => {
   const [searchValue, setSearchValue] = useState("");
   const [selectedItem, setSelectedItem] = useState(null);
+
+  const { bookingLocation } = useSelector((state) => state.booking);
+  const dispatch = useDispatch()
 
   const locationSearchContent = [
     {

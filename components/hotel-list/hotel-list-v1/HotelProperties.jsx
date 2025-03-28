@@ -278,7 +278,7 @@ const HotelPropertyDetails = (props) => {
     <div className="y-gap-30">
       <div className="roomGrid -content--compact">
         <div>
-          <div className="text-15 fw-500 mb-10">Per night charges packages</div>
+          <div className="text-15 fw-500 mb-10">Packages</div>
           <div className="dropdown js-dropdown js-price-1-active">
             <select className="form-select dropdown__button d-flex items-center rounded-4 border-light px-15 h-50 text-14">
               {...roomRates}
@@ -286,9 +286,7 @@ const HotelPropertyDetails = (props) => {
           </div>
         </div>
         <div>
-          <p className="text-16 fw-500 text-black pl-4 mb-2">
-            Select meal plan
-          </p>
+          <p className="text-15 fw-500 mb-10">Select meal plan</p>
           <div className="radio-group">
             {roomPackages?.map((pack, index) => (
               <div key={index}>
