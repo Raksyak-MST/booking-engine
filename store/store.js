@@ -1,6 +1,5 @@
 import { configureStore, createSlice } from "@reduxjs/toolkit";
 import findPlaceSlice from "../features/hero/findPlaceSlice";
-
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react"
 
 const api = createApi({
@@ -15,16 +14,29 @@ const api = createApi({
       }),
     }),
     webLogin: builder.mutation({
-      query: () => ({
-        url: "/webLogin",
-        method: "POST",
-        body: new URLSearchParams({
-          userName: "ramesh",
-          password: "ramesh@123",
-          hotelid: "10",
-          companyCode: "ALLILAD",
-        }),
-      }),
+      async queryFn(_args, _queryApi, _extraOptions, baseQuery) {
+        try {
+          const response = await baseQuery({
+            url: "webLogin",
+            method: "POST",
+            body: new URLSearchParams({
+              userName: "ramesh",
+              password: "ramesh@123",
+              hotelid: "10",
+              companyCode: "ALLILAD",
+            }),
+          });
+          console.log("Cookies", response?.meta?.response?.headers);
+          console.log("Token cookie: ", document.cookie);
+          if (!response?.meta?.response?.ok) {
+            throw new Error("FETCH_ERROR");
+          }
+          return { data: response.data };
+        } catch (error) {
+          console.error(error);
+          return { error: { status: "FETCH_ERROR", message: error.message } };
+        }
+      },
     }),
   }),
 });
@@ -47,13 +59,13 @@ const authSlice = createSlice({
 
 const bookingInitialState = {
   hotelId: 10,
-  arrivalDate: null,
-  departureDate: null,
-  bookingLocation: null,
+  arrivalDate: "",
+  departureDate: "",
+  bookingLocation: "",
   adults: 2,
   children: 1,
   rooms: 1,
-  companyId: null,
+  companyCode: "",
 }
 
 const bookingSlice = createSlice({

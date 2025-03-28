@@ -1,4 +1,3 @@
-import { priceFormatter } from "@/utils/textFormatter"
 export const webBookingData = {
   status: "success",
   statusCode: 200,
