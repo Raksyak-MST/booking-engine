@@ -57,13 +57,6 @@ const bookingInitialState = {
     package: "",
     mealPlan: "",
   },
-  customerInfo: {
-    firstName: "",
-    lastName: "",
-    email: "",
-    password: "",
-    companyCode: "",
-  },
 };
 
 const bookingQuerySlice = createSlice({
@@ -118,6 +111,36 @@ const roomSelection = createSlice({
   },
 })
 
+
+const billingCustomerInfoInitialState = {
+  firstName: "",
+  lastName: "",
+  email: "",
+  password: "",
+  companyCode: "",
+  city: "",
+  state: "",
+  zipCode: "",
+  address: "",
+  phone: "",
+  country: "",
+  isPasswordVisible: false,
+};
+
+const billingCustomerInfoSlice = createSlice({
+  name: "billingCustomerInfo",
+  initialState: billingCustomerInfoInitialState,
+  reducers: {
+    setBillingCustomerInfo: (state, action) => {
+      return Object.assign(state, action.payload);
+    },
+    togglePasswordVisibility: (state) => {
+      return !state.isPasswordVisible
+    }
+  },
+});
+
+
 export const store = configureStore({
   reducer: {
     hero: findPlaceSlice,
@@ -126,6 +149,7 @@ export const store = configureStore({
     bookingQuery: bookingQuerySlice.reducer,
     availableRooms: availableRooms.reducer,
     roomSelection: roomSelection.reducer,
+    billingCustomerInfo: billingCustomerInfoSlice.reducer,
     [api.reducerPath]: api.reducer,
   },
   middleware: (getDefaultMiddleware) =>
@@ -140,3 +164,4 @@ export const bookingQueryActions = bookingQuerySlice.actions
 export const bookingActions = bookingSlice.actions
 export const availableRoomsActions = availableRooms.actions
 export const roomSelectionActions = roomSelection.actions
+export const billingCustomerInfoActions = billingCustomerInfoSlice.actions

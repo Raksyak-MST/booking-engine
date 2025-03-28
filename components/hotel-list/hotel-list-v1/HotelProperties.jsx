@@ -282,7 +282,7 @@ const HotelPropertyDetails = (props) => {
     roomPackage?.rooms?.map((room, index) => (
       <option key={index} value={index}>
         ({room?.packageCode}){" "}
-        {new Intl.NumberFormat("en", {
+        {new Intl.NumberFormat("en-IN", {
           style: "currency",
           currency: "INR",
         }).format(room?.TotalAmountBeforeTax)}

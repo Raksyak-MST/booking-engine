@@ -2,20 +2,20 @@ import Link from "next/link";
 import { useState } from "react";
 
 import BookingDetails from "./sidebar/BookingDetails";
-import { bookingActions  } from "@/store/store"
+import { billingCustomerInfoActions  } from "@/store/store"
 import { useDispatch, useSelector } from "react-redux";
 
 const CustomerInfo = () => {
 
-  const [customerInfo, setCustomerInfo] = useState({
-    firstName: "",
-    lastName: "",
-    email: "",
-    password: "",
-    companyCode: "",
-  });
+  // const [customerInfo, setCustomerInfo] = useState({
+  //   firstName: "",
+  //   lastName: "",
+  //   email: "",
+  //   password: "",
+  //   companyCode: "",
+  // });
 
-  // const customerInfo = useSelector((state) => state.booking.customerInfo);
+  const customerInfo = useSelector((state) => state.billingCustomerInfo);
 
   const dispatch = useDispatch();
   const { firstName, lastName, email, password, companyCode } = customerInfo;
@@ -23,9 +23,10 @@ const CustomerInfo = () => {
   const handleChange = (e) => {
     const fieldName = e.target.name;
     const fieldValue = e.target.value;
+    console.log(customerInfo)
 
-    // dispatch(bookingActions.setCustomerInfo({ ...customerInfo, [fieldName]: fieldValue }));
-    setCustomerInfo((state) => ({ ...state, [fieldName]: fieldValue }));
+    dispatch(billingCustomerInfoActions.setBillingCustomerInfo({ ...customerInfo, [fieldName]: fieldValue}));
+    // setCustomerInfo((state) => ({ ...state, [fieldName]: fieldValue }));
   };
 
   return (
@@ -45,17 +46,37 @@ const CustomerInfo = () => {
         </h2>
 
         <form className="row x-gap-20 y-gap-20 pt-20">
-          <div className="col-12">
+          <div className="col-2">
+            <select className="form-select h-full text-light-1">
+                <option>Mr.</option>
+                <option>Mrs.</option>
+            </select>
+          </div>
+          {/* End col-12 */}
+
+          <div className="col-5">
             <div className="form-input ">
-              <input type="text" name="firstName" value={firstName} onChange={handleChange} required />
+              <input
+                type="text"
+                name="firstName"
+                value={firstName}
+                onChange={handleChange}
+                required
+              />
               <label className="lh-1 text-16 text-light-1">First name</label>
             </div>
           </div>
           {/* End col-12 */}
 
-          <div className="col-12">
+          <div className="col-5">
             <div className="form-input ">
-              <input type="text" name="lastName" value={lastName} onChange={handleChange} required />
+              <input
+                type="text"
+                name="lastName"
+                value={lastName}
+                onChange={handleChange}
+                required
+              />
               <label className="lh-1 text-16 text-light-1">Last name</label>
             </div>
           </div>
@@ -63,7 +84,13 @@ const CustomerInfo = () => {
 
           <div className="col-md-12">
             <div className="form-input ">
-              <input type="text" name="email" value={email} onChange={handleChange} required />
+              <input
+                type="text"
+                name="email"
+                value={email}
+                onChange={handleChange}
+                required
+              />
               <label className="lh-1 text-16 text-light-1">Email</label>
             </div>
           </div>
@@ -71,8 +98,15 @@ const CustomerInfo = () => {
 
           <div className="col-md-6">
             <div className="form-input ">
-              <input type="text" name="password" value={password} onChange={handleChange} required />
+              <input
+                type="password"
+                name="password"
+                value={password}
+                onChange={handleChange}
+                required
+              />
               <label className="lh-1 text-16 text-light-1">Password</label>
+              {customerInfo.isPasswordVisible ? <i className="fas fa-eye"></i> : <i className="fa fas-eye"></i>}
             </div>
           </div>
           {/* End col-12 */}
@@ -92,6 +126,46 @@ const CustomerInfo = () => {
           {/* End col-12 */}
 
           <div className="col-12">
+            <div className="form-input ">
+              <input name="Address" type="text" required />
+              <label className="lh-1 text-16 text-light-1">
+                Address line 2
+              </label>
+            </div>
+          </div>
+          {/* End col-12 */}
+
+          <div className="col-md-6">
+            <div className="form-input ">
+              <input name="State" type="text" required />
+              <label className="lh-1 text-16 text-light-1">
+                State/Province/Region
+              </label>
+            </div>
+          </div>
+          {/* End col-12 */}
+
+          <div className="col-md-6">
+            <div className="form-input ">
+              <input name="Zipcode" type="text" required />
+              <label className="lh-1 text-16 text-light-1">
+                ZIP code/Postal code
+              </label>
+            </div>
+          </div>
+          {/* End col-12 */}
+
+          <div className="col-12">
+            <div className="form-input ">
+              <textarea required rows={6} defaultValue={""} />
+              <label className="lh-1 text-16 text-light-1">
+                Special Requests
+              </label>
+            </div>
+          </div>
+          {/* End col-12 */}
+
+          <div className="col-12">
             <div className="row y-gap-20 items-center justify-between">
               <div className="col-auto">
                 <div className="text-14 text-light-1">
@@ -102,12 +176,8 @@ const CustomerInfo = () => {
               {/* End col-12 */}
             </div>
           </div>
-          {/* End col-12 */}
         </form>
-        {/* End .row */}
       </div>
-      {/* End .col-xl-7 */}
-
       <div className="col-xl-5 col-lg-4 mt-30">
         <div className="booking-sidebar">
           <BookingDetails />
