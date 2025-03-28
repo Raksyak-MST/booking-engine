@@ -4,15 +4,16 @@
 import React, { useState } from "react";
 import DatePicker from "react-multi-date-picker";
 import { useDispatch, useSelector } from 'react-redux'
-import { setBookingData } from "@/store/store"
+import { bookingQueryActions } from "@/store/store"
+import moment from "moment";
 
 const DateSearch = () => {
   const dispatch = useDispatch();
-  const {arrivalDate, departureDate } = useSelector(state => state.booking)
+  const {arrivalDate, departureDate } = useSelector(state => state.bookingQuery)
+
   const [dates, setDates] = useState(() => {
     // fetch from the store if uer has picked date from previous page
     if (arrivalDate && departureDate) {
-      console.log(new Date(departureDate))
       return [new Date(arrivalDate), new Date(departureDate)];
     }
     return [new Date(), new Date()];
@@ -25,9 +26,9 @@ const DateSearch = () => {
       checkOut = checkInCheckout[1];
       setDates([checkIn, checkOut])
     dispatch(
-      setBookingData({
-        arrivalDate: checkIn?.toISOString(),
-        departureDate: checkOut?.toISOString(),
+      bookingQueryActions.setBookingQuery({
+        arrivalDate: moment(checkIn).format("YYYY-MM-DD"),
+        departureDate: moment(checkOut).format("YYYY-MM-DD"),
       })
     );
   }

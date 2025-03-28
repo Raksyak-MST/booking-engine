@@ -1,6 +1,7 @@
 import { configureStore, createSlice } from "@reduxjs/toolkit";
 import findPlaceSlice from "../features/hero/findPlaceSlice";
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react"
+import moment from 'moment'
 
 const api = createApi({
   reducerPath: "api",
@@ -10,33 +11,15 @@ const api = createApi({
       query: (data) => ({
         url: "getDataforWebBooking",
         method: "POST",
-        body: new URLSearchParams(data),
+        body: data,
       }),
     }),
     webLogin: builder.mutation({
-      async queryFn(_args, _queryApi, _extraOptions, baseQuery) {
-        try {
-          const response = await baseQuery({
-            url: "webLogin",
-            method: "POST",
-            body: new URLSearchParams({
-              userName: "ramesh",
-              password: "ramesh@123",
-              hotelid: "10",
-              companyCode: "ALLILAD",
-            }),
-          });
-          console.log("Cookies", response?.meta?.response?.headers);
-          console.log("Token cookie: ", document.cookie);
-          if (!response?.meta?.response?.ok) {
-            throw new Error("FETCH_ERROR");
-          }
-          return { data: response.data };
-        } catch (error) {
-          console.error(error);
-          return { error: { status: "FETCH_ERROR", message: error.message } };
-        }
-      },
+      query: (data) => ({
+        url: "webLogin",
+        method: "POST",
+        body: new URLSearchParams(data),
+      })
     }),
   }),
 });
@@ -57,38 +40,79 @@ const authSlice = createSlice({
   }
 })
 
-const bookingInitialState = {
-  hotelId: 10,
-  arrivalDate: "",
-  departureDate: "",
-  bookingLocation: "",
+const bookingQueryInitialState = {
+  hotelID: 10,
+  arrivalDate: moment(new Date()).format("YYYY-MM-DD"),
+  departureDate: moment(new Date()).format("YYYY-MM-DD"),
   adults: 2,
   children: 1,
-  rooms: 1,
+  quantity: 1,
   companyCode: "",
-}
+};
+
+const bookingInitialState = {
+  roomSelection: {
+    package: "",
+    mealPlan: "",
+  },
+  customerInfo: {
+    firstName: "",
+    lastName: "",
+    email: "",
+    password: "",
+    companyCode: "",
+  },
+};
+
+const bookingQuerySlice = createSlice({
+  name: "booking/query",
+  initialState: bookingQueryInitialState,
+  reducers: {
+    setBookingQuery: (state, action) => {
+      console.log(action.payload);
+      return Object.assign(state, action.payload);
+    },
+  }
+})
 
 const bookingSlice = createSlice({
   name: "booking",
   initialState: bookingInitialState,
   reducers: {
-    setBookingData: (state, action) => {
-      console.log(action.payload)
-      return Object.assign(state, action.payload) 
+    setBookingQuery: (state, action) => {
+      console.log(action.payload);
+      return Object.assign(state.bookingQuery, action.payload);
     },
-    updateGuest: (state, action) => {
-      console.log(action)
-      const { name, value } = action.payload
-      return Object.assign(state, {[name]: value})
+    setCustomerInfo: (state, action) => {
+      console.log(action.payload);
+      return state;
     },
+  },
+});
+
+const availableRooms = createSlice({
+  name: "availableRooms",
+  initialState: [],
+  reducers: {
+    setAvailableRooms: (state, action) => {
+      console.log(action.payload);
+      return action.payload;
+    },
+  },
+  extraReducers: (builder) => {
+    builder.addMatcher(api.endpoints.getDataForWebBooking.matchFulfilled, (state, action) => {
+      return action.payload?.data;
+    })
   }
-})
+});
 
 export const store = configureStore({
   reducer: {
     hero: findPlaceSlice,
     auth: authSlice.reducer,
     booking: bookingSlice.reducer,
+    bookingQuery: bookingQuerySlice.reducer,
+    availableRooms: availableRooms.reducer,
     [api.reducerPath]: api.reducer,
   },
   middleware: (getDefaultMiddleware) =>
@@ -98,4 +122,7 @@ export const store = configureStore({
 export const { useGetDataForWebBookingMutation, useWebLoginMutation } = api
 
 export const { setIsUserLogin } = authSlice.actions
-export const { setBookingData, updateGuest } = bookingSlice.actions
+export const { setBookingQuery, updateGuest } = bookingSlice.actions
+export const bookingQueryActions = bookingQuerySlice.actions
+export const bookingActions = bookingSlice.actions
+export const availableRoomsActions = availableRooms.actions

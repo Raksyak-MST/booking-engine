@@ -3,12 +3,12 @@
 
 import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { updateGuest } from "@/store/store"
+import { bookingQueryActions } from "@/store/store"
 
 const counters = [
   { name: "adults", defaultValue: 2 },
   { name: "children", defaultValue: 1 },
-  { name: "rooms", defaultValue: 1 },
+  { name: "quantity", defaultValue: 1 },
 ];
 
 const Counter = ({ name, defaultValue, onCounterChange }) => {
@@ -65,16 +65,13 @@ const Counter = ({ name, defaultValue, onCounterChange }) => {
 };
 
 const GuestSearch = () => {
-  const state = useSelector(state => state.booking)
+  const state = useSelector(state => state.bookingQuery)
   const dispatch = useDispatch()
-  const [guestCounts, setGuestCounts] = useState({
-    Adults: 2,
-    Children: 1,
-    Rooms: 1,
-  });
+
   const handleCounterChange = (name, value) => {
-    dispatch(updateGuest({name, value}))
+    dispatch(bookingQueryActions.setBookingQuery({[name]: value}))
   };
+
   return (
     <div className="searchMenu-guests px-30 lg:py-20 lg:px-0 js-form-dd js-form-counters position-relative">
       <div
@@ -87,7 +84,7 @@ const GuestSearch = () => {
         <div className="text-15 text-light-1 ls-2 lh-16">
           <span className="js-count-adult">{state.adults}</span> adults -{" "}
           <span className="js-count-child">{state.children}</span>{" "}
-          childeren - <span className="js-count-room">{state.rooms}</span>{" "}
+          childeren - <span className="js-count-room">{state.quantity}</span>{" "}
           room
         </div>
       </div>

@@ -5,9 +5,8 @@ import { hotelsData } from "../../../data/hotels";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Navigation, Pagination } from "swiper";
 import Image from "next/image";
-import Link from "next/link";
-import { webBookingData } from "@/data/webBookingData"
 import { priceFormatter } from "@/utils/textFormatter"
+import { useSelector } from "react-redux"
 
 const HotelProperties = () => {
   return (
@@ -168,9 +167,10 @@ const HotelProperties = () => {
 };
 
 export const HotelProperties2 = () => {
+  const availableRooms = useSelector(state => state.availableRooms)
   return (
     <>
-      {webBookingData.data.map((item, index) => (
+      {availableRooms?.map((item, index) => (
         <div className="col-12 border-light mb-3 rounded p-3" key={index}>
           <div>
             <div className="row x-gap-20 y-gap-20">
@@ -306,8 +306,13 @@ const HotelPropertyDetails = (props) => {
             ))}
           </div>
         </div>
-        <div className="button -md -dark-1 bg-blue-1 text-white">
-          <Link href={`/booking-page`}>BOOK NOW</Link>
+        <div
+          className="button -md -dark-1 bg-blue-1 text-white cursor-pointer"
+          onClick={() => {
+            console.log(hotel);
+          }}
+        >
+          BOOK NOW
         </div>
       </div>
       {/* End romm Grid horizontal content */}

@@ -2,7 +2,7 @@
 'use client'
 
 import { useState } from "react";
-import { setBookingData } from "@/store/store"
+import { setBookingQuery } from "@/store/store"
 import { useSelector, useDispatch } from "react-redux"
 
 const SearchBar = () => {
