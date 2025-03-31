@@ -4,9 +4,7 @@ import DefaultFooter from "@/components/footer/default";
 import MainFilterSearchBox from "@/components/hero/hero-1/MainFilterSearchBox";
 import TopHeaderFilter from "@/components/hotel-list/hotel-list-v1/TopHeaderFilter";
 import {HotelProperties2} from "@/components/hotel-list/hotel-list-v1/HotelProperties";
-import Pagination from "@/components/hotel-list/common/Pagination";
 import Sidebar from "@/components/hotel-list/hotel-list-v1/Sidebar";
-import { Suspense } from "react";
 
 export const metadata = {
   title: "Hotel List v1 || GoTrip - Travel & Tour React NextJS Template",
@@ -14,6 +12,7 @@ export const metadata = {
 };
 
 const index = () => {
+
   return (
     <>
       {/* End Page Title */}

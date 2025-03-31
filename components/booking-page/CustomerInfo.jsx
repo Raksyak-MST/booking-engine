@@ -2,21 +2,18 @@ import Link from "next/link";
 import { useState } from "react";
 
 import BookingDetails from "./sidebar/BookingDetails";
-import { billingAction  } from "@/store/store"
+import { billingAction } from "@/store/store"
 import { useDispatch, useSelector } from "react-redux";
 
 const CustomerInfo = () => {
 
-  const personalInf = useSelector((state) => state.billing.personalInfo);
-
+  const personalInfo = useSelector((state) => state.billing.personalInfo);
   const dispatch = useDispatch();
-  const { firstName, lastName, email, password, companyCode, country, mobile } = personalInf;
 
   const handleChange = (e) => {
     const fieldName = e.target.name;
     const fieldValue = e.target.value;
-
-    dispatch(billingAction.setPersonalInfo({ ...personalInf, [fieldName]: fieldValue}));
+    dispatch(billingAction.setPersonalInfo({ ...personalInfo, [fieldName]: fieldValue}));
   };
 
   return (
@@ -39,7 +36,7 @@ const CustomerInfo = () => {
           <div className="col-md-2">
             <select
               className="form-select h-full text-light-1"
-              name="salutation"
+              name="Salutation"
               onChange={handleChange}
             >
               <option value="Mr">Mr.</option>
@@ -52,8 +49,8 @@ const CustomerInfo = () => {
             <div className="form-input ">
               <input
                 type="text"
-                name="firstName"
-                value={firstName}
+                name="FirstName"
+                value={personalInfo?.FirstName}
                 onChange={handleChange}
                 required
               />
@@ -66,8 +63,8 @@ const CustomerInfo = () => {
             <div className="form-input ">
               <input
                 type="text"
-                name="lastName"
-                value={lastName}
+                name="LastName"
+                value={personalInfo?.LastName}
                 onChange={handleChange}
                 required
               />
@@ -80,8 +77,8 @@ const CustomerInfo = () => {
             <div className="form-input ">
               <input
                 type="text"
-                name="email"
-                value={email}
+                name="Email"
+                value={personalInfo?.Email}
                 onChange={handleChange}
                 required
               />
@@ -94,8 +91,8 @@ const CustomerInfo = () => {
             <div className="form-input ">
               <input
                 type="text"
-                name="mobile"
-                value={mobile}
+                name="Mobile"
+                value={personalInfo?.Mobile}
                 onChange={handleChange}
                 required
               />
@@ -104,18 +101,17 @@ const CustomerInfo = () => {
           </div>
           {/* End col-12 */}
 
-
           <div className="col-md-6">
             <div className="form-input ">
               <input
                 type="password"
-                name="password"
-                value={password}
+                name="Password"
+                value={personalInfo?.Password}
                 onChange={handleChange}
                 required
               />
               <label className="lh-1 text-16 text-light-1">Password</label>
-              {personalInf.isPasswordVisible ? (
+              {personalInfo?.isPasswordVisible ? (
                 <i className="fas fa-eye"></i>
               ) : (
                 <i className="fa fas-eye"></i>
@@ -128,9 +124,9 @@ const CustomerInfo = () => {
             <div className="form-input ">
               <input
                 type="text"
-                name="companyCode"
+                name="companyID"
                 onChange={handleChange}
-                value={companyCode}
+                value={personalInfo?.companyID}
                 required
               />
               <label className="lh-1 text-16 text-light-1">Company code</label>
@@ -141,10 +137,10 @@ const CustomerInfo = () => {
           <div className="col-12">
             <div className="form-input ">
               <input
-                name="address"
+                name="Address"
                 type="text"
                 required
-                value={personalInf?.address}
+                value={personalInfo?.Address}
                 onChange={handleChange}
               />
               <label className="lh-1 text-16 text-light-1">
@@ -158,9 +154,10 @@ const CustomerInfo = () => {
             <div className="form-input ">
               <input
                 type="text"
-                name="country"
-                onChange={handleChange}
+                name="Country"
                 required
+                onChange={handleChange}
+                value={personalInfo?.Country}
               />
               <label className="lh-1 text-16 text-light-1">Country</label>
             </div>
@@ -170,10 +167,10 @@ const CustomerInfo = () => {
           <div className="col-md-6">
             <div className="form-input ">
               <input
-                name="state"
+                name="State"
                 type="text"
                 required
-                value={personalInf?.state}
+                value={personalInfo?.State}
                 onChange={handleChange}
               />
               <label className="lh-1 text-16 text-light-1">
@@ -186,10 +183,10 @@ const CustomerInfo = () => {
           <div className="col-md-6">
             <div className="form-input ">
               <input
-                name="zipcode"
+                name="Zipcode"
                 type="text"
                 required
-                value={personalInf?.zipcode}
+                value={personalInfo?.Zipcode}
                 onChange={handleChange}
               />
               <label className="lh-1 text-16 text-light-1">
@@ -202,11 +199,10 @@ const CustomerInfo = () => {
           <div className="col-12">
             <div className="form-input ">
               <textarea
-                name="specialRequest"
+                name="Comment"
                 required
                 rows={6}
-                defaultValue={""}
-                value={personalInf?.specialRequest}
+                value={personalInfo?.Comment}
                 onChange={handleChange}
               ></textarea>
               <label className="lh-1 text-16 text-light-1">
@@ -220,7 +216,7 @@ const CustomerInfo = () => {
             <div className="row y-gap-20 items-center justify-between">
               <div className="col-auto">
                 <div className="text-14 text-light-1">
-                  By proceeding with this booking, I agree to GoTrip Terms of
+                  By proceeding with this booking, I agree to Oterra Terms of
                   Use and Privacy Policy.
                 </div>
               </div>

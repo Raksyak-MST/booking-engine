@@ -7,11 +7,23 @@ import { useSelector } from "react-redux"
 import { useState, useEffect } from "react"
 import HotelPropertiesDetails from "./HotelPropertiesDetails"
 import RoomAmenities from "./RoomAmenities"
+import { usePathname } from 'next/navigation'
+import {useGetDataForWebBookingMutation  } from "@/store/store"
 
 export const HotelProperties2 = () => {
-  const availableRooms = useSelector(state => state.availableRooms)
-
   const [ truncateOnSmallScreen, setTruncateOnMobile ] = useState(false);
+  const pathname = usePathname()
+  
+  const availableRooms = useSelector(state => state.availableRooms)
+  const bookingQuery = useSelector((state) => state.bookingQuery);
+  const [ getDataForWebBooking, options ] = useGetDataForWebBookingMutation();
+
+  useEffect(() => {
+    // need to refetch after coming back from next step, this has to be done manually.
+    if(pathname.includes("hotel-list-v1")){
+      getDataForWebBooking(bookingQuery)
+    }
+  }, [pathname])
 
   useEffect(() => {
     const updateLines = () => {
@@ -27,6 +39,17 @@ export const HotelProperties2 = () => {
     window.addEventListener('resize', updateLines)
     return () => window.removeEventListener('resize', updateLines)
   }, [])
+
+  if(options.isError && availableRooms.length === 0){
+    return (
+      <div className="col-12 text-center">
+        <h2>Sorry, No Rooms for this Search</h2>
+        <p>
+          We cannnot find any rooms for your search. Please modify your search criteria and try again.
+        </p>
+      </div>
+    );
+  }
 
   return (
     <>
