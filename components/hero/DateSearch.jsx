@@ -40,11 +40,12 @@ const DateSearch = () => {
         containerClassName="custom_container-picker"
         value={dates}
         onChange={handleDatePick}
-        numberOfMonths={1}
+        numberOfMonths={2}
         offsetY={10}
         range
         rangeHover
         format="MMMM DD"
+        minDate={new Date()}
       />
     </div>
   );
