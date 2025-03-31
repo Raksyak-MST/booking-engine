@@ -7,16 +7,16 @@ import { useDispatch, useSelector } from "react-redux";
 
 const CustomerInfo = () => {
 
-  const customerInfo = useSelector((state) => state.billing.personalInfo);
+  const personalInf = useSelector((state) => state.billing.personalInfo);
 
   const dispatch = useDispatch();
-  const { firstName, lastName, email, password, companyCode } = customerInfo;
+  const { firstName, lastName, email, password, companyCode } = personalInf;
 
   const handleChange = (e) => {
     const fieldName = e.target.name;
     const fieldValue = e.target.value;
 
-    dispatch(billingAction.setBillingCustomerInfo({ ...customerInfo, [fieldName]: fieldValue}));
+    dispatch(billingAction.setPersonalInfo({ ...personalInf, [fieldName]: fieldValue}));
   };
 
   return (
@@ -38,8 +38,8 @@ const CustomerInfo = () => {
         <form className="row x-gap-20 y-gap-20 pt-20">
           <div className="col-md-2">
             <select className="form-select h-full text-light-1">
-                <option>Mr.</option>
-                <option>Mrs.</option>
+              <option>Mr.</option>
+              <option>Mrs.</option>
             </select>
           </div>
           {/* End col-12 */}
@@ -96,7 +96,11 @@ const CustomerInfo = () => {
                 required
               />
               <label className="lh-1 text-16 text-light-1">Password</label>
-              {customerInfo.isPasswordVisible ? <i className="fas fa-eye"></i> : <i className="fa fas-eye"></i>}
+              {personalInf.isPasswordVisible ? (
+                <i className="fas fa-eye"></i>
+              ) : (
+                <i className="fa fas-eye"></i>
+              )}
             </div>
           </div>
           {/* End col-12 */}
@@ -117,7 +121,13 @@ const CustomerInfo = () => {
 
           <div className="col-12">
             <div className="form-input ">
-              <input name="Address" type="text" required />
+              <input
+                name="address"
+                type="text"
+                required
+                value={personalInf?.address}
+                onChange={handleChange}
+              />
               <label className="lh-1 text-16 text-light-1">
                 Address line 2
               </label>
@@ -127,7 +137,13 @@ const CustomerInfo = () => {
 
           <div className="col-md-6">
             <div className="form-input ">
-              <input name="State" type="text" required />
+              <input
+                name="state"
+                type="text"
+                required
+                value={personalInf?.state}
+                onChange={handleChange}
+              />
               <label className="lh-1 text-16 text-light-1">
                 State/Province/Region
               </label>
@@ -137,7 +153,13 @@ const CustomerInfo = () => {
 
           <div className="col-md-6">
             <div className="form-input ">
-              <input name="Zipcode" type="text" required />
+              <input
+                name="zipcode"
+                type="text"
+                required
+                value={personalInf?.zipcode}
+                onChange={handleChange}
+              />
               <label className="lh-1 text-16 text-light-1">
                 ZIP code/Postal code
               </label>
@@ -147,7 +169,14 @@ const CustomerInfo = () => {
 
           <div className="col-12">
             <div className="form-input ">
-              <textarea required rows={6} defaultValue={""} />
+              <textarea
+                name="specialRequest"
+                required
+                rows={6}
+                defaultValue={""}
+                value={personalInf?.specialRequest}
+                onChange={handleChange}
+              ></textarea>
               <label className="lh-1 text-16 text-light-1">
                 Special Requests
               </label>

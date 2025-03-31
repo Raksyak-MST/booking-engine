@@ -10,18 +10,25 @@ const api = createApi({
   endpoints: (builder) => ({
     getDataForWebBooking: builder.mutation({
       query: (data) => ({
-        url: "getDataforWebBooking",
+        url: "/getDataforWebBooking",
         method: "POST",
         body: data,
       }),
     }),
     webLogin: builder.mutation({
       query: (data) => ({
-        url: "webLogin",
+        url: "/webLogin",
         method: "POST",
         body: new URLSearchParams(data),
       })
     }),
+    getReservationJsonLikeEzeeWebBooking: builder.mutation({
+      query: (data) => ({
+        url: "/getReservationJsonLikeEzeeWebBooking",
+        method: "POST",
+        body: data,
+      })
+    })
   }),
 });
 
@@ -55,6 +62,7 @@ const billingInitialState = {
     address: "",
     phone: "",
     country: "",
+    specialRequest: "",
     isPasswordVisible: false,
   },
 };
@@ -127,12 +135,12 @@ const roomSelection = createSlice({
 })
 
 const billingInfoSlice = createSlice({
-  name: "billingCustomerInfo",
+  name: "billing",
   initialState: billingInitialState,
   reducers: {
     setPersonalInfo: (state, action) => {
       state.personalInfo = action.payload
-      return state
+      console.log(state.personalInfo)
     },
     togglePasswordVisibility: (state) => {
       return !state.isPasswordVisible
@@ -158,7 +166,11 @@ export const store = configureStore({
 });
 
 // [ Actions exports ]
-export const { useGetDataForWebBookingMutation, useWebLoginMutation } = api
+export const {
+  useGetDataForWebBookingMutation,
+  useWebLoginMutation,
+  useGetReservationJsonLikeEzeeWebBookingMutation,
+} = api;
 
 export const { setIsUserLogin } = authSlice.actions
 export const { setBookingQuery, updateGuest } = bookingSlice.actions
