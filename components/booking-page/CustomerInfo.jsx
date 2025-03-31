@@ -10,7 +10,7 @@ const CustomerInfo = () => {
   const personalInf = useSelector((state) => state.billing.personalInfo);
 
   const dispatch = useDispatch();
-  const { firstName, lastName, email, password, companyCode } = personalInf;
+  const { firstName, lastName, email, password, companyCode, country, mobile } = personalInf;
 
   const handleChange = (e) => {
     const fieldName = e.target.name;
@@ -37,9 +37,13 @@ const CustomerInfo = () => {
 
         <form className="row x-gap-20 y-gap-20 pt-20">
           <div className="col-md-2">
-            <select className="form-select h-full text-light-1">
-              <option>Mr.</option>
-              <option>Mrs.</option>
+            <select
+              className="form-select h-full text-light-1"
+              name="salutation"
+              onChange={handleChange}
+            >
+              <option value="Mr">Mr.</option>
+              <option value="Miss">Mrs.</option>
             </select>
           </div>
           {/* End col-12 */}
@@ -86,6 +90,21 @@ const CustomerInfo = () => {
           </div>
           {/* End col-12 */}
 
+          <div className="col-md-12">
+            <div className="form-input ">
+              <input
+                type="text"
+                name="mobile"
+                value={mobile}
+                onChange={handleChange}
+                required
+              />
+              <label className="lh-1 text-16 text-light-1">Mobile</label>
+            </div>
+          </div>
+          {/* End col-12 */}
+
+
           <div className="col-md-6">
             <div className="form-input ">
               <input
@@ -131,6 +150,19 @@ const CustomerInfo = () => {
               <label className="lh-1 text-16 text-light-1">
                 Address line 2
               </label>
+            </div>
+          </div>
+          {/* End col-12 */}
+
+          <div className="col-md-06">
+            <div className="form-input ">
+              <input
+                type="text"
+                name="country"
+                onChange={handleChange}
+                required
+              />
+              <label className="lh-1 text-16 text-light-1">Country</label>
             </div>
           </div>
           {/* End col-12 */}

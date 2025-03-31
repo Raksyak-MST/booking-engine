@@ -51,9 +51,11 @@ const bookingQueryInitialState = {
 
 const billingInitialState = {
   personalInfo: {
+    salutation: "",
     firstName: "",
     lastName: "",
     email: "",
+    mobile: "",
     password: "",
     companyCode: "",
     city: "",
