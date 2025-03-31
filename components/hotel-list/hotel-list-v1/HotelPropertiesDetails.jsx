@@ -32,6 +32,7 @@ const HotelPropertyDetails = (props) => {
   const handleRoomSelection = () => {
     dispatch(roomSelectionActions.setRoomSelection(hotel));
     Router.push("/booking-page");
+    // FIXME: this is a hack to make the booking page work.
     localStorage.setItem(
       "bookingQuery",
       JSON.stringify(
