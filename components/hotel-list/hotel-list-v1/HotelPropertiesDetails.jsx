@@ -1,10 +1,11 @@
-import { useState } from 'react'
-import { useRouter } from 'next/navigation'
-import { useDispatch } from 'react-redux'
+import { useState } from "react";
+import { useRouter } from "next/navigation";
+import { useDispatch } from "react-redux";
+import { roomSelectionActions } from "@/store/store";
 
 const HotelPropertyDetails = (props) => {
   const { hotel } = props;
-  const [selectedMealPlan, setSelectedMealPlan] = useState({"EP": true}); // default selected package name
+  const [selectedMealPlan, setSelectedMealPlan] = useState({ EP: true }); // default selected package name
 
   const dispatch = useDispatch();
   const Router = useRouter();
@@ -18,17 +19,20 @@ const HotelPropertyDetails = (props) => {
   const handleMealPlanSelection = (e) => {
     const mealPlan = e.currentTarget.getAttribute("name");
     const packageId = e.currentTarget.getAttribute("id") ?? "";
-    console.log(e.currentTarget)
-    setSelectedMealPlan({[mealPlan]: true});
+    console.log(e.currentTarget);
+    setSelectedMealPlan({ [mealPlan]: true });
     dispatch(
-      bookingQueryActions.setBookingQuery({ selectedPackageID: packageId, selectedRoomTypeID: hotel?.roomTypeID })
+      bookingQueryActions.setBookingQuery({
+        selectedPackageID: packageId,
+        selectedRoomTypeID: hotel?.roomTypeID,
+      })
     );
-  }
+  };
 
   const handleRoomSelection = () => {
     dispatch(roomSelectionActions.setRoomSelection(hotel));
-    Router.push("/booking-page")
-  }
+    Router.push("/booking-page");
+  };
 
   return (
     <div className="y-gap-30">
@@ -45,21 +49,19 @@ const HotelPropertyDetails = (props) => {
                 name={pack?.packageCode}
               >
                 <p
-                  className={`radio-label border-light rounded-100 px-3 py-1 text-14 ${
+                  className={`d-flex gap-1 items-center radio-label border-light rounded-100 px-3 py-1 text-14 ${
                     selectedMealPlan[pack?.packageCode]
                       ? "bg-blue-1 text-white"
                       : ""
                   }`}
                   name={pack?.packageCode}
                 >
-                  <div className="d-flex gap-1 items-center">
-                    {pack?.packageCode}{" "}
-                    {`(${new Intl.NumberFormat("en-IN", {
-                      currency: "INR",
-                      style: "currency",
-                      currencyDisplay: "code",
-                    }).format(pack?.packageRate)})`}
-                  </div>
+                  {pack?.packageCode}{" "}
+                  {`(${new Intl.NumberFormat("en-IN", {
+                    currency: "INR",
+                    style: "currency",
+                    currencyDisplay: "code",
+                  }).format(pack?.packageRate)})`}
                 </p>
               </div>
             ))}
@@ -77,4 +79,4 @@ const HotelPropertyDetails = (props) => {
   );
 };
 
-export default HotelPropertyDetails
+export default HotelPropertyDetails;
