@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { useDispatch } from "react-redux";
-import { roomSelectionActions } from "@/store/store";
+import { roomSelectionActions, bookingQueryActions } from "@/store/store";
 
 const HotelPropertyDetails = (props) => {
   const { hotel } = props;

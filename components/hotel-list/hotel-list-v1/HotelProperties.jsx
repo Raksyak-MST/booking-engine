@@ -6,11 +6,12 @@ import Image from "next/image";
 import { useSelector } from "react-redux"
 import { useState, useEffect } from "react"
 import HotelPropertiesDetails from "./HotelPropertiesDetails"
+import RoomAmenities from "./RoomAmenities"
 
 export const HotelProperties2 = () => {
   const availableRooms = useSelector(state => state.availableRooms)
 
-  const [ truncateOnMobile, setTruncateOnMobile ] = useState(false);
+  const [ truncateOnSmallScreen, setTruncateOnMobile ] = useState(false);
 
   useEffect(() => {
     const updateLines = () => {
@@ -100,29 +101,11 @@ export const HotelProperties2 = () => {
                 </div>
               </div>
             </div>
-            {truncateOnMobile ? (
-              <div className="row x-gap-10 y-gap-10 pt-20 items-center">
-                {item?.roomAmenities
-                  ?.map((amenities, index) => (
-                    <div key={index} className="col-auto">
-                      <div className="border-light rounded-100 py-5 px-20 text-14 lh-14">
-                        {amenities}
-                      </div>
-                    </div>
-                  ))
-                  .slice(0, 5)}{" "}
-                +{item?.roomAmenities?.slice(5).length} more
-              </div>
-            ) : <div className="row x-gap-10 y-gap-10 pt-20">
-                {item?.roomAmenities
-                  ?.map((amenities, index) => (
-                    <div key={index} className="col-auto">
-                      <div className="border-light rounded-100 py-5 px-20 text-14 lh-14">
-                        {amenities}
-                      </div>
-                    </div>
-                  ))}
-              </div>}
+            {truncateOnSmallScreen ? (
+              <RoomAmenities data={item?.roomAmenities} truncate={5} />
+            ) : (
+              <RoomAmenities data={item?.roomAmenities} />
+            )}
           </div>
           <div className="border-light p-3 rounded mt-2">
             <HotelPropertiesDetails hotel={item} />

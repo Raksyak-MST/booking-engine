@@ -42,19 +42,21 @@ const bookingQueryInitialState = {
   selectedRoomTypeID: "",
 };
 
-const billingCustomerInfoInitialState = {
-  firstName: "",
-  lastName: "",
-  email: "",
-  password: "",
-  companyCode: "",
-  city: "",
-  state: "",
-  zipCode: "",
-  address: "",
-  phone: "",
-  country: "",
-  isPasswordVisible: false,
+const billingInitialState = {
+  personalInfo: {
+    firstName: "",
+    lastName: "",
+    email: "",
+    password: "",
+    companyCode: "",
+    city: "",
+    state: "",
+    zipCode: "",
+    address: "",
+    phone: "",
+    country: "",
+    isPasswordVisible: false,
+  },
 };
 
 const bookingInitialState = {
@@ -129,12 +131,13 @@ const roomSelection = createSlice({
   },
 })
 
-const billingCustomerInfoSlice = createSlice({
+const billingInfoSlice = createSlice({
   name: "billingCustomerInfo",
-  initialState: billingCustomerInfoInitialState,
+  initialState: billingInitialState,
   reducers: {
-    setBillingCustomerInfo: (state, action) => {
-      return Object.assign(state, action.payload);
+    setPersonalInfo: (state, action) => {
+      state.personalInfo = action.payload
+      return state
     },
     togglePasswordVisibility: (state) => {
       return !state.isPasswordVisible
@@ -152,7 +155,7 @@ export const store = configureStore({
     bookingQuery: bookingQuerySlice.reducer,
     availableRooms: availableRooms.reducer,
     roomSelection: roomSelection.reducer,
-    billingCustomerInfo: billingCustomerInfoSlice.reducer,
+    billing: billingInfoSlice.reducer,
     [api.reducerPath]: api.reducer,
   },
   middleware: (getDefaultMiddleware) =>
@@ -168,4 +171,4 @@ export const bookingQueryActions = bookingQuerySlice.actions
 export const bookingActions = bookingSlice.actions
 export const availableRoomsActions = availableRooms.actions
 export const roomSelectionActions = roomSelection.actions
-export const billingCustomerInfoActions = billingCustomerInfoSlice.actions
+export const billingAction = billingInfoSlice.actions

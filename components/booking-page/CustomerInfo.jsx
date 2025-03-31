@@ -2,20 +2,12 @@ import Link from "next/link";
 import { useState } from "react";
 
 import BookingDetails from "./sidebar/BookingDetails";
-import { billingCustomerInfoActions  } from "@/store/store"
+import { billingAction  } from "@/store/store"
 import { useDispatch, useSelector } from "react-redux";
 
 const CustomerInfo = () => {
 
-  // const [customerInfo, setCustomerInfo] = useState({
-  //   firstName: "",
-  //   lastName: "",
-  //   email: "",
-  //   password: "",
-  //   companyCode: "",
-  // });
-
-  const customerInfo = useSelector((state) => state.billingCustomerInfo);
+  const customerInfo = useSelector((state) => state.billing.personalInfo);
 
   const dispatch = useDispatch();
   const { firstName, lastName, email, password, companyCode } = customerInfo;
@@ -25,8 +17,7 @@ const CustomerInfo = () => {
     const fieldValue = e.target.value;
     console.log(customerInfo)
 
-    dispatch(billingCustomerInfoActions.setBillingCustomerInfo({ ...customerInfo, [fieldName]: fieldValue}));
-    // setCustomerInfo((state) => ({ ...state, [fieldName]: fieldValue }));
+    dispatch(billingAction.setBillingCustomerInfo({ ...customerInfo, [fieldName]: fieldValue}));
   };
 
   return (
@@ -46,7 +37,7 @@ const CustomerInfo = () => {
         </h2>
 
         <form className="row x-gap-20 y-gap-20 pt-20">
-          <div className="col-2">
+          <div className="col-md-2">
             <select className="form-select h-full text-light-1">
                 <option>Mr.</option>
                 <option>Mrs.</option>
@@ -54,7 +45,7 @@ const CustomerInfo = () => {
           </div>
           {/* End col-12 */}
 
-          <div className="col-5">
+          <div className="col-md-5">
             <div className="form-input ">
               <input
                 type="text"
@@ -68,7 +59,7 @@ const CustomerInfo = () => {
           </div>
           {/* End col-12 */}
 
-          <div className="col-5">
+          <div className="col-md-5">
             <div className="form-input ">
               <input
                 type="text"
