@@ -72,7 +72,6 @@ const authSlice = createSlice({
   initialState,
   reducers: {
     setIsUserLogin: (state, action) => {
-      console.log("Set user to:", action)
       state.isLogin = action.payload; 
       return state 
     },
@@ -84,7 +83,6 @@ const bookingQuerySlice = createSlice({
   initialState: bookingQueryInitialState,
   reducers: {
     setBookingQuery: (state, action) => {
-      console.log(action.payload);
       return Object.assign(state, action.payload);
     },
   }
@@ -95,11 +93,9 @@ const bookingSlice = createSlice({
   initialState: bookingInitialState,
   reducers: {
     setBookingQuery: (state, acuseroutertion) => {
-      console.log(action.payload);
       return Object.assign(state.bookingQuery, action.payload);
     },
     setCustomerInfo: (state, action) => {
-      console.log(action.payload);
       return state;
     },
   },
@@ -110,7 +106,6 @@ const availableRooms = createSlice({
   initialState: [],
   reducers: {
     setAvailableRooms: (state, action) => {
-      console.log(action.payload);
       return action.payload;
     },
   },

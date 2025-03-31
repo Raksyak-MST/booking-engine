@@ -15,7 +15,6 @@ const CustomerInfo = () => {
   const handleChange = (e) => {
     const fieldName = e.target.name;
     const fieldValue = e.target.value;
-    console.log(customerInfo)
 
     dispatch(billingAction.setBillingCustomerInfo({ ...customerInfo, [fieldName]: fieldValue}));
   };

@@ -19,7 +19,6 @@ const HotelPropertyDetails = (props) => {
   const handleMealPlanSelection = (e) => {
     const mealPlan = e.currentTarget.getAttribute("name");
     const packageId = e.currentTarget.getAttribute("id") ?? "";
-    console.log(e.currentTarget);
     setSelectedMealPlan({ [mealPlan]: true });
     dispatch(
       bookingQueryActions.setBookingQuery({

@@ -7,7 +7,7 @@ const BookingDetails = () => {
   return (
     <div className="px-30 py-30 border-light rounded-4">
       <div className="text-20 fw-500 mb-30">Your booking details</div>
-      <div className="x-gap-15 y-gap-20 d-flex flex-column">
+      <div className="x-gap-15 y-gap-20">
         <div className="col-auto">
           <Image
             width={140}

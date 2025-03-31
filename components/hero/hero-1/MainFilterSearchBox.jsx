@@ -20,7 +20,7 @@ const MainFilterSearchBox = () => {
       await getDataForWebBooking(bookingState);
       Router.push("/hotel-list-v1");
     }catch(error){
-      console.log("Error")
+      console.error(error)
     }
   };
 
@@ -61,7 +61,7 @@ const MainFilterSearchBox = () => {
 
             <div className="button-item">
               <button
-                className="mainSearch__submit button -dark-1 h-60 px-35 col-12 rounded bg-blue-1 text-white"
+                className="mainSearch__submit button -dark-1 h-60 px-35 col-12 rounded bg-blue-1 text-white gap-2"
                 onClick={handleSubmit}
               >
                 {options.isLoading ? (

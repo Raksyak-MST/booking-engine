@@ -6,6 +6,7 @@ import TopHeaderFilter from "@/components/hotel-list/hotel-list-v1/TopHeaderFilt
 import {HotelProperties2} from "@/components/hotel-list/hotel-list-v1/HotelProperties";
 import Pagination from "@/components/hotel-list/common/Pagination";
 import Sidebar from "@/components/hotel-list/hotel-list-v1/Sidebar";
+import { Suspense } from "react";
 
 export const metadata = {
   title: "Hotel List v1 || GoTrip - Travel & Tour React NextJS Template",
@@ -85,7 +86,6 @@ const index = () => {
                 <HotelProperties2 />
               </div>
               {/* End .row */}
-              <Pagination />
             </div>
             {/* End .col for right content */}
           </div>
