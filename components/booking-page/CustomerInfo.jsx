@@ -1,20 +1,25 @@
 import Link from "next/link";
-import { useState } from "react";
+import { useEffect } from "react";
 
 import BookingDetails from "./sidebar/BookingDetails";
-import { billingAction } from "@/store/store"
+import { billingAction, useGetReservationJsonLikeEzeeWebBookingMutation } from "@/store/store"
 import { useDispatch, useSelector } from "react-redux";
 
 const CustomerInfo = () => {
 
   const personalInfo = useSelector((state) => state.billing.personalInfo);
   const dispatch = useDispatch();
+  const [ getReservationJsonLikeEzeeWebBooking ] = useGetReservationJsonLikeEzeeWebBookingMutation()
 
   const handleChange = (e) => {
     const fieldName = e.target.name;
     const fieldValue = e.target.value;
     dispatch(billingAction.setPersonalInfo({ ...personalInfo, [fieldName]: fieldValue}));
   };
+
+  useEffect(() => {
+    getReservationJsonLikeEzeeWebBooking(JSON.parse(localStorage.getItem("bookingQuery"))).then(res => console.dir(res))
+  }, [])
 
   return (
     <>

@@ -1,11 +1,12 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector} from "react-redux";
 import { roomSelectionActions, bookingQueryActions } from "@/store/store";
 
 const HotelPropertyDetails = (props) => {
   const { hotel } = props;
   const [selectedMealPlan, setSelectedMealPlan] = useState({ EP: true }); // default selected package name
+  const bookingQuery = useSelector((state) => state.bookingQuery);
 
   const dispatch = useDispatch();
   const Router = useRouter();
@@ -31,6 +32,12 @@ const HotelPropertyDetails = (props) => {
   const handleRoomSelection = () => {
     dispatch(roomSelectionActions.setRoomSelection(hotel));
     Router.push("/booking-page");
+    localStorage.setItem(
+      "bookingQuery",
+      JSON.stringify(
+        Object.assign({ ...bookingQuery }, { guestDetails: { PromoCode: "" } })
+      )
+    );
   };
 
   return (
