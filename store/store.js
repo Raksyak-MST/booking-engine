@@ -3,6 +3,7 @@ import findPlaceSlice from "../features/hero/findPlaceSlice";
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react"
 import moment from 'moment'
 
+// [ API slice ]
 const api = createApi({
   reducerPath: "api",
   baseQuery: fetchBaseQuery({ baseUrl: process.env.NEXT_PUBLIC_API_BASE_URL }),
@@ -24,21 +25,10 @@ const api = createApi({
   }),
 });
 
+// [ Store slice initial states ]
 const initialState = {
   isLogin: null
 }
-
-const authSlice = createSlice({
-  name: "auth",
-  initialState,
-  reducers: {
-    setIsUserLogin: (state, action) => {
-      console.log("Set user to:", action)
-      state.isLogin = action.payload; 
-      return state 
-    },
-  }
-})
 
 const bookingQueryInitialState = {
   hotelID: 10,
@@ -52,12 +42,40 @@ const bookingQueryInitialState = {
   selectedRoomTypeID: "",
 };
 
+const billingCustomerInfoInitialState = {
+  firstName: "",
+  lastName: "",
+  email: "",
+  password: "",
+  companyCode: "",
+  city: "",
+  state: "",
+  zipCode: "",
+  address: "",
+  phone: "",
+  country: "",
+  isPasswordVisible: false,
+};
+
 const bookingInitialState = {
   roomSelection: {
     package: "",
     mealPlan: "",
   },
 };
+
+// [ Store slice]
+const authSlice = createSlice({
+  name: "auth",
+  initialState,
+  reducers: {
+    setIsUserLogin: (state, action) => {
+      console.log("Set user to:", action)
+      state.isLogin = action.payload; 
+      return state 
+    },
+  }
+})
 
 const bookingQuerySlice = createSlice({
   name: "booking/query",
@@ -111,22 +129,6 @@ const roomSelection = createSlice({
   },
 })
 
-
-const billingCustomerInfoInitialState = {
-  firstName: "",
-  lastName: "",
-  email: "",
-  password: "",
-  companyCode: "",
-  city: "",
-  state: "",
-  zipCode: "",
-  address: "",
-  phone: "",
-  country: "",
-  isPasswordVisible: false,
-};
-
 const billingCustomerInfoSlice = createSlice({
   name: "billingCustomerInfo",
   initialState: billingCustomerInfoInitialState,
@@ -141,6 +143,7 @@ const billingCustomerInfoSlice = createSlice({
 });
 
 
+// [ Root Store ]
 export const store = configureStore({
   reducer: {
     hero: findPlaceSlice,
@@ -156,6 +159,7 @@ export const store = configureStore({
     getDefaultMiddleware().concat(api.middleware),
 });
 
+// [ Actions exports ]
 export const { useGetDataForWebBookingMutation, useWebLoginMutation } = api
 
 export const { setIsUserLogin } = authSlice.actions
