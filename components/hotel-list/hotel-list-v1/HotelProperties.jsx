@@ -58,7 +58,7 @@ export const HotelProperties2 = () => {
           <div>
             <div className="row x-gap-20 y-gap-20">
               <div className="col-md-auto">
-                <div className="cardImage ratio ratio-1:1 w-250 md:w-1/1 rounded-4">
+                <div className="cardImage ratio ratio-1:1 w-250 md:w-1/1 rounded-4 bg-light-2">
                   <div className="cardImage__content">
                     <div className="cardImage-slider rounded-4  custom_inside-slider">
                       <Swiper

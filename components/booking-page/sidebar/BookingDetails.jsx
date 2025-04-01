@@ -9,11 +9,11 @@ const BookingDetails = () => {
     <div className="px-30 py-30 border-light rounded-4">
       <div className="text-20 fw-500 mb-30">Your booking details</div>
       <div className="row x-gap-15 y-gap-20">
-        <div className="col-auto">
+        <div className="col-auto cardImage ratio ratio-1:1 w-140 md:w-1/1 rounded-4 bg-light-2">
           <Image
             width={140}
             height={140}
-            src="/img/backgrounds/1.png"
+            src={selectedRoom?.roomImages[0]}
             alt="image"
             className="size-140 rounded-4 object-cover"
           />
