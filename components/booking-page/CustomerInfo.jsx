@@ -1,25 +1,19 @@
 import Link from "next/link";
-import { useEffect } from "react";
 
 import BookingDetails from "./sidebar/BookingDetails";
-import { billingAction, useGetReservationJsonLikeEzeeWebBookingMutation } from "@/store/store"
+import { billingAction } from "@/store/store"
 import { useDispatch, useSelector } from "react-redux";
 
 const CustomerInfo = () => {
 
   const personalInfo = useSelector((state) => state.billing.personalInfo);
   const dispatch = useDispatch();
-  const [ getReservationJsonLikeEzeeWebBooking ] = useGetReservationJsonLikeEzeeWebBookingMutation()
 
   const handleChange = (e) => {
     const fieldName = e.target.name;
     const fieldValue = e.target.value;
     dispatch(billingAction.setPersonalInfo({ ...personalInfo, [fieldName]: fieldValue}));
   };
-
-  useEffect(() => {
-    getReservationJsonLikeEzeeWebBooking(JSON.parse(localStorage.getItem("bookingQuery"))).then(res => console.dir(res))
-  }, [])
 
   return (
     <>
@@ -45,7 +39,7 @@ const CustomerInfo = () => {
               onChange={handleChange}
             >
               <option value="Mr">Mr.</option>
-              <option value="Miss">Mrs.</option>
+              <option value="Mrs">Mrs.</option>
             </select>
           </div>
           {/* End col-12 */}
@@ -116,11 +110,6 @@ const CustomerInfo = () => {
                 required
               />
               <label className="lh-1 text-16 text-light-1">Password</label>
-              {personalInfo?.isPasswordVisible ? (
-                <i className="fas fa-eye"></i>
-              ) : (
-                <i className="fa fas-eye"></i>
-              )}
             </div>
           </div>
           {/* End col-12 */}
@@ -130,8 +119,8 @@ const CustomerInfo = () => {
               <input
                 type="text"
                 name="companyID"
-                onChange={handleChange}
                 value={personalInfo?.companyID}
+                onChange={handleChange}
                 required
               />
               <label className="lh-1 text-16 text-light-1">Company code</label>
@@ -161,8 +150,8 @@ const CustomerInfo = () => {
                 type="text"
                 name="Country"
                 required
-                onChange={handleChange}
                 value={personalInfo?.Country}
+                onChange={handleChange}
               />
               <label className="lh-1 text-16 text-light-1">Country</label>
             </div>

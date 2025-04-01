@@ -5,9 +5,15 @@ import React, { useState } from "react";
 import CustomerInfo from "../CustomerInfo";
 import PaymentInfo from "../PaymentInfo";
 import OrderSubmittedInfo from "../OrderSubmittedInfo";
+import { useGetReservationJsonLikeEzeeWebBookingMutation } from "@/store/store"
+import { useSelector } from "react-redux"
 
 const Index = () => {
   const [currentStep, setCurrentStep] = useState(0);
+  const [ getReservationJsonLikeEzeeWebBooking ] = useGetReservationJsonLikeEzeeWebBookingMutation()
+  const bookingQuery = useSelector(state => state.bookingQuery)
+  const billingInfo = useSelector(state => state.billing)
+
   const steps = [
     {
       title: "Personal Details",
@@ -49,6 +55,9 @@ const Index = () => {
   const nextStep = () => {
     if (currentStep < steps.length - 1) {
       setCurrentStep(currentStep + 1);
+    }
+    if(currentStep === 0){
+      getReservationJsonLikeEzeeWebBooking({ ...bookingQuery, guestDetails: billingInfo?.personalInfo })
     }
   };
 
