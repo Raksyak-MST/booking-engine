@@ -3,10 +3,6 @@ import { useSelector } from "react-redux"
 
 const BookingDetails = () => {
   const selectedRoom = useSelector(state => state.roomSelection)
-  const bookingQueryInfo = useSelector(state => state.bookingQuery)
-  const perNightCharges = selectedRoom?.perNightCharges?.filter(
-    (pkg) => pkg?.packageID == bookingQueryInfo?.selectedPackageID
-  )[0]?.rooms;
 
   return (
     <div className="px-30 py-30 border-light rounded-4">
@@ -35,49 +31,6 @@ const BookingDetails = () => {
       <div className="border-top-light mt-30 mb-20" />
       <div className="row y-gap-20 justify-between">
         <div className="col-auto">
-          <span className="fw-500">Room1</span>
-        </div>
-        <div className="col-auto">
-          {perNightCharges
-            ? new Intl.NumberFormat("en-IN", {
-                currencyDisplay: "code",
-                style: "currency",
-                currency: "INR",
-              }).format(perNightCharges[0]?.fulltotal)
-            : null}
-        </div>
-      </div>
-      <div className="row y-gap-20 justify-between">
-        <div className="col-auto">
-          <span className="fw-500">Total tax</span>
-        </div>
-        <div className="col-auto">
-          {perNightCharges
-            ? new Intl.NumberFormat("en-IN", {
-                currencyDisplay: "code",
-                style: "currency",
-                currency: "INR",
-              }).format(perNightCharges[0]?.TotalTax)
-            : null}
-        </div>
-      </div>
-      <div className="row y-gap-20 justify-between">
-        <div className="col-auto">
-          <span className="fw-500">Total price</span>
-        </div>
-        <div className="col-auto">
-          {perNightCharges
-            ? new Intl.NumberFormat("en-IN", {
-                currencyDisplay: "code",
-                style: "currency",
-                currency: "INR",
-              }).format(perNightCharges[0]?.TotalAmountAfterTax)
-            : null}
-        </div>
-      </div>
-      <div className="border-top-light mt-30 mb-20" />
-      <div className="row y-gap-20 justify-between">
-        <div className="col-auto">
           <div className="text-15">Check-in</div>
           <div className="fw-500">{selectedRoom?.arrivalDate}</div>
         </div>
@@ -98,9 +51,9 @@ const BookingDetails = () => {
       </div>
 
       <div className="border-top-light mt-30 mb-20" />
-      <div className="row y-gap-20 justify-between items-center">
+      <div className="row items-end">
         <div className="col-auto">
-          <div className="text-15">You selected:</div>
+          <div className="text-15">Stay information:</div>
           <div className="fw-500">{selectedRoom?.roomTypeName}</div>
         </div>
         <div className="col-auto">
