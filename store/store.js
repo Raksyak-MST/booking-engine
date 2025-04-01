@@ -2,6 +2,31 @@ import { configureStore, createSlice } from "@reduxjs/toolkit";
 import findPlaceSlice from "../features/hero/findPlaceSlice";
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react"
 import moment from 'moment'
+import * as yup from 'yup'
+
+const validationYupSchema = yup.object().shape({
+  Salutation: yup.string().required("Salutation is required"),
+  FirstName: yup.string().required("First Name is required"),
+  LastName: yup.string().required("Last Name is required"),
+  // Gender: yup.string().required("Gender is required"),
+  // DateOfBirth: yup.string().required("Date of Birth is required"),
+  // SpouseDateOfBirth: yup.string().required("Spouse Date of Birth is required"),
+  // WeddingAnniversary: yup.string().required("Wedding Anniversary is required"),
+  Password: yup.string().required("Password is required"),
+  Address: yup.string().required("Address is required"),
+  // City: yup.string().required("City is required"),
+  State: yup.string().required("State is required"),
+  Country: yup.string().required("Country is required"),
+  // Nationality: yup.string().required("Nationality is required"),
+  Zipcode: yup.string().required("Zipcode is required"),
+  // Phone: yup.string().required("Phone is required"),
+  Mobile: yup.string().required("Mobile is required"),
+  // Fax: yup.string().required("Fax is required"),
+  Email: yup.string().required("Email is required"),
+  // PromoCode: yup.string().required("Promo Code is required"),
+  // Comment: yup.string().required("Comment is required"),
+  companyID: yup.string().required("Company ID is required"),
+});
 
 // [ API slice ]
 const api = createApi({
@@ -14,21 +39,23 @@ const api = createApi({
         method: "POST",
         body: data,
       }),
+      providesTags: ["getDataForWebBooking"],
     }),
     webLogin: builder.mutation({
       query: (data) => ({
         url: "/webLogin",
         method: "POST",
         body: new URLSearchParams(data),
-      })
+      }),
     }),
     getReservationJsonLikeEzeeWebBooking: builder.mutation({
       query: (data) => ({
         url: "/getReservationJsonLikeEzeeWebBooking",
         method: "POST",
         body: data,
-      })
-    })
+      }),
+      providesTags: ["getReservationJsonLikeEzeeWebBooking"],
+    }),
   }),
 });
 
@@ -73,7 +100,8 @@ const billingInitialState = {
     companyID: "",
     isPasswordVisible: false,
   },
-  reservationInfo: {}
+  reservationInfo: {},
+  errors: {},
 };
 
 const bookingInitialState = {
@@ -109,7 +137,7 @@ const bookingSlice = createSlice({
   name: "booking",
   initialState: bookingInitialState,
   reducers: {
-    setBookingQuery: (state, acuseroutertion) => {
+    setBookingQuery: (state, action) => {
       return Object.assign(state.bookingQuery, action.payload);
     },
     setCustomerInfo: (state, action) => {
@@ -153,6 +181,17 @@ const billingInfoSlice = createSlice({
     togglePasswordVisibility: (state) => {
       return !state.isPasswordVisible;
     },
+    validateForm: (state) => {
+      try{
+        validationYupSchema.validateSync(state.personalInfo, { abortEarly: false });
+      }catch(err){
+        const validationError = {}
+        err.inner.forEach((error) => {
+          validationError[error.path] = error.message
+        })
+        state.errors = validationError
+      }
+    }
   },
   extraReducers: (builder) => {
     builder.addMatcher(
@@ -163,7 +202,6 @@ const billingInfoSlice = createSlice({
     );
   },
 });
-
 
 // [ Root Store ]
 export const store = configureStore({

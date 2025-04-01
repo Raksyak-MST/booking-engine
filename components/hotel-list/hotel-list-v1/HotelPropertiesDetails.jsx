@@ -14,7 +14,8 @@ const HotelPropertyDetails = (props) => {
   const roomPackages = hotel?.perNightCharges.map((roomPackage) => ({
     packageCode: roomPackage.packageCode,
     packageId: roomPackage.packageID,
-    packageRate: roomPackage.rooms[0].packageRate,
+    packageRate: roomPackage.rooms[0]?.packageRate,
+    TotalAmountBeforeTax: roomPackage.rooms[0]?.TotalAmountBeforeTax,
   }));
 
   const handleMealPlanSelection = (e) => {
@@ -34,7 +35,6 @@ const HotelPropertyDetails = (props) => {
     dispatch(
       roomSelectionActions.setRoomSelection({
         selectedRoomTypeID: hotel?.roomTypeID,
-        selectedPackageID: "1",
       })
     );
     Router.push("/booking-page");
@@ -42,8 +42,8 @@ const HotelPropertyDetails = (props) => {
 
   return (
     <div className="y-gap-30">
-      <div className="roomGrid -content--compact">
-        <div>
+      <div className="row y-gap-10 items-end">
+        <div className="col-md-6">
           {/* <p className="text-15 fw-500 text-red-1">Rate Details</p> */}
           <p className="text-14 fw-500 mb-10">Select meal plan</p>
           <div className="radio-group">
@@ -73,11 +73,14 @@ const HotelPropertyDetails = (props) => {
             ))}
           </div>
         </div>
-        <div
-          className="button -md -dark-1 bg-blue-1 text-white cursor-pointer"
-          onClick={handleRoomSelection}
-        >
-          BOOK NOW
+        <div className="col-md-6">
+          <p className="text-light-1 text-14 text-end">{`${bookingQuery?.adults} adults, ${bookingQuery?.children} children and ${bookingQuery?.quantity} room`}</p>
+          <div
+            className="button -md -dark-1 bg-blue-1 text-white cursor-pointer"
+            onClick={handleRoomSelection}
+          >
+            BOOK NOW
+          </div>
         </div>
       </div>
       {/* End romm Grid horizontal content */}

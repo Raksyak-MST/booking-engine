@@ -6,13 +6,16 @@ import CustomerInfo from "../CustomerInfo";
 import PaymentInfo from "../PaymentInfo";
 import OrderSubmittedInfo from "../OrderSubmittedInfo";
 import { useGetReservationJsonLikeEzeeWebBookingMutation } from "@/store/store"
-import { useSelector } from "react-redux"
+import { useDispatch, useSelector } from "react-redux"
+import { billingAction } from "@/store/store"
+
 
 const Index = () => {
   const [currentStep, setCurrentStep] = useState(0);
   const [ getReservationJsonLikeEzeeWebBooking ] = useGetReservationJsonLikeEzeeWebBookingMutation()
   const bookingQuery = useSelector(state => state.bookingQuery)
   const billingInfo = useSelector(state => state.billing)
+  const dispatch = useDispatch()
 
   const steps = [
     {
@@ -53,11 +56,15 @@ const Index = () => {
   };
 
   const nextStep = () => {
-    if (currentStep < steps.length - 1) {
+    if (currentStep < steps.length - 1 && billingInfo?.errors?.length === 0) {
       setCurrentStep(currentStep + 1);
     }
+
     if(currentStep === 0){
-      getReservationJsonLikeEzeeWebBooking({ ...bookingQuery, guestDetails: billingInfo?.personalInfo })
+      dispatch(billingAction.validateForm())
+      if(Object.keys(billingInfo?.errors).length === 0){
+        getReservationJsonLikeEzeeWebBooking({ ...bookingQuery, guestDetails: billingInfo?.personalInfo })
+      }
     }
   };
 

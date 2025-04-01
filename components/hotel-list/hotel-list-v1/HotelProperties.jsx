@@ -1,5 +1,5 @@
-
 'use client'
+
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Navigation, Pagination } from "swiper";
 import Image from "next/image";
@@ -53,7 +53,8 @@ export const HotelProperties2 = () => {
 
   return (
     <>
-      {availableRooms?.map((item, index) => (
+    {/* TODO: Add a loader handler to show loader while fetching data */}
+      {options?.isLoading ? <Loader />: availableRooms?.map((item, index) => (
         <div className="col-12 border-light mb-3 rounded p-3" key={index}>
           <div>
             <div className="row x-gap-20 y-gap-20">
@@ -137,4 +138,12 @@ export const HotelProperties2 = () => {
       ))}
     </>
   );
+}
+
+const Loader = () => {
+  return (
+    <div className="col-12 text-center">
+      <div className="spinner-border" role="status"></div>
+    </div>
+  )
 }

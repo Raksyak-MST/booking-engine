@@ -1,5 +1,6 @@
 import Link from "next/link";
 
+import { useState } from "react"
 import BookingDetails from "./sidebar/BookingDetails";
 import { billingAction } from "@/store/store"
 import { useDispatch, useSelector } from "react-redux";
@@ -7,6 +8,7 @@ import { useDispatch, useSelector } from "react-redux";
 const CustomerInfo = () => {
 
   const personalInfo = useSelector((state) => state.billing.personalInfo);
+  const { errors } = useSelector((state) => state.billing)
   const dispatch = useDispatch();
 
   const handleChange = (e) => {
@@ -15,6 +17,7 @@ const CustomerInfo = () => {
     dispatch(billingAction.setPersonalInfo({ ...personalInfo, [fieldName]: fieldValue}));
   };
 
+  console.log(errors)
   return (
     <>
       <div className="col-xl-7 col-lg-8 mt-30">
@@ -55,11 +58,12 @@ const CustomerInfo = () => {
               />
               <label className="lh-1 text-16 text-light-1">First name</label>
             </div>
+            <div className="text-13 text-red-1">{errors?.FirstName}</div>
           </div>
           {/* End col-12 */}
 
           <div className="col-md-5">
-            <div className="form-input ">
+            <div className="form-input input-group has-validation">
               <input
                 type="text"
                 name="LastName"
@@ -69,6 +73,7 @@ const CustomerInfo = () => {
               />
               <label className="lh-1 text-16 text-light-1">Last name</label>
             </div>
+            <div className="text-13 text-red-1">{errors?.LastName}</div>
           </div>
           {/* End col-12 */}
 
@@ -83,6 +88,7 @@ const CustomerInfo = () => {
               />
               <label className="lh-1 text-16 text-light-1">Email</label>
             </div>
+            <div className="text-13 text-red-1">{errors?.Email}</div>
           </div>
           {/* End col-12 */}
 
@@ -97,6 +103,7 @@ const CustomerInfo = () => {
               />
               <label className="lh-1 text-16 text-light-1">Mobile</label>
             </div>
+            <div className="text-13 text-red-1">{errors?.Email}</div>
           </div>
           {/* End col-12 */}
 
@@ -111,6 +118,7 @@ const CustomerInfo = () => {
               />
               <label className="lh-1 text-16 text-light-1">Password</label>
             </div>
+            <div className="text-13 text-red-1">{errors?.Password}</div>
           </div>
           {/* End col-12 */}
 
@@ -125,6 +133,7 @@ const CustomerInfo = () => {
               />
               <label className="lh-1 text-16 text-light-1">Company code</label>
             </div>
+            <div className="text-13 text-red-1">{errors?.companyID}</div>
           </div>
           {/* End col-12 */}
 
@@ -138,9 +147,10 @@ const CustomerInfo = () => {
                 onChange={handleChange}
               />
               <label className="lh-1 text-16 text-light-1">
-                Address line 2
+                Address line 1
               </label>
             </div>
+            <div className="text-13 text-red-1">{errors?.Address}</div>
           </div>
           {/* End col-12 */}
 
@@ -155,6 +165,7 @@ const CustomerInfo = () => {
               />
               <label className="lh-1 text-16 text-light-1">Country</label>
             </div>
+            <div className="text-13 text-red-1">{errors?.Country}</div>
           </div>
           {/* End col-12 */}
 
@@ -171,6 +182,7 @@ const CustomerInfo = () => {
                 State/Province/Region
               </label>
             </div>
+            <div className="text-13 text-red-1">{errors?.State}</div>
           </div>
           {/* End col-12 */}
 
@@ -187,6 +199,7 @@ const CustomerInfo = () => {
                 ZIP code/Postal code
               </label>
             </div>
+            <div className="text-13 text-red-1">{errors?.Zipcode}</div>
           </div>
           {/* End col-12 */}
 
