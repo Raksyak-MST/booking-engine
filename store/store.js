@@ -149,7 +149,6 @@ const billingInfoSlice = createSlice({
   reducers: {
     setPersonalInfo: (state, action) => {
       state.personalInfo = action.payload;
-      console.log(state.personalInfo);
     },
     togglePasswordVisibility: (state) => {
       return !state.isPasswordVisible;

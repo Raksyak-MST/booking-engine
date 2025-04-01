@@ -33,11 +33,11 @@ const BookingDetails = () => {
       {/* End .row */}
 
       <div className="border-top-light mt-30 mb-20" />
-      <div className="row">
-        <div className="col-6">
+      <div className="row y-gap-20 justify-between">
+        <div className="col-auto">
           <span className="fw-500">Room1</span>
         </div>
-        <div className="col-6">
+        <div className="col-auto">
           {perNightCharges
             ? new Intl.NumberFormat("en-IN", {
                 currencyDisplay: "code",
@@ -47,11 +47,11 @@ const BookingDetails = () => {
             : null}
         </div>
       </div>
-      <div className="row">
-        <div className="col-6">
+      <div className="row y-gap-20 justify-between">
+        <div className="col-auto">
           <span className="fw-500">Total tax</span>
         </div>
-        <div className="col-6">
+        <div className="col-auto">
           {perNightCharges
             ? new Intl.NumberFormat("en-IN", {
                 currencyDisplay: "code",
@@ -61,11 +61,11 @@ const BookingDetails = () => {
             : null}
         </div>
       </div>
-      <div className="row">
-        <div className="col-6">
+      <div className="row y-gap-20 justify-between">
+        <div className="col-auto">
           <span className="fw-500">Total price</span>
         </div>
-        <div className="col-6">
+        <div className="col-auto">
           {perNightCharges
             ? new Intl.NumberFormat("en-IN", {
                 currencyDisplay: "code",
