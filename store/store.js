@@ -45,7 +45,7 @@ const bookingQueryInitialState = {
   children: 1,
   quantity: 1,
   companyCode: "",
-  selectedPackageID: "",
+  selectedPackageID: "1",
   selectedRoomTypeID: "",
 };
 

@@ -31,6 +31,12 @@ const HotelPropertyDetails = (props) => {
 
   const handleRoomSelection = () => {
     dispatch(roomSelectionActions.setRoomSelection(hotel));
+    dispatch(
+      roomSelectionActions.setRoomSelection({
+        selectedRoomTypeID: hotel?.roomTypeID,
+        selectedPackageID: "1",
+      })
+    );
     Router.push("/booking-page");
   };
 

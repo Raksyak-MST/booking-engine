@@ -13,7 +13,11 @@ const BookingDetails = () => {
           <Image
             width={140}
             height={140}
-            src={selectedRoom?.roomImages[0]}
+            src={
+              selectedRoom?.roomImages?.length > 0
+                ? selectedRoom?.roomImages[0]
+                : "/not-found"
+            }
             alt="image"
             className="size-140 rounded-4 object-cover"
           />
@@ -51,14 +55,22 @@ const BookingDetails = () => {
       <div className="row y-gap-20 justify-between">
         <div className="col-auto">
           <div className="text-15">Check-in</div>
-          <div className="fw-500">{moment(selectedRoom?.arrivalDate).format('ddd DD MMM YYYY')}</div>
+          <div className="fw-500">
+            {selectedRoom?.arrivalDate
+              ? moment(selectedRoom?.arrivalDate).format("ddd DD MMM YYYY")
+              : null}
+          </div>
         </div>
         <div className="col-auto md:d-none">
           <div className="h-full w-1 bg-border" />
         </div>
         <div className="col-auto text-right md:text-left">
           <div className="text-15">Check-out</div>
-          <div className="fw-500">{moment(selectedRoom?.departureDate).format('ddd DD MMM YYYY')}</div>
+          <div className="fw-500">
+            {selectedRoom?.departureDate
+              ? moment(selectedRoom?.departureDate).format("ddd DD MMM YYYY")
+              : null}
+          </div>
         </div>
       </div>
       {/* End row */}
