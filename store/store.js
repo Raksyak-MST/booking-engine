@@ -51,7 +51,7 @@ const bookingQueryInitialState = {
 
 const billingInitialState = {
   personalInfo: {
-    Salutation: "",
+    Salutation: "Mr",
     FirstName: "",
     LastName: "",
     Gender: "",
@@ -73,6 +73,7 @@ const billingInitialState = {
     companyID: "",
     isPasswordVisible: false,
   },
+  reservationInfo: {}
 };
 
 const bookingInitialState = {
@@ -147,12 +148,20 @@ const billingInfoSlice = createSlice({
   initialState: billingInitialState,
   reducers: {
     setPersonalInfo: (state, action) => {
-      state.personalInfo = action.payload
-      console.log(state.personalInfo)
+      state.personalInfo = action.payload;
+      console.log(state.personalInfo);
     },
     togglePasswordVisibility: (state) => {
-      return !state.isPasswordVisible
-    }
+      return !state.isPasswordVisible;
+    },
+  },
+  extraReducers: (builder) => {
+    builder.addMatcher(
+      api.endpoints.getReservationJsonLikeEzeeWebBooking.matchFulfilled,
+      (state, action) => {
+        state.reservationInfo = action.payload?.data;
+      }
+    );
   },
 });
 
