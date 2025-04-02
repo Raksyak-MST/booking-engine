@@ -31,7 +31,14 @@ const validationYupSchema = yup.object().shape({
 // [ API slice ]
 const api = createApi({
   reducerPath: "api",
-  baseQuery: fetchBaseQuery({ baseUrl: process.env.NEXT_PUBLIC_API_BASE_URL }),
+  baseQuery: async (args, api, extraOptions) => {
+    const baseQuery = fetchBaseQuery({ baseUrl: process.env.NEXT_PUBLIC_API_BASE_URL });
+    const result = await baseQuery(args, api, extraOptions);
+
+    // FIXME: intentional delay, this will cause an additional 1 second delay
+    await new Promise((resolve) => setTimeout(resolve, 1000));
+    return result;
+  },
   endpoints: (builder) => ({
     getDataForWebBooking: builder.mutation({
       query: (data) => ({
@@ -148,17 +155,32 @@ const bookingSlice = createSlice({
 
 const availableRooms = createSlice({
   name: "availableRooms",
-  initialState: [],
+  initialState: { roomTypes: [] },
   reducers: {
     setAvailableRooms: (state, action) => {
-      return action.payload;
+      state.roomTypes = action.payload;
     },
+    getRoomInfoByPackageCode: (state, action) => {},
   },
   extraReducers: (builder) => {
-    builder.addMatcher(api.endpoints.getDataForWebBooking.matchFulfilled, (state, action) => {
-      return action.payload?.data;
-    })
-  }
+    builder
+      .addMatcher(
+        api.endpoints.getDataForWebBooking.matchPending,
+        (state, action) => {
+          // FIXME: this handles the loading deception when user click on the search button
+          // WARNING: do not change the state to (initiate)
+          console.info("API initiate:(availableRooms set to [])");
+          state.roomTypes = [];
+        }
+      )
+      .addMatcher(
+        api.endpoints.getDataForWebBooking.matchFulfilled,
+        (state, action) => {
+          console.info("API initiate:(availableRooms set with response data)");
+          state.roomTypes = action?.payload?.data;
+        }
+      );
+  },
 });
 
 const roomSelection = createSlice({

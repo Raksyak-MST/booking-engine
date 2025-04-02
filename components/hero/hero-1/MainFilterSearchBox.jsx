@@ -17,8 +17,8 @@ const MainFilterSearchBox = () => {
 
   const handleSubmit = async () => {
     try{
-      await getDataForWebBooking(bookingState);
-      Router.push("/hotel-list-v1");
+      await getDataForWebBooking(bookingState).unwrap();
+      Router.push("/room-types");
     }catch(error){
       console.error(error)
     }
