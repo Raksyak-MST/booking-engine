@@ -25,7 +25,7 @@ const validationYupSchema = yup.object().shape({
   Email: yup.string().required("Email is required"),
   // PromoCode: yup.string().required("Promo Code is required"),
   // Comment: yup.string().required("Comment is required"),
-  companyID: yup.string().required("Company ID is required"),
+  // companyID: yup.string().required("Company ID is required"),
 });
 
 // [ API slice ]
@@ -63,6 +63,13 @@ const api = createApi({
       }),
       providesTags: ["getReservationJsonLikeEzeeWebBooking"],
     }),
+    addReservationFromWeb: builder.mutation({
+      query: (data) => ({
+        url: "addReservationFromWeb",
+        method: "POST",
+        body: data,
+      })
+    })
   }),
 });
 
@@ -243,9 +250,17 @@ const reservationInfoSlice = createSlice({
     builder.addCase(
       bookingQuerySlice.actions.setBookingQuery,
       (state, action) => {
+        console.log(action)
         Object.assign(state, action.payload);
       }
-    );
+    ).addCase(
+      billingInfoSlice.actions.setPersonalInfo,
+      (state, action) => {
+        Object.assign(state.guestDetails, action.payload)
+      }
+    ).addCase(roomSelection.actions.setRoomSelection, (state, action) => {
+      Object.assign(state, action.payload)
+    });
   },
 });
 
@@ -271,6 +286,7 @@ export const {
   useGetDataForWebBookingMutation,
   useWebLoginMutation,
   useGetReservationJsonLikeEzeeWebBookingMutation,
+  useAddReservationFromWebMutation
 } = api;
 
 export const { setIsUserLogin } = authSlice.actions

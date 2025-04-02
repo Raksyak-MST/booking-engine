@@ -64,7 +64,10 @@ const HotelPropertyDetails = (props) => {
         selectedRoomTypeID: hotel?.roomTypeID,
       })
     );
-    await getReservationJsonLikeEzee(reservationInfo)
+    await getReservationJsonLikeEzee({
+      ...reservationInfo,
+      selectedRoomTypeID: hotel?.roomTypeID,
+    });
     Router.push("/booking-page");
   };
 

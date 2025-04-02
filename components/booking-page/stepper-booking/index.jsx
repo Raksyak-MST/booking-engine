@@ -5,15 +5,17 @@ import React, { useState } from "react";
 import CustomerInfo from "../CustomerInfo";
 import PaymentInfo from "../PaymentInfo";
 import OrderSubmittedInfo from "../OrderSubmittedInfo";
-import { useGetReservationJsonLikeEzeeWebBookingMutation } from "@/store/store"
+import { useAddReservationFromWebMutation, useGetReservationJsonLikeEzeeWebBookingMutation } from "@/store/store"
 import { useDispatch, useSelector } from "react-redux"
 import { billingAction } from "@/store/store"
 
 
 const Index = () => {
   const [currentStep, setCurrentStep] = useState(0);
-  const [ getReservationJsonLikeEzeeWebBooking ] = useGetReservationJsonLikeEzeeWebBookingMutation()
-  const bookingQuery = useSelector(state => state.bookingQuery)
+  const [ addReservationFromWebMutation ] = useAddReservationFromWebMutation()
+  const [ getReservationJsonLikeEzeeWebbooking, options ] = useGetReservationJsonLikeEzeeWebBookingMutation() 
+  const reservationInfo = useSelector(state => state.reservationInfo)
+  const reservationsInfo = useSelector(state => state.billing?.reservationInfo)
   const billingInfo = useSelector(state => state.billing)
   const dispatch = useDispatch()
 
@@ -56,14 +58,18 @@ const Index = () => {
   };
 
   const nextStep = () => {
-    if (currentStep < steps.length - 1 && billingInfo?.errors?.length === 0) {
+    if (currentStep < steps.length - 1 && Object.keys(billingInfo?.errors).length === 0) {
       setCurrentStep(currentStep + 1);
     }
 
     if(currentStep === 0){
-      dispatch(billingAction.validateForm())
-      if(Object.keys(billingInfo?.errors).length === 0){
-        getReservationJsonLikeEzeeWebBooking({ ...bookingQuery, guestDetails: billingInfo?.personalInfo })
+      dispatch(billingAction.validateForm());
+      if (Object.keys(billingInfo?.errors).length === 0) {
+        getReservationJsonLikeEzeeWebbooking(reservationInfo).then((res) => {
+          addReservationFromWebMutation(reservationsInfo).catch((error) =>
+            alert(error.message)
+          );
+        }).catch(error => alert(error.message));
       }
     }
   };

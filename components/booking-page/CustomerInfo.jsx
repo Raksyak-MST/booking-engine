@@ -17,7 +17,6 @@ const CustomerInfo = () => {
     dispatch(billingAction.setPersonalInfo({ ...personalInfo, [fieldName]: fieldValue}));
   };
 
-  console.log(errors)
   return (
     <>
       <div className="col-xl-7 col-lg-8 mt-30">
@@ -92,7 +91,7 @@ const CustomerInfo = () => {
           </div>
           {/* End col-12 */}
 
-          <div className="col-md-12">
+          <div className="col-md-6">
             <div className="form-input ">
               <input
                 type="text"
@@ -122,7 +121,7 @@ const CustomerInfo = () => {
           </div>
           {/* End col-12 */}
 
-          <div className="col-md-6">
+          {/* <div className="col-md-6">
             <div className="form-input ">
               <input
                 type="text"
@@ -134,7 +133,7 @@ const CustomerInfo = () => {
               <label className="lh-1 text-16 text-light-1">Company code</label>
             </div>
             <div className="text-13 text-red-1">{errors?.companyID}</div>
-          </div>
+          </div> */}
           {/* End col-12 */}
 
           <div className="col-12">
