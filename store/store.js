@@ -173,7 +173,7 @@ const availableRooms = createSlice({
         api.endpoints.getDataForWebBooking.matchPending,
         (state, action) => {
           // FIXME: this handles the loading deception when user click on the search button
-          // WARNING: do not change the state to (initiate)
+          // WARNING: do not change the state to (initiate) matchPending is intentionally used
           state.roomTypes = [];
         }
       )
@@ -208,6 +208,7 @@ const billingInfoSlice = createSlice({
     },
     validateForm: (state) => {
       try{
+        // abortEarly: false will return all errors at once instead of one by one which is default set with abortEarly: true
         validationYupSchema.validateSync(state.personalInfo, { abortEarly: false });
       }catch(err){
         const validationError = {}
