@@ -46,7 +46,6 @@ const api = createApi({
         method: "POST",
         body: data,
       }),
-      providesTags: ["getDataForWebBooking"],
     }),
     webLogin: builder.mutation({
       query: (data) => ({
@@ -61,7 +60,6 @@ const api = createApi({
         method: "POST",
         body: data,
       }),
-      providesTags: ["getReservationJsonLikeEzeeWebBooking"],
     }),
     addReservationFromWeb: builder.mutation({
       query: (data) => ({
