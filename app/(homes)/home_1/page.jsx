@@ -5,8 +5,8 @@ import Hero1 from "@/components/hero/hero-1";
 import { destinations2 } from "../../../data/desinations";
 
 export const metadata = {
-  title: "Home-1 || GoTrip - Travel & Tour React NextJS Template",
-  description: "GoTrip - Travel & Tour React NextJS Template",
+  title: "Home || Oterra",
+  description: "Oterra",
 };
 
 const Home_1 = () => {

@@ -7,8 +7,8 @@ import {HotelProperties2} from "@/components/hotel-list/hotel-list-v1/HotelPrope
 import Sidebar from "@/components/hotel-list/hotel-list-v1/Sidebar";
 
 export const metadata = {
-  title: "Hotel List v1 || GoTrip - Travel & Tour React NextJS Template",
-  description: "GoTrip - Travel & Tour React NextJS Template",
+  title: "Room Types || Oterra",
+  description: "Oterra",
 };
 
 const index = () => {
