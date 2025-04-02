@@ -17,10 +17,10 @@ const MainFilterSearchBox = () => {
 
   const handleSubmit = async () => {
     try{
-      await getDataForWebBooking(bookingState).unwrap();
+      await getDataForWebBooking(bookingState)
       Router.push("/room-types");
     }catch(error){
-      console.error(error)
+      alert(error.message)
     }
   };
 

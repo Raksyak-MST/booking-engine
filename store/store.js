@@ -135,7 +135,7 @@ const bookingQuerySlice = createSlice({
   initialState: bookingQueryInitialState,
   reducers: {
     setBookingQuery: (state, action) => {
-      return Object.assign(state, action.payload);
+      Object.assign(state, action.payload);
     },
   }
 })
@@ -145,7 +145,7 @@ const bookingSlice = createSlice({
   initialState: bookingInitialState,
   reducers: {
     setBookingQuery: (state, action) => {
-      return Object.assign(state.bookingQuery, action.payload);
+      Object.assign(state.bookingQuery, action.payload);
     },
     setCustomerInfo: (state, action) => {
       return state;
@@ -169,14 +169,12 @@ const availableRooms = createSlice({
         (state, action) => {
           // FIXME: this handles the loading deception when user click on the search button
           // WARNING: do not change the state to (initiate)
-          console.info("API initiate:(availableRooms set to [])");
           state.roomTypes = [];
         }
       )
       .addMatcher(
         api.endpoints.getDataForWebBooking.matchFulfilled,
         (state, action) => {
-          console.info("API initiate:(availableRooms set with response data)");
           state.roomTypes = action?.payload?.data;
         }
       );
@@ -188,7 +186,7 @@ const roomSelection = createSlice({
   initialState: {},
   reducers: {
     setRoomSelection: (state, action) => {
-      return Object.assign(state, action.payload);
+      Object.assign(state, action.payload);
     },
   },
 })
@@ -245,8 +243,7 @@ const reservationInfoSlice = createSlice({
     builder.addCase(
       bookingQuerySlice.actions.setBookingQuery,
       (state, action) => {
-        console.log(action);
-        return Object.assign(state, action.payload);
+        Object.assign(state, action.payload);
       }
     );
   },
