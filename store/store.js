@@ -225,6 +225,33 @@ const billingInfoSlice = createSlice({
   },
 });
 
+const reservationInfoSlice = createSlice({
+  name: "reservationInfo",
+  initialState: {
+    hotelID: 10,
+    arrivalDate: moment(new Date()).format("YYYY-MM-DD"),
+    departureDate: moment(new Date()).format("YYYY-MM-DD"),
+    adults: 2,
+    children: 1,
+    quantity: 1,
+    selectedPackageID: "1",
+    selectedRoomTypeID: "",
+    guestDetails: {
+      PromoCode: "",
+    },
+  },
+  reducers: {},
+  extraReducers: (builder) => {
+    builder.addCase(
+      bookingQuerySlice.actions.setBookingQuery,
+      (state, action) => {
+        console.log(action);
+        return Object.assign(state, action.payload);
+      }
+    );
+  },
+});
+
 // [ Root Store ]
 export const store = configureStore({
   reducer: {
@@ -235,6 +262,7 @@ export const store = configureStore({
     availableRooms: availableRooms.reducer,
     roomSelection: roomSelection.reducer,
     billing: billingInfoSlice.reducer,
+    reservationInfo: reservationInfoSlice.reducer,
     [api.reducerPath]: api.reducer,
   },
   middleware: (getDefaultMiddleware) =>
