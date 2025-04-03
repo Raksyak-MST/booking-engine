@@ -55,6 +55,18 @@ export const HotelProperties2 = () => {
     return <Loader />;
   }
 
+  if(availableRooms?.length === 0) {
+    return (
+      <div className="col-12 text-center">
+        <h2>Sorry, No Rooms for this Search</h2>
+        <p>
+          We cannnot find any rooms for your search. Please modify your search
+          criteria and try again.
+        </p>
+      </div>
+    );
+  }
+
   return availableRooms?.map((item, index) => (
     <div className="col-12 border-light mb-3 rounded p-3" key={index}>
       <div>
