@@ -5,16 +5,13 @@ import { useSelector, useDispatch } from "react-redux";
 import DateSearch from "../DateSearch";
 import GuestSearch from "./GuestSearch";
 import { useRouter } from "next/navigation";
-import { bookingQueryActions, useGetDataForWebBookingMutation } from "@/store/store"
-import { setBookingQuery } from "@/store/store"
+import { useGetDataForWebBookingMutation } from "@/store/store"
 import LocationSearch from "./LocationSearch"
 
 const MainFilterSearchBox = () => {
   const Router = useRouter()
   const bookingState = useSelector(state => state.bookingQuery);
-  const dispatch = useDispatch()
   const [getDataForWebBooking, options] = useGetDataForWebBookingMutation()
-  const { companyCode } = useSelector(state => state.booking)
 
   const handleSubmit = async () => {
     try{
@@ -32,21 +29,6 @@ const MainFilterSearchBox = () => {
           <div className="button-grid --compact-5 items-center">
             <LocationSearch />
             {/* End Location */}
-            {/* <div className="px-30 lg:py-20 lg:px-0 js-form-dd js-liverSearch">
-              <h4 className="text-15 fw-500 ls-2 lh-16">Company code</h4>
-              <input
-                className="text-15 text-light-1 ls-2 lh-16"
-                placeholder="Enter company code"
-                value={companyCode}
-                onChange={(event) => {
-                  dispatch(
-                    bookingQueryActions.setBookingQuery({
-                      companyCode: event?.target?.value?.toUpperCase(),
-                    })
-                  );
-                }}
-              />
-            </div> */}
             <div className="searchMenu-date px-30 lg:py-20 lg:px-0 js-form-dd js-calendar">
               <div>
                 <h4 className="text-15 fw-500 ls-2 lh-16">
