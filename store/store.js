@@ -63,70 +63,26 @@ const api = createApi({
     }),
     addReservationFromWeb: builder.mutation({
       query: (data) => ({
-        url: "addReservationFromWeb",
+        url: "/addReservationFromWeb",
         method: "POST",
         body: data,
+      })
+    }),
+    getHotelDetailsWebBooking: builder.mutation({
+      query: () => ({
+        url: "/getHotelDetailsWebBooking",
+        method: "POST",
       })
     })
   }),
 });
 
-// [ Store slice initial states ]
-const initialState = {
-  isLogin: null
-}
-
-const bookingQueryInitialState = {
-  hotelID: 10,
-  arrivalDate: moment(new Date()).format("YYYY-MM-DD"),
-  departureDate: moment(new Date()).format("YYYY-MM-DD"),
-  adults: 2,
-  children: 1,
-  quantity: 1,
-  companyCode: "",
-  selectedPackageID: "1",
-  selectedRoomTypeID: "",
-};
-
-const billingInitialState = {
-  personalInfo: {
-    Salutation: "Mr",
-    FirstName: "",
-    LastName: "",
-    Gender: "",
-    DateOfBirth: null,
-    SpouseDateOfBirth: null,
-    WeddingAnniversary: null,
-    Address: "",
-    City: null,
-    State: "",
-    Country: "",
-    Nationality: "",
-    Zipcode: "",
-    Phone: null,
-    Mobile: "",
-    Fax: null,
-    Email: "",
-    PromoCode: "",
-    Comment: "",
-    companyID: "",
-    isPasswordVisible: false,
-  },
-  reservationInfo: {},
-  errors: {},
-};
-
-const bookingInitialState = {
-  roomSelection: {
-    package: "",
-    mealPlan: "",
-  },
-};
-
 // [ Store slice]
 const authSlice = createSlice({
   name: "auth",
-  initialState,
+  initialState: {
+  isLogin: null
+},
   reducers: {
     setIsUserLogin: (state, action) => {
       state.isLogin = action.payload; 
@@ -137,17 +93,32 @@ const authSlice = createSlice({
 
 const bookingQuerySlice = createSlice({
   name: "booking/query",
-  initialState: bookingQueryInitialState,
+  initialState: {
+    hotelID: 10,
+    arrivalDate: moment(new Date()).format("YYYY-MM-DD"),
+    departureDate: moment(new Date()).format("YYYY-MM-DD"),
+    adults: 2,
+    children: 1,
+    quantity: 1,
+    companyCode: "",
+    selectedPackageID: "1",
+    selectedRoomTypeID: "",
+  },
   reducers: {
     setBookingQuery: (state, action) => {
       Object.assign(state, action.payload);
     },
-  }
-})
+  },
+});
 
 const bookingSlice = createSlice({
   name: "booking",
-  initialState: bookingInitialState,
+  initialState: {
+  roomSelection: {
+    package: "",
+    mealPlan: "",
+  },
+},
   reducers: {
     setBookingQuery: (state, action) => {
       Object.assign(state.bookingQuery, action.payload);
@@ -198,7 +169,33 @@ const roomSelection = createSlice({
 
 const billingInfoSlice = createSlice({
   name: "billing",
-  initialState: billingInitialState,
+  initialState: {
+  personalInfo: {
+    Salutation: "Mr",
+    FirstName: "",
+    LastName: "",
+    Gender: "",
+    DateOfBirth: null,
+    SpouseDateOfBirth: null,
+    WeddingAnniversary: null,
+    Address: "",
+    City: null,
+    State: "",
+    Country: "",
+    Nationality: "",
+    Zipcode: "",
+    Phone: null,
+    Mobile: "",
+    Fax: null,
+    Email: "",
+    PromoCode: "",
+    Comment: "",
+    companyID: "",
+    isPasswordVisible: false,
+  },
+  reservationInfo: {},
+  errors: {},
+},
   reducers: {
     setPersonalInfo: (state, action) => {
       state.personalInfo = action.payload;
@@ -263,6 +260,22 @@ const reservationInfoSlice = createSlice({
   },
 });
 
+const hotelDetailsSlice = createSlice({
+  name: "hotelDetails",
+  initialState: {
+    locations: [],
+  },
+  reducers: {},
+  extraReducers: (builder) => {
+    builder.addMatcher(
+      api.endpoints.getHotelDetailsWebBooking.matchFulfilled,
+      (state, action) => {
+        state.locations = action.payload?.data;
+      }
+    )
+  }
+});
+
 // [ Root Store ]
 export const store = configureStore({
   reducer: {
@@ -274,6 +287,7 @@ export const store = configureStore({
     roomSelection: roomSelection.reducer,
     billing: billingInfoSlice.reducer,
     reservationInfo: reservationInfoSlice.reducer,
+    hotelDetails: hotelDetailsSlice.reducer,
     [api.reducerPath]: api.reducer,
   },
   middleware: (getDefaultMiddleware) =>
@@ -285,7 +299,8 @@ export const {
   useGetDataForWebBookingMutation,
   useWebLoginMutation,
   useGetReservationJsonLikeEzeeWebBookingMutation,
-  useAddReservationFromWebMutation
+  useAddReservationFromWebMutation,
+  useGetHotelDetailsWebBookingMutation,
 } = api;
 
 export const { setIsUserLogin } = authSlice.actions
