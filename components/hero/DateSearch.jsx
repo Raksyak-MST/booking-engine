@@ -1,7 +1,7 @@
 
 'use client'
 
-import React, { useState } from "react";
+import React, { useState, useCallback } from "react";
 import DatePicker from "react-multi-date-picker";
 import { useDispatch, useSelector } from 'react-redux'
 import { bookingQueryActions } from "@/store/store"
@@ -19,7 +19,7 @@ const DateSearch = () => {
     return [new Date(), new Date()];
   });
 
-  const handleDatePick = (event) => {
+  const handleDatePick = useCallback((event) => {
     if (!Array.isArray(event)) return;
     const checkInCheckout = event.map((date) => new Date(date));
     const checkIn = checkInCheckout[0],
@@ -31,7 +31,7 @@ const DateSearch = () => {
         departureDate: moment(checkOut).format("YYYY-MM-DD"),
       })
     );
-  }
+  }, [dispatch])
 
   return (
     <div className="text-15 text-light-1 ls-2 lh-16 custom_dual_datepicker">
@@ -51,4 +51,4 @@ const DateSearch = () => {
   );
 };
 
-export default DateSearch;
+export default React.memo(DateSearch);

@@ -1,7 +1,7 @@
 
 'use client'
 
-import { useState } from "react";
+import { useState, memo } from "react";
 import { setBookingQuery } from "@/store/store"
 import { useSelector, useDispatch } from "react-redux"
 
@@ -100,4 +100,4 @@ const SearchBar = () => {
   );
 };
 
-export default SearchBar;
+export default memo(SearchBar);
