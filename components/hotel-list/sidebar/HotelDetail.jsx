@@ -7,10 +7,12 @@ export const HotelDetails = () => {
     <div>
       <h2 className="text-18 fw-500">{userPicketHotel?.name}</h2>
       <address className="text-14">{userPicketHotel?.address}</address>
-      <p className="text-13">{formatPhoneNumber(userPicketHotel?.phoneNumber)}</p>
+      <a className="text-13 d-block text-light-1" href={`tel:+${userPicketHotel?.phoneNumber}`}>
+        {userPicketHotel?.phoneNumber}
+      </a>
       {userPicketHotel?.website ? (
         <a
-          className="text-16 fw-500 -underline"
+          className="text-14 -underline"
           href={userPicketHotel?.website}
           target="_blank"
         >
@@ -20,8 +22,3 @@ export const HotelDetails = () => {
     </div>
   );
 };
-
-function formatPhoneNumber(phoneNumberString){
-    const cleaned = ('' + phoneNumberString).replace(/\D/g, '');
-    return cleaned 
-}
