@@ -4,17 +4,12 @@ import { Swiper, SwiperSlide } from "swiper/react";
 import { Navigation, Pagination } from "swiper";
 import Image from "next/image";
 import { useSelector } from "react-redux"
-import { useState, useEffect, useRef } from "react"
+import { useEffect } from "react"
 import HotelPropertiesDetails from "./HotelPropertiesDetails"
 import RoomAmenities from "./RoomAmenities"
-import { usePathname } from 'next/navigation'
-import {availableRoomsActions, useGetDataForWebBookingMutation  } from "@/store/store"
+import {useGetDataForWebBookingMutation  } from "@/store/store"
 
 export const HotelProperties2 = () => {
-  const [truncateOnSmallScreen, setTruncateOnMobile] = useState(false);
-  const pathname = usePathname();
-  const lastPath = useRef("")
-
   const availableRooms = useSelector((state) => state.availableRooms.roomTypes);
   const bookingQuery = useSelector((state) => state.bookingQuery);
   const [getDataForWebBooking, options] = useGetDataForWebBookingMutation();
@@ -23,21 +18,6 @@ export const HotelProperties2 = () => {
     // need to refetch after coming back from next step, this has to be done manually.
       getDataForWebBooking(bookingQuery);
     }, []);
-
-  useEffect(() => {
-    const updateLines = () => {
-      const width = window.innerWidth;
-      if (width > 1024) {
-        setTruncateOnMobile(false);
-      } else if (width < 768) {
-        setTruncateOnMobile(true);
-      }
-    };
-
-    updateLines();
-    window.addEventListener("resize", updateLines);
-    return () => window.removeEventListener("resize", updateLines);
-  }, []);
 
   if (options?.isError) {
     return (
@@ -136,13 +116,9 @@ export const HotelProperties2 = () => {
                 You can cancel later, so lock in this great price today.
               </div>
             </div>
+          <RoomAmenities data={item?.roomAmenities} truncate={4} />
           </div>
         </div>
-        {truncateOnSmallScreen ? (
-          <RoomAmenities data={item?.roomAmenities} truncate={5} />
-        ) : (
-          <RoomAmenities data={item?.roomAmenities} />
-        )}
       </div>
       <div className="border-light p-3 rounded mt-2">
         <HotelPropertiesDetails hotel={item} />
