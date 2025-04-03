@@ -97,7 +97,7 @@ const HotelPropertyDetails = (props) => {
                   {`(${new Intl.NumberFormat("en-IN", {
                     currency: "INR",
                     style: "currency",
-                    currencyDisplay: "code",
+                    currencyDisplay: "symbol",
                   }).format(pack?.packageRate)})`}
                 </p>
               </div>
@@ -107,7 +107,7 @@ const HotelPropertyDetails = (props) => {
         <div className="col-md-6">
           <p className="text-18 fw-500 text-md-end">
             {new Intl.NumberFormat("en-IN", {
-              currencyDisplay: "code",
+              currencyDisplay: "symbol",
               currency: "INR",
               style: "currency",
             }).format(roomRate)}
