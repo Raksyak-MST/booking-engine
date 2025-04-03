@@ -112,6 +112,7 @@ const HotelPropertyDetails = (props) => {
               style: "currency",
             }).format(roomRate)}
           </p>
+          <p className="text-13 text-light-1 text-md-end">Per Night</p>
           <p className="text-light-1 text-14 text-md-end">{`${hotel?.adults} adults, ${hotel?.children} children and ${hotel?.roomQuantity} room`}</p>
           <div
             className="button -md -dark-1 bg-blue-1 text-white cursor-pointer"
