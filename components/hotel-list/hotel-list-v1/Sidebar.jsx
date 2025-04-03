@@ -1,3 +1,5 @@
+"use client"
+
 import DealsFilter from "../sidebar/DealsFilter";
 import Map from "../sidebar/Map";
 import SearchBox from "../sidebar/SearchBox";
@@ -8,10 +10,18 @@ import GuestRatingFilters from "../sidebar/GuestRatingFilters";
 import StyleFilter from "../sidebar/StyleFilter";
 import NeighborhoddFilter from "../sidebar/NeighborhoddFilter";
 import PirceSlider from "../sidebar/PirceSlider";
+import { useSelector } from "react-redux"
 
 const Sidebar = () => {
+  const userPicketHotel = useSelector((state) => state.hotelDetails.selectedHotel)
   return (
     <>
+    <div>
+      <h2 className="text-18 fw-500">{userPicketHotel?.name}</h2>
+      <address className="text-14">{userPicketHotel?.address}</address>
+      <p className="text-13">{userPicketHotel?.phoneNumber}</p>
+      <a className="text-16 fw-500 -underline" href={userPicketHotel?.website} target="_blank" >See hotel</a>
+    </div>
       <div className="sidebar__item -no-border position-relative">
         <Map />
       </div>

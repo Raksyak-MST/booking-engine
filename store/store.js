@@ -264,8 +264,13 @@ const hotelDetailsSlice = createSlice({
   name: "hotelDetails",
   initialState: {
     locations: [],
+    selectedHotel: null,
   },
-  reducers: {},
+  reducers: {
+    setUserPickedHotelDetail: (state, action) => {
+      state.selectedHotel = action.payload
+    }
+  },
   extraReducers: (builder) => {
     builder.addMatcher(
       api.endpoints.getHotelDetailsWebBooking.matchFulfilled,
@@ -310,3 +315,4 @@ export const bookingActions = bookingSlice.actions
 export const availableRoomsActions = availableRooms.actions
 export const roomSelectionActions = roomSelection.actions
 export const billingAction = billingInfoSlice.actions
+export const hotelDetailsActions = hotelDetailsSlice.actions

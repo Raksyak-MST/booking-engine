@@ -52,6 +52,9 @@ a {
   &:hover {
     text-decoration: none;
   }
+  &.-underline {
+    text-decoration: underline
+  }
 }
 input[type="search"]::-ms-clear {
   display: none;
