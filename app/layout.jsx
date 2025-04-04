@@ -12,6 +12,7 @@ import "aos/dist/aos.css";
 import "../styles/index.scss";
 import { Provider } from "react-redux";
 import { store } from "../store/store";
+import { Toaster } from 'react-hot-toast'
 
 if (typeof window !== "undefined") {
   require("bootstrap/dist/js/bootstrap");
@@ -44,6 +45,7 @@ export default function RootLayout({ children }) {
           <Provider store={store}>
             {children}
             <SrollTop />
+            <Toaster />
           </Provider>
         </main>
       </body>

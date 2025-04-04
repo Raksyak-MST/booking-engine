@@ -2,6 +2,8 @@ import { useState, memo, useMemo } from "react";
 import { useRouter } from "next/navigation";
 import { useDispatch, useSelector} from "react-redux";
 import { roomSelectionActions, bookingQueryActions, useGetReservationJsonLikeEzeeWebBookingMutation } from "@/store/store";
+import toast from "react-hot-toast";
+import { ERROR_MESSAGES } from "@/data/error-messages";
 
 const DEFAULT_ROOM_RATE = 0.0;
 
@@ -64,11 +66,19 @@ const HotelPropertyDetails = (props) => {
         selectedRoomTypeID: hotel?.roomTypeID,
       })
     );
-    await getReservationJsonLikeEzee({
-      ...reservationInfo,
-      selectedRoomTypeID: hotel?.roomTypeID,
+    toast.promise(
+      getReservationJsonLikeEzee({
+        ...reservationInfo,
+        selectedRoomTypeID: hotel?.roomTypeID,
+      }),
+      {
+        loading: "Loading...",
+        success: "Redirecting to booking page",
+        error: ERROR_MESSAGES.API_FAILED_DEFAULT_MESSAGE,
+      }
+    ).then(() => {
+      Router.push("/booking-page");
     });
-    Router.push("/booking-page");
   };
 
   return (
@@ -122,7 +132,7 @@ const HotelPropertyDetails = (props) => {
           </div>
         </div>
       </div>
-      {/* End romm Grid horizontal content */}
+      {/* End room Grid horizontal content */}
     </div>
   );
 };

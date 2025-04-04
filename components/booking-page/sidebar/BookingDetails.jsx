@@ -15,8 +15,10 @@ const BookingDetails = () => {
             height={140}
             src={
               selectedRoom?.roomImages?.length > 0
-                ? selectedRoom?.roomImages[0]
-                : "/not-found"
+                ? selectedRoom?.roomImages[0]?.includes("http")
+                  ? selectedRoom?.roomImages[0]
+                  : "/img/hotels/default-hotel.jpg"
+                : "/img/hotels/default-hotel.jpg"
             }
             alt="image"
             className="size-140 rounded-4 object-cover"

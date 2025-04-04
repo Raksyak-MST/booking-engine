@@ -201,6 +201,7 @@ const billingInfoSlice = createSlice({
     reservationInfo: {},
     reservationCompetitionDetails: {},
     errors: {},
+    hasError: true,
   },
   reducers: {
     setPersonalInfo: (state, action) => {
@@ -215,12 +216,14 @@ const billingInfoSlice = createSlice({
         validationYupSchema.validateSync(state.personalInfo, {
           abortEarly: false,
         });
+        state.hasError = false;
       } catch (err) {
         const validationError = {};
         err.inner.forEach((error) => {
           validationError[error.path] = error.message;
         });
         state.errors = validationError;
+        state.hasError = true;
       }
     },
   },

@@ -1,6 +1,5 @@
 import Link from "next/link";
 
-import { useState } from "react"
 import BookingDetails from "./sidebar/BookingDetails";
 import { billingAction } from "@/store/store"
 import { useDispatch, useSelector } from "react-redux";
@@ -91,7 +90,7 @@ const CustomerInfo = () => {
           </div>
           {/* End col-12 */}
 
-          <div className="col-md-6">
+          <div className="col-md-12">
             <div className="form-input ">
               <input
                 type="text"
@@ -104,36 +103,6 @@ const CustomerInfo = () => {
             </div>
             <div className="text-13 text-red-1">{errors?.Email}</div>
           </div>
-          {/* End col-12 */}
-
-          <div className="col-md-6">
-            <div className="form-input ">
-              <input
-                type="password"
-                name="Password"
-                value={personalInfo?.Password}
-                onChange={handleChange}
-                required
-              />
-              <label className="lh-1 text-16 text-light-1">Password</label>
-            </div>
-            <div className="text-13 text-red-1">{errors?.Password}</div>
-          </div>
-          {/* End col-12 */}
-
-          {/* <div className="col-md-6">
-            <div className="form-input ">
-              <input
-                type="text"
-                name="companyID"
-                value={personalInfo?.companyID}
-                onChange={handleChange}
-                required
-              />
-              <label className="lh-1 text-16 text-light-1">Company code</label>
-            </div>
-            <div className="text-13 text-red-1">{errors?.companyID}</div>
-          </div> */}
           {/* End col-12 */}
 
           <div className="col-12">

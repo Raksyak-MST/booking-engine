@@ -1,12 +1,14 @@
 
 'use client'
 
-import { useSelector, useDispatch } from "react-redux";
+import { useSelector } from "react-redux";
 import DateSearch from "../DateSearch";
 import GuestSearch from "./GuestSearch";
 import { useRouter } from "next/navigation";
 import { useGetDataForWebBookingMutation } from "@/store/store"
 import LocationSearch from "./LocationSearch"
+import toast from 'react-hot-toast'
+import { ERROR_MESSAGES } from "@/data/error-messages"
 
 const MainFilterSearchBox = () => {
   const Router = useRouter()
@@ -15,10 +17,9 @@ const MainFilterSearchBox = () => {
 
   const handleSubmit = async () => {
     try{
-      await getDataForWebBooking(bookingState)
-      Router.push("/room-types");
+      await getDataForWebBooking(bookingState).unwrap()
     }catch(error){
-      alert(error.message)
+      toast.error(ERROR_MESSAGES.API_FAILED_DEFAULT_MESSAGE)
     }
   };
 
