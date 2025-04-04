@@ -1,7 +1,9 @@
 import { useSelector } from "react-redux"
+import moment from "moment"
 
 const OrderSubmittedInfo = () => {
   const personalInfo = useSelector((state) => state.billing.personalInfo) 
+  const reservationInfo = useSelector((state) => state.billing.reservationInfo)
 
   return (
     <>
@@ -11,11 +13,11 @@ const OrderSubmittedInfo = () => {
             <div className="size-80 flex-center rounded-full bg-dark-3">
               <i className="icon-check text-30 text-white" />
             </div>
-            <div className="text-30 lh-1 fw-600 mt-20">
-              {personalInfo?.LastName}, your order was submitted successfully!
+            <div className="text-26 lh-1 fw-600 mt-20">
+              {`${personalInfo?.Salutation} ${personalInfo?.LastName}`}, your reservation was submitted successfully!
             </div>
             <div className="text-15 text-light-1 mt-10">
-              Booking details has been sent to: admin@bookingcore.test
+              Booking details has been sent to: {personalInfo?.Email} 
             </div>
           </div>
           {/* End header */}
@@ -23,7 +25,7 @@ const OrderSubmittedInfo = () => {
           <div className="border-type-1 rounded-8 px-50 py-35 mt-40">
             <div className="row">
               <div className="col-lg-3 col-md-6">
-                <div className="text-15 lh-12">Order Number</div>
+                <div className="text-15 lh-2812">Reservation Number</div>
                 <div className="text-15 lh-12 fw-500 text-blue-1 mt-10">
                   13119
                 </div>
@@ -32,7 +34,7 @@ const OrderSubmittedInfo = () => {
               <div className="col-lg-3 col-md-6">
                 <div className="text-15 lh-12">Date</div>
                 <div className="text-15 lh-12 fw-500 text-blue-1 mt-10">
-                  27/07/2021
+                  {moment(new Date()).format("ddd DD MMM YYYY")}
                 </div>
               </div>
               {/* End .col */}
@@ -45,9 +47,7 @@ const OrderSubmittedInfo = () => {
               {/* End .col */}
               <div className="col-lg-3 col-md-6">
                 <div className="text-15 lh-12">Payment Method</div>
-                <div className="text-15 lh-12 fw-500 text-blue-1 mt-10">
-                  Direct Bank Transfer
-                </div>
+                <div className="text-15 lh-12 fw-500 text-blue-1 mt-10">N/A</div>
               </div>
               {/* End .col */}
             </div>
@@ -60,14 +60,14 @@ const OrderSubmittedInfo = () => {
               <div className="col-12">
                 <div className="d-flex justify-between ">
                   <div className="text-15 lh-16">First name</div>
-                  <div className="text-15 lh-16 fw-500 text-blue-1">System</div>
+                  <div className="text-15 lh-16 fw-500 text-blue-1">{personalInfo?.FirstName}</div>
                 </div>
               </div>
               {/* End .col */}
               <div className="col-12">
                 <div className="d-flex justify-between border-top-light pt-10">
                   <div className="text-15 lh-16">Last name</div>
-                  <div className="text-15 lh-16 fw-500 text-blue-1">Admin</div>
+                  <div className="text-15 lh-16 fw-500 text-blue-1">{personalInfo?.LastName}</div>
                 </div>
               </div>
               {/* End .col */}
@@ -75,7 +75,7 @@ const OrderSubmittedInfo = () => {
                 <div className="d-flex justify-between border-top-light pt-10">
                   <div className="text-15 lh-16">Email</div>
                   <div className="text-15 lh-16 fw-500 text-blue-1">
-                    admin@bookingcore.test
+                    {personalInfo?.Email} 
                   </div>
                 </div>
               </div>
@@ -84,7 +84,7 @@ const OrderSubmittedInfo = () => {
                 <div className="d-flex justify-between border-top-light pt-10">
                   <div className="text-15 lh-16">Phone</div>
                   <div className="text-15 lh-16 fw-500 text-blue-1">
-                    112 666 888
+                    {personalInfo?.Mobile} 
                   </div>
                 </div>
               </div>
@@ -92,14 +92,7 @@ const OrderSubmittedInfo = () => {
               <div className="col-12">
                 <div className="d-flex justify-between border-top-light pt-10">
                   <div className="text-15 lh-16">Address line 1</div>
-                  <div className="text-15 lh-16 fw-500 text-blue-1" />
-                </div>
-              </div>
-              {/* End .col */}
-              <div className="col-12">
-                <div className="d-flex justify-between border-top-light pt-10">
-                  <div className="text-15 lh-16">Address line 2</div>
-                  <div className="text-15 lh-16 fw-500 text-blue-1" />
+                  <div className="text-15 lh-16 fw-500 text-blue-1">{personalInfo?.Address}</div>
                 </div>
               </div>
               {/* End .col */}
@@ -107,7 +100,7 @@ const OrderSubmittedInfo = () => {
                 <div className="d-flex justify-between border-top-light pt-10">
                   <div className="text-15 lh-16">City</div>
                   <div className="text-15 lh-16 fw-500 text-blue-1">
-                    New York
+                    {personalInfo?.City} 
                   </div>
                 </div>
               </div>
@@ -115,14 +108,14 @@ const OrderSubmittedInfo = () => {
               <div className="col-12">
                 <div className="d-flex justify-between border-top-light pt-10">
                   <div className="text-15 lh-16">State/Province/Region</div>
-                  <div className="text-15 lh-16 fw-500 text-blue-1" />
+                  <div className="text-15 lh-16 fw-500 text-blue-1">{personalInfo?.State}</div>
                 </div>
               </div>
               {/* End .col */}
               <div className="col-12">
                 <div className="d-flex justify-between border-top-light pt-10">
                   <div className="text-15 lh-16">ZIP code/Postal code</div>
-                  <div className="text-15 lh-16 fw-500 text-blue-1" />
+                  <div className="text-15 lh-16 fw-500 text-blue-1">{personalInfo?.Zipcode}</div>
                 </div>
               </div>
               {/* End .col */}
@@ -130,7 +123,7 @@ const OrderSubmittedInfo = () => {
                 <div className="d-flex justify-between border-top-light pt-10">
                   <div className="text-15 lh-16">Country</div>
                   <div className="text-15 lh-16 fw-500 text-blue-1">
-                    United States
+                     {personalInfo?.Country}
                   </div>
                 </div>
               </div>
@@ -138,7 +131,7 @@ const OrderSubmittedInfo = () => {
               <div className="col-12">
                 <div className="d-flex justify-between border-top-light pt-10">
                   <div className="text-15 lh-16">Special Requirements</div>
-                  <div className="text-15 lh-16 fw-500 text-blue-1" />
+                  <div className="text-15 lh-16 fw-500 text-blue-1">{personalInfo?.Comment}</div>
                 </div>
               </div>
               {/* End .col */}
