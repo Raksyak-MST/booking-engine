@@ -22,10 +22,9 @@ export const HotelProperties2 = () => {
   if (options?.isError) {
     return (
       <div className="col-12 text-center">
-        <h2>Sorry, No Rooms for this Search</h2>
+        <h2>Look like our service is down</h2>
         <p>
-          We cannnot find any rooms for your search. Please modify your search
-          criteria and try again.
+          We cannnot find any rooms for your search. Please try after some time.
         </p>
       </div>
     );
@@ -54,9 +53,9 @@ export const HotelProperties2 = () => {
           <div className="col-md-auto">
             <div className="cardImage ratio ratio-1:1 w-250 md:w-1/1 rounded-4 bg-light-2">
               <div className="cardImage__content">
-                <div className="cardImage-slider rounded-4  custom_inside-slider">
+                <div className="cardImage-slider rounded-4  custom_inside-slider h-full">
                   <Swiper
-                    className="mySwiper"
+                    className="mySwiper h-full"
                     modules={[Pagination, Navigation]}
                     pagination={{
                       clickable: true,
@@ -64,12 +63,17 @@ export const HotelProperties2 = () => {
                     navigation={true}
                   >
                     {item?.roomImages?.map((slide, i) => (
-                      <SwiperSlide key={i}>
+                      <SwiperSlide key={i} className="h-full">
                         <Image
                           width={250}
                           height={250}
-                          className="rounded-4 col-12 js-lazy"
-                          src={slide}
+                          className="rounded-4 col-12 js-lazy h-full object-fit-cover"
+                          style={{objectPosition: "left center"}}
+                          src={
+                            slide.includes("http")
+                              ? slide
+                              : "/img/hotels/default-hotel.jpg"
+                          }
                           alt="image"
                         />
                       </SwiperSlide>
@@ -78,12 +82,6 @@ export const HotelProperties2 = () => {
                 </div>
               </div>
               {/* End image */}
-
-              <div className="cardImage__wishlist">
-                <button className="button -blue-1 bg-white size-30 rounded-full shadow-2">
-                  <i className="icon-heart text-12"></i>
-                </button>
-              </div>
             </div>
           </div>
           {/* End .col */}
@@ -116,7 +114,7 @@ export const HotelProperties2 = () => {
                 You can cancel later, so lock in this great price today.
               </div>
             </div>
-          <RoomAmenities data={item?.roomAmenities} truncate={4} />
+            <RoomAmenities data={item?.roomAmenities} truncate={4} />
           </div>
         </div>
       </div>

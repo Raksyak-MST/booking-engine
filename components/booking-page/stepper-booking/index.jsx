@@ -75,9 +75,10 @@ const Index = () => {
       }
     }
 
-    if (currentStep === 1) {
-      await addReservationFromWebMutation(reservationsInfo);
-    }
+    // FIXME: This is a temporary to test the creation of the reservation 
+    // if (currentStep === 1) {
+    //   await addReservationFromWebMutation(reservationsInfo);
+    // }
   };
 
   const previousStep = () => {
