@@ -1,4 +1,8 @@
+import { useSelector } from "react-redux"
+
 const OrderSubmittedInfo = () => {
+  const personalInfo = useSelector((state) => state.billing.personalInfo) 
+
   return (
     <>
       <div className="col-xl-8 col-lg-8">
@@ -8,7 +12,7 @@ const OrderSubmittedInfo = () => {
               <i className="icon-check text-30 text-white" />
             </div>
             <div className="text-30 lh-1 fw-600 mt-20">
-              System, your order was submitted successfully!
+              {personalInfo?.LastName}, your order was submitted successfully!
             </div>
             <div className="text-15 text-light-1 mt-10">
               Booking details has been sent to: admin@bookingcore.test

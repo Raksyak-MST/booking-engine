@@ -170,32 +170,38 @@ const roomSelection = createSlice({
 const billingInfoSlice = createSlice({
   name: "billing",
   initialState: {
-  personalInfo: {
-    Salutation: "Mr",
-    FirstName: "",
-    LastName: "",
-    Gender: "",
-    DateOfBirth: null,
-    SpouseDateOfBirth: null,
-    WeddingAnniversary: null,
-    Address: "",
-    City: null,
-    State: "",
-    Country: "",
-    Nationality: "",
-    Zipcode: "",
-    Phone: null,
-    Mobile: "",
-    Fax: null,
-    Email: "",
-    PromoCode: "",
-    Comment: "",
-    companyID: "",
-    isPasswordVisible: false,
+    personalInfo: {
+      Salutation: "Mr",
+      FirstName: "",
+      LastName: "",
+      Gender: "",
+      DateOfBirth: null,
+      SpouseDateOfBirth: null,
+      WeddingAnniversary: null,
+      Address: "",
+      City: null,
+      State: "",
+      Country: "",
+      Nationality: "",
+      Zipcode: "",
+      Phone: null,
+      Mobile: "",
+      Fax: null,
+      Email: "",
+      PromoCode: "",
+      Comment: "",
+      companyID: "",
+      isPasswordVisible: false,
+      CCLink: "",
+      CCNo: "",
+      CCType: "",
+      CCExpiryDate: "",
+      CardHoldersName: "",
+    },
+    reservationInfo: {},
+    reservationCompetitionDetails: {},
+    errors: {},
   },
-  reservationInfo: {},
-  errors: {},
-},
   reducers: {
     setPersonalInfo: (state, action) => {
       state.personalInfo = action.payload;
@@ -204,23 +210,32 @@ const billingInfoSlice = createSlice({
       return !state.isPasswordVisible;
     },
     validateForm: (state) => {
-      try{
+      try {
         // abortEarly: false will return all errors at once instead of one by one which is default set with abortEarly: true
-        validationYupSchema.validateSync(state.personalInfo, { abortEarly: false });
-      }catch(err){
-        const validationError = {}
+        validationYupSchema.validateSync(state.personalInfo, {
+          abortEarly: false,
+        });
+      } catch (err) {
+        const validationError = {};
         err.inner.forEach((error) => {
-          validationError[error.path] = error.message
-        })
-        state.errors = validationError
+          validationError[error.path] = error.message;
+        });
+        state.errors = validationError;
       }
-    }
+    },
   },
   extraReducers: (builder) => {
     builder.addMatcher(
       api.endpoints.getReservationJsonLikeEzeeWebBooking.matchFulfilled,
       (state, action) => {
         state.reservationInfo = action.payload?.data;
+      }
+    );
+    builder.addMatcher(
+      api.endpoints.addReservationFromWeb.matchFulfilled,
+      (state, action) => {
+        console.log(action);
+        state.reservationCompetitionDetails = action.payload;
       }
     );
   },

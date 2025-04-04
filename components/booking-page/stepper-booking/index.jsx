@@ -57,20 +57,26 @@ const Index = () => {
     return <>{content}</>;
   };
 
-  const nextStep = () => {
-    if (currentStep < steps.length - 1 && Object.keys(billingInfo?.errors).length === 0) {
+  const nextStep = async () => {
+    dispatch(billingAction.validateForm());
+
+    if (
+      currentStep < steps.length - 1 &&
+      Object.keys(billingInfo?.errors).length === 0
+    ) {
       setCurrentStep(currentStep + 1);
     }
 
-    if(currentStep === 0){
-      dispatch(billingAction.validateForm());
-      if (Object.keys(billingInfo?.errors).length === 0) {
-        getReservationJsonLikeEzeeWebbooking(reservationInfo).then((res) => {
-          addReservationFromWebMutation(reservationsInfo).catch((error) =>
-            alert(error.message)
-          );
-        }).catch(error => alert(error.message));
+    if (Object.keys(billingInfo?.errors).length === 0) {
+      try {
+        await getReservationJsonLikeEzeeWebbooking(reservationInfo);
+      } catch (error) {
+        console.log(error);
       }
+    }
+
+    if (currentStep === 1) {
+      await addReservationFromWebMutation(reservationsInfo);
     }
   };
 

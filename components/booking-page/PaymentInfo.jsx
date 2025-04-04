@@ -7,13 +7,25 @@ import PricingSummary from "./sidebar/PricingSummary";
 import PaymentSchedule from "./sidebar/PaymentSchedule";
 import PromoCode from "./sidebar/PromoCode";
 import RatingInfo from "./RatingInfo";
+import { billingAction } from "@/store/store"
+import { useSelector, useDispatch } from 'react-redux'
 
 const PaymentInfo = () => {
   const [itemsTabs, setItemsTabs] = useState(1);
+  const dispatch = useDispatch();
+  const personalInfo = useSelector((state) => state.billing.personalInfo);
   const cardTabs = [
     { id: 1, name: "Credit/Debit Card" },
     { id: 2, name: "Digital Payment" },
   ];
+
+  const handleChange = (e) => {
+    const fieldName = e.target.name;
+    const fieldValue = e.target.value;
+    dispatch(billingAction.setPersonalInfo({ ...personalInfo, [fieldName]: fieldValue}));
+  }
+
+  console.log(personalInfo)
 
   return (
     <>
@@ -47,9 +59,15 @@ const PaymentInfo = () => {
               <div className="row x-gap-20 y-gap-20 pt-20">
                 <div className="col-12">
                   <div className="form-input ">
-                    <input type="text" required />
+                    <input
+                      type="text"
+                      name="CCType"
+                      required
+                      value={personalInfo?.CCType}
+                      onChange={handleChange}
+                    />
                     <label className="lh-1 text-16 text-light-1">
-                      Select payment method *
+                      Card Type *
                     </label>
                   </div>
                 </div>
@@ -57,14 +75,26 @@ const PaymentInfo = () => {
 
                 <div className="col-md-6">
                   <div className="form-input ">
-                    <input type="text" required />
+                    <input
+                      type="text"
+                      name="CardHoldersName"
+                      required
+                      value={personalInfo?.CardHoldersName}
+                      onChange={handleChange}
+                    />
                     <label className="lh-1 text-16 text-light-1">
                       Card holder name *
                     </label>
                   </div>
 
                   <div className="form-input mt-20">
-                    <input type="text" required />
+                    <input
+                      type="text"
+                      name="CCNo"
+                      required
+                      value={personalInfo?.CCNo}
+                      onChange={handleChange}
+                    />
                     <label className="lh-1 text-16 text-light-1">
                       Credit/debit card number *
                     </label>
@@ -73,7 +103,13 @@ const PaymentInfo = () => {
                   <div className="row x-gap-20 y-gap-20 pt-20">
                     <div className="col-md-6">
                       <div className="form-input ">
-                        <input type="text" required />
+                        <input
+                          type="text"
+                          name="CCExpiryDate"
+                          required
+                          value={personalInfo?.CCExpiryDate}
+                          onChange={handleChange}
+                        />
                         <label className="lh-1 text-16 text-light-1">
                           Expiry date *
                         </label>
@@ -82,7 +118,13 @@ const PaymentInfo = () => {
 
                     <div className="col-md-6">
                       <div className="form-input ">
-                        <input type="text" required />
+                        <input
+                          type="text"
+                          name="CVC"
+                          value={personalInfo?.CVC}
+                          required
+                          onChange={handleChange}
+                        />
                         <label className="lh-1 text-16 text-light-1">
                           CVC/CVV *
                         </label>
@@ -137,7 +179,7 @@ const PaymentInfo = () => {
         <div className="row y-gap-20 items-center justify-between">
           <div className="col-auto">
             <div className="form-checkbox d-flex items-center">
-              <input type="checkbox" name="name" />
+              <input type="checkbox" name="name" onChange={handleChange} />
               <div className="form-checkbox__mark">
                 <div className="form-checkbox__icon icon-check" />
               </div>
