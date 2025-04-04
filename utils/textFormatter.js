@@ -16,6 +16,6 @@ export const dateFormatter = function(date, defaultFormat="YYYY-MM-DD") {
 }
 
 export const priceFormatter = function(value, defaultCurrency="INR") {
-  const formatter = new Intl.NumberFormat("en", { currency: defaultCurrency, style: "currency", currencyDisplay: "code"})
+  const formatter = new Intl.NumberFormat("en", { currency: defaultCurrency, style: "currency", currencyDisplay: "symbol"})
   return formatter.format(value) 
 }

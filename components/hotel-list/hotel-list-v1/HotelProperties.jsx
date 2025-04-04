@@ -7,7 +7,7 @@ import { useSelector } from "react-redux"
 import { useEffect } from "react"
 import HotelPropertiesDetails from "./HotelPropertiesDetails"
 import RoomAmenities from "./RoomAmenities"
-import {useGetDataForWebBookingMutation  } from "@/store/store"
+import {useGetDataForWebBookingMutation } from "@/store/store"
 
 export const HotelProperties2 = () => {
   const availableRooms = useSelector((state) => state.availableRooms.roomTypes);

@@ -4,6 +4,8 @@ import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react"
 import moment from 'moment'
 import * as yup from 'yup'
 
+export const LOCALSTORAGE_KEY_ROOM_SELECTION = "prevSelectedRoom"
+
 const validationYupSchema = yup.object().shape({
   Salutation: yup.string().required("Salutation is required"),
   FirstName: yup.string().required("First Name is required"),
@@ -159,13 +161,15 @@ const availableRooms = createSlice({
 
 const roomSelection = createSlice({
   name: "roomSelection",
-  initialState: {},
+  initialState: localStorage.getItem(LOCALSTORAGE_KEY_ROOM_SELECTION)
+    ? JSON.parse(localStorage.getItem(LOCALSTORAGE_KEY_ROOM_SELECTION))
+    : {},
   reducers: {
     setRoomSelection: (state, action) => {
       Object.assign(state, action.payload);
     },
   },
-})
+});
 
 const billingInfoSlice = createSlice({
   name: "billing",
@@ -254,27 +258,26 @@ const reservationInfoSlice = createSlice({
     children: 1,
     quantity: 1,
     selectedPackageID: "1",
-    selectedRoomTypeID: "",
+    selectedRoomTypeID: localStorage.getItem("roomTypeId")
+      ? JSON.parse(localStorage.getItem("roomTypeId"))
+      : "",
     guestDetails: {
       PromoCode: "",
     },
   },
   reducers: {},
   extraReducers: (builder) => {
-    builder.addCase(
-      bookingQuerySlice.actions.setBookingQuery,
-      (state, action) => {
-        console.log(action)
+    builder
+      .addCase(bookingQuerySlice.actions.setBookingQuery, (state, action) => {
+        console.log(action);
         Object.assign(state, action.payload);
-      }
-    ).addCase(
-      billingInfoSlice.actions.setPersonalInfo,
-      (state, action) => {
-        Object.assign(state.guestDetails, action.payload)
-      }
-    ).addCase(roomSelection.actions.setRoomSelection, (state, action) => {
-      Object.assign(state, action.payload)
-    });
+      })
+      .addCase(billingInfoSlice.actions.setPersonalInfo, (state, action) => {
+        Object.assign(state.guestDetails, action.payload);
+      })
+      .addCase(roomSelection.actions.setRoomSelection, (state, action) => {
+        Object.assign(state, action.payload);
+      });
   },
 });
 
@@ -325,6 +328,10 @@ export const {
   useAddReservationFromWebMutation,
   useGetHotelDetailsWebBookingMutation,
 } = api;
+
+store.subscribe(() => {
+  const state = store.getState();
+});
 
 export const { setIsUserLogin } = authSlice.actions
 export const { setBookingQuery, updateGuest } = bookingSlice.actions

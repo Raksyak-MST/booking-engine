@@ -22,7 +22,7 @@ const PricingSummary = () => {
           <div className="text-15">
             {new Intl.NumberFormat("en-IN", {
               currency: "INR",
-              currencyDisplay: "code",
+              currencyDisplay: "symbol",
               style: "currency",
             }).format(fulltotal)}
           </div>
@@ -39,7 +39,7 @@ const PricingSummary = () => {
           <div className="text-15">
             {new Intl.NumberFormat("en-IN", {
               currency: "INR",
-              currencyDisplay: "code",
+              currencyDisplay: "symbol",
               style: "currency",
             }).format(TotalTax)}
           </div>
@@ -66,7 +66,7 @@ const PricingSummary = () => {
             <div className="text-18 lh-13 fw-500">
               {new Intl.NumberFormat("en-IN", {
                 currency: "INR",
-                currencyDisplay: "code",
+                currencyDisplay: "symbol",
                 style: "currency",
               }).format(TotalAmountAfterTax)}
             </div>

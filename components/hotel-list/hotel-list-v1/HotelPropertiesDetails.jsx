@@ -1,7 +1,12 @@
 import { useState, memo, useMemo } from "react";
 import { useRouter } from "next/navigation";
 import { useDispatch, useSelector} from "react-redux";
-import { roomSelectionActions, bookingQueryActions, useGetReservationJsonLikeEzeeWebBookingMutation } from "@/store/store";
+import {
+  roomSelectionActions,
+  bookingQueryActions,
+  useGetReservationJsonLikeEzeeWebBookingMutation,
+  LOCALSTORAGE_KEY_ROOM_SELECTION,
+} from "@/store/store";
 import toast from "react-hot-toast";
 import { ERROR_MESSAGES } from "@/data/error-messages";
 
@@ -50,6 +55,7 @@ const HotelPropertyDetails = (props) => {
   const handleMealPlanSelection = (e) => {
     const mealPlan = e.currentTarget.getAttribute("name");
     const packageId = e.currentTarget.getAttribute("id") ?? "";
+
     setSelectedMealPlan({ [mealPlan]: true, type: mealPlan });
     dispatch(
       bookingQueryActions.setBookingQuery({
@@ -60,6 +66,12 @@ const HotelPropertyDetails = (props) => {
   };
 
   const handleRoomSelection = async () => {
+    localStorage.setItem(
+      LOCALSTORAGE_KEY_ROOM_SELECTION,
+      JSON.stringify(hotel)
+    );
+    localStorage.setItem("roomTypeId", hotel?.roomTypeID);
+
     dispatch(roomSelectionActions.setRoomSelection(hotel));
     dispatch(
       roomSelectionActions.setRoomSelection({

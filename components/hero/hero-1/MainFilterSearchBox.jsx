@@ -17,7 +17,8 @@ const MainFilterSearchBox = () => {
 
   const handleSubmit = async () => {
     try{
-      await getDataForWebBooking(bookingState).unwrap()
+      await getDataForWebBooking(bookingState)
+      Router.push("/room-types")
     }catch(error){
       toast.error(ERROR_MESSAGES.API_FAILED_DEFAULT_MESSAGE)
     }
