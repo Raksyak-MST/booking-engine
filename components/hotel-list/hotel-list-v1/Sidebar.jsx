@@ -15,7 +15,7 @@ import { HotelDetails } from "../sidebar/HotelDetail"
 const Sidebar = () => {
   return (
     <>
-      <div className="sidebar__item -no-border position-relative border p-4 rounded">
+      <div className="sidebar__item -no-border position-relative">
         <HotelDetails />
       </div>
     </>

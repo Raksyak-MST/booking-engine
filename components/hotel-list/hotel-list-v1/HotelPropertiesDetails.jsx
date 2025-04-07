@@ -11,10 +11,8 @@ const HotelPropertyDetails = (props) => {
   const { hotel } = props;
   const [selectedMealPlan, setSelectedMealPlan] = useState({ EP: true, type: "EP" }); // default selected package name
   const [roomRate, setRoomRate] = useState(DEFAULT_ROOM_RATE);
-  const [roomRateInfo, setRoomRateInfo] = useState({});
   const [ getReservationJsonLikeEzee, options ] = useGetReservationJsonLikeEzeeWebBookingMutation();
   const reservationInfo = useSelector(state => state.reservationInfo)
-  const bookingQuery = useSelector((state) => state.bookingQuery);
 
   const dispatch = useDispatch();
   const Router = useRouter();
@@ -23,7 +21,7 @@ const HotelPropertyDetails = (props) => {
     packageCode: roomPackage.packageCode,
     packageId: roomPackage.packageID,
     packageRate: roomPackage.rooms[0]?.packageRate,
-    TotalAmountBeforeTax: roomPackage.rooms[0]?.TotalAmountBeforeTax,
+    fulltotal: roomPackage.rooms[0]?.fulltotal,
   }));
 
   useMemo(() => {
@@ -33,18 +31,9 @@ const HotelPropertyDetails = (props) => {
     const EPPackage = roomPackages
       ?.filter((pkg) => pkg.packageCode === "EP")
       .pop();
-    const roomAndPackageRate =
-      parseInt(pkg?.TotalAmountBeforeTax) + parseInt(pkg?.packageRate);
-    const DefaultESPackageRate =
-      parseInt(EPPackage?.TotalAmountBeforeTax) +
-      parseInt(EPPackage?.packageRate);
-
+    const roomAndPackageRate = parseInt(pkg?.fulltotal);
+    const DefaultESPackageRate = parseInt(EPPackage?.fulltotal);
     setRoomRate(roomAndPackageRate ?? DefaultESPackageRate);
-
-    setRoomRateInfo({
-      packageRate: parseInt(pkg?.packageRate) ?? 0,
-      totalAmountBeforeTax: parseInt(pkg?.TotalAmountBeforeTax) ?? 0,
-    });
   }, [selectedMealPlan]);
 
   const handleMealPlanSelection = (e) => {
