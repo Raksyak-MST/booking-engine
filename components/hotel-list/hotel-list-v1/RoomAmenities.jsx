@@ -12,7 +12,6 @@ const RoomAmenities = (props) => {
   if (isTruncate)
     return (
       <div className="row x-gap-10 y-gap-10 pt-20 items-center">
-        <h2 className="text-14 text-light-1 fw-500">Amenities</h2>
         {data
           ?.map((amenities, index) => (
             <div key={index} className="col-auto">

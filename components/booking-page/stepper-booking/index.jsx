@@ -12,7 +12,6 @@ import toast from "react-hot-toast";
 import { startCheckout } from "@/features/payment/CashFree.mjs"
 import { ERROR_MESSAGES } from "@/data/error-messages";
 
-import { Formik, useFormik } from "formik"
 
 const Index = () => {
   const [currentStep, setCurrentStep] = useState(0);

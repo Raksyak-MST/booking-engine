@@ -25,6 +25,8 @@ const PaymentInfo = () => {
     dispatch(billingAction.setPersonalInfo({ ...personalInfo, [fieldName]: fieldValue}));
   }
 
+  console.log(personalInfo)
+
   return (
     <>
       <div className="col-xl-7 col-lg-8">

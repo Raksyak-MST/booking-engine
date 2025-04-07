@@ -68,7 +68,7 @@ export const HotelProperties2 = () => {
                           width={250}
                           height={250}
                           className="rounded-4 col-12 js-lazy h-full object-fit-cover"
-                          style={{ objectPosition: "left center" }}
+                          style={{objectPosition: "left center"}}
                           src={
                             slide.includes("http")
                               ? slide
@@ -96,18 +96,15 @@ export const HotelProperties2 = () => {
                 <i className="icon-star text-10 text-yellow-2"></i>
               </div>
             </h3>
-            <div>
-              <h2 className="text-14 text-light-1 mb-2 fw-500">Room details</h2>
-              <div className="mb-2 d-flex flex-wrap gap-1">
-                {item?.roomDetails?.map((lodging, index) => (
-                  <div
-                    key={index}
-                    className="border-light rounded-100 px-2 text-12 bg-light-2"
-                  >
-                    {lodging}
-                  </div>
-                ))}
-              </div>
+            <div className="mb-2 d-flex flex-wrap gap-1">
+              {item?.roomDetails?.map((lodging, index) => (
+                <div
+                  key={index}
+                  className="border-light rounded-100 px-2 text-12 bg-light-2"
+                >
+                  {lodging}
+                </div>
+              ))}
             </div>
             <p className="text-14 lh-sm">{item?.description} </p>
 
