@@ -15,6 +15,8 @@ const SearchBar = () => {
   }, [])
 
   const hotelLocations = useSelector(state => state.hotelDetails?.locations)
+  const selectedHotel = useSelector(state => state.hotelDetails?.selectedHotel)
+
   const dispatch = useDispatch()
 
   const handleOptionClick = (item) => {
@@ -39,7 +41,7 @@ const SearchBar = () => {
               type="search"
               placeholder="Where are you going?"
               className="js-search js-dd-focus"
-              value={searchValue}
+              value={selectedHotel?.name ?? ""}
               onChange={(e) => setSearchValue(e.target.value)}
             />
           </div>
@@ -57,7 +59,7 @@ const SearchBar = () => {
                 {hotelLocations.map((item) => (
                   <li
                     className={`-link d-block col-12 text-left rounded-4 px-20 py-15 js-search-option mb-1 ${
-                      selectedItem && selectedItem.id === item.id
+                      selectedHotel && selectedHotel?.id === item.id
                         ? "active"
                         : ""
                     }`}

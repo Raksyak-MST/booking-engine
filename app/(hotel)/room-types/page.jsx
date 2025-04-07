@@ -7,8 +7,8 @@ import {HotelProperties2} from "@/components/hotel-list/hotel-list-v1/HotelPrope
 import Sidebar from "@/components/hotel-list/hotel-list-v1/Sidebar";
 
 export const metadata = {
-  title: "Room Types || Oterra",
-  description: "Oterra",
+  title: "Room Types",
+  description: "",
 };
 
 const index = () => {
@@ -78,7 +78,7 @@ const index = () => {
             {/* End col */}
 
             <div className="col-xl-9 ">
-              <TopHeaderFilter />
+              {/* <TopHeaderFilter /> */}
               <div className="mt-30"></div>
               {/* End mt--30 */}
               <div className="row y-gap-30">
