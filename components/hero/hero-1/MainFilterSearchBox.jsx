@@ -9,17 +9,43 @@ import { useGetDataForWebBookingMutation } from "@/store/store"
 import LocationSearch from "./LocationSearch"
 import toast from 'react-hot-toast'
 import { ERROR_MESSAGES } from "@/data/error-messages"
+import moment from "moment";
 
 const MainFilterSearchBox = () => {
   const Router = useRouter()
-  const bookingState = useSelector(state => state.bookingQuery);
+  const bookingQuery = useSelector(state => state.bookingQuery);
   const [getDataForWebBooking, options] = useGetDataForWebBookingMutation()
 
   const handleSubmit = async () => {
+
+    if(!bookingQuery.hotelID){
+      toast.error("Please select a hotel")
+      return
+    }
+
+    if (
+      !bookingQuery.arrivalDate ||
+      !bookingQuery.departureDate
+    ) {
+      toast.error("Please select check-in check-out date");
+      return;
+    }
+
     try{
-      await getDataForWebBooking(bookingState).unwrap()
+      const payload = {
+        hotelID: bookingQuery.hotelID,
+        arrivalDate: moment(bookingQuery.arrivalDate).format("YYYY-MM-DD"),
+        departureDate: moment(bookingQuery.departureDate).format("YYYY-MM-DD"),
+        adults: bookingQuery.adults,
+        children: bookingQuery.children,
+        quantity: bookingQuery.quantity,
+        selectedPackageID: bookingQuery.selectedPackageID,
+        selectedRoomTypeID: bookingQuery.selectedRoomTypeID,
+      }
+      await getDataForWebBooking(payload)
       Router.push("/room-types")
     }catch(error){
+      console.error(error)
       toast.error(ERROR_MESSAGES.API_FAILED_DEFAULT_MESSAGE)
     }
   };

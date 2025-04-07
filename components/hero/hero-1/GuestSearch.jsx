@@ -6,17 +6,19 @@ import { useDispatch, useSelector } from "react-redux";
 import { bookingQueryActions } from "@/store/store"
 
 const counters = [
-  { name: "adults", defaultValue: 2 },
-  { name: "children", defaultValue: 1 },
+  { name: "adults", defaultValue: 1 },
+  { name: "children", defaultValue: 0 },
   { name: "quantity", defaultValue: 1 },
 ];
 
 const Counter = ({ name, defaultValue, onCounterChange }) => {
   const [count, setCount] = useState(defaultValue);
+
   const incrementCount = () => {
     setCount(count + 1);
     onCounterChange(name, count + 1);
   };
+
   const decrementCount = () => {
     if (count > 0) {
       setCount(count - 1);

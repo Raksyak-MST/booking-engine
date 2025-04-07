@@ -21,14 +21,11 @@ const DateSearch = () => {
 
   const handleDatePick = useCallback((event) => {
     if (!Array.isArray(event)) return;
-    const checkInCheckout = event.map((date) => new Date(date));
-    const checkIn = checkInCheckout[0],
-      checkOut = checkInCheckout[1];
-      setDates([checkIn, checkOut])
+    setDates(event)
     dispatch(
       bookingQueryActions.setBookingQuery({
-        arrivalDate: moment(checkIn).format("YYYY-MM-DD"),
-        departureDate: moment(checkOut).format("YYYY-MM-DD"),
+        arrivalDate: event[0],
+        departureDate: event[1],
       })
     );
   }, [dispatch])

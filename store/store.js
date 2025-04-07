@@ -94,7 +94,7 @@ const authSlice = createSlice({
 const bookingQuerySlice = createSlice({
   name: "booking/query",
   initialState: {
-    hotelID: 10,
+    hotelID: null,
     arrivalDate: moment(new Date()).format("YYYY-MM-DD"),
     departureDate: moment(new Date()).format("YYYY-MM-DD"),
     adults: 1,
@@ -247,11 +247,11 @@ const billingInfoSlice = createSlice({
 const reservationInfoSlice = createSlice({
   name: "reservationInfo",
   initialState: {
-    hotelID: 10,
+    hotelID: null,
     arrivalDate: moment(new Date()).format("YYYY-MM-DD"),
     departureDate: moment(new Date()).format("YYYY-MM-DD"),
-    adults: 2,
-    children: 1,
+    adults: 1,
+    children: 0,
     quantity: 1,
     selectedPackageID: "1",
     selectedRoomTypeID: "",
