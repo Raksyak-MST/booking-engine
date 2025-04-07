@@ -49,6 +49,11 @@ const HotelPropertyDetails = (props) => {
   };
 
   const handleRoomSelection = async () => {
+
+    // FIXME: clean after payment successful 
+    localStorage.setItem("userRoomTypeID", hotel?.roomTypeID);
+    localStorage.setItem("userPickedHotel", JSON.stringify(hotel))
+
     dispatch(roomSelectionActions.setRoomSelection(hotel));
     dispatch(
       roomSelectionActions.setRoomSelection({

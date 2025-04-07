@@ -9,6 +9,7 @@ import { useAddReservationFromWebMutation, useGetReservationJsonLikeEzeeWebBooki
 import { useDispatch, useSelector } from "react-redux"
 import { billingAction } from "@/store/store"
 import toast from "react-hot-toast";
+import { startCheckout } from "@/features/payment/CashFree.mjs"
 import { ERROR_MESSAGES } from "@/data/error-messages";
 
 import { Formik, useFormik } from "formik"
@@ -68,27 +69,29 @@ const Index = () => {
       return;
     }
 
-    if (billingInfo?.hasError === false) {
-      toast
-        .promise(getReservationJsonLikeEzeeWebbooking(reservationInfo), {
-          loading: "Loading...",
-          success: "Your information is saved successfully.",
-          error: ERROR_MESSAGES.API_FAILED_RESERVATIONS_LIKE_WEB_BOOKING,
-        })
-        .then(() => {
-          if (
-            currentStep < steps.length - 1 &&
-            billingInfo?.hasError == false
-          ) {
-            setCurrentStep(currentStep + 1);
-          }
-        });
-    }
+    dispatch(startCheckout())
+
+    // if (billingInfo?.hasError === false) {
+    //   toast
+    //     .promise(getReservationJsonLikeEzeeWebbooking(reservationInfo), {
+    //       loading: "Loading...",
+    //       success: "Your information is saved successfully.",
+    //       error: ERROR_MESSAGES.API_FAILED_RESERVATIONS_LIKE_WEB_BOOKING,
+    //     })
+    //     .then(() => {
+    //       if (
+    //         currentStep < steps.length - 1 &&
+    //         billingInfo?.hasError == false
+    //       ) {
+    //         setCurrentStep(currentStep + 1);
+    //       }
+    //     });
+    // }
 
     // FIXME: This is a temporary to test the creation of the reservation
-    if (currentStep === 1) {
-      await addReservationFromWebMutation(reservationsInfo);
-    }
+    // if (currentStep === 1) {
+    //   await addReservationFromWebMutation(reservationsInfo);
+    // }
   };
 
   const previousStep = () => {

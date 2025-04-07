@@ -159,13 +159,15 @@ const availableRooms = createSlice({
 
 const roomSelection = createSlice({
   name: "roomSelection",
-  initialState: {},
+  initialState: localStorage.getItem("userPickedHotel")
+    ? JSON.parse(localStorage.getItem("userPickedHotel"))
+    : {},
   reducers: {
     setRoomSelection: (state, action) => {
       Object.assign(state, action.payload);
     },
   },
-})
+});
 
 const billingInfoSlice = createSlice({
   name: "billing",
