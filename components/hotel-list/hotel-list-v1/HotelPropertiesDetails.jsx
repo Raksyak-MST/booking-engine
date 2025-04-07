@@ -51,8 +51,8 @@ const HotelPropertyDetails = (props) => {
   const handleRoomSelection = async () => {
 
     // FIXME: clean after payment successful 
-    localStorage.setItem("userRoomTypeID", hotel?.roomTypeID);
-    localStorage.setItem("userPickedHotel", JSON.stringify(hotel))
+    // localStorage.setItem("userRoomTypeID", hotel?.roomTypeID);
+    // localStorage.setItem("userPickedHotel", JSON.stringify(hotel))
 
     dispatch(roomSelectionActions.setRoomSelection(hotel));
     dispatch(
@@ -60,19 +60,21 @@ const HotelPropertyDetails = (props) => {
         selectedRoomTypeID: hotel?.roomTypeID,
       })
     );
-    toast.promise(
-      getReservationJsonLikeEzee({
-        ...reservationInfo,
-        selectedRoomTypeID: hotel?.roomTypeID,
-      }),
-      {
-        loading: "Loading...",
-        success: "Redirecting to booking page",
-        error: ERROR_MESSAGES.API_FAILED_DEFAULT_MESSAGE,
-      }
-    ).then(() => {
-      Router.push("/booking-page");
-    });
+    toast
+      .promise(
+        getReservationJsonLikeEzee({
+          ...reservationInfo,
+          selectedRoomTypeID: hotel?.roomTypeID,
+        }).unwrap(),
+        {
+          loading: "Loading...",
+          success: "Redirecting to booking page",
+          error: ERROR_MESSAGES.API_FAILED_DEFAULT_MESSAGE,
+        }
+      )
+      .then(() => {
+        Router.push("/booking-page");
+      });
   };
 
   return (

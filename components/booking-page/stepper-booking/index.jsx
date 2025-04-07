@@ -38,11 +38,32 @@ const Index = () => {
     },
     onSubmit: (values) => {
       console.log(values);
+      dispatch(startCheckout())
+
+      // NOTE: .unwrap() is mandatory to catch errors
+      toast
+        .promise(
+          getReservationJsonLikeEzeeWebbooking(reservationInfo).unwrap(),
+          {
+            loading: "Loading...",
+            success: "Your information is saved successfully.",
+            error: ERROR_MESSAGES.API_FAILED_RESERVATIONS_LIKE_WEB_BOOKING,
+          }
+        )
+        .then(() => {
+          if (
+            currentStep < steps.length - 1 &&
+            billingInfo?.hasError == false
+          ) {
+            setCurrentStep(currentStep + 1);
+          }
+        });
+
     },
     validationSchema: yup.object().shape({
       // Salutation: yup.string().required("Salutation is required"),
-      FirstName: yup.string().required("First Name is required"),
-      LastName: yup.string().required("Last Name is required"),
+      // FirstName: yup.string().required("First Name is required"),
+      // LastName: yup.string().required("Last Name is required"),
       // Gender: yup.string().required("Gender is required"),
       // DateOfBirth: yup.string().required("Date of Birth is required"),
       // SpouseDateOfBirth: yup.string().required("Spouse Date of Birth is required"),
@@ -113,24 +134,6 @@ const Index = () => {
     dispatch(startCheckout())
 
     if (billingInfo?.hasError === false) {
-      // NOTE: .unwrap() is mandatory to catch errors
-      toast
-        .promise(
-          getReservationJsonLikeEzeeWebbooking(reservationInfo).unwrap(),
-          {
-            loading: "Loading...",
-            success: "Your information is saved successfully.",
-            error: ERROR_MESSAGES.API_FAILED_RESERVATIONS_LIKE_WEB_BOOKING,
-          }
-        )
-        .then(() => {
-          if (
-            currentStep < steps.length - 1 &&
-            billingInfo?.hasError == false
-          ) {
-            setCurrentStep(currentStep + 1);
-          }
-        });
     }
 
     // FIXME: This is a temporary to test the creation of the reservation

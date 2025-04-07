@@ -5,9 +5,9 @@ import moment from 'moment'
 import * as yup from 'yup'
 
 const validationYupSchema = yup.object().shape({
-  Salutation: yup.string().required("Salutation is required"),
-  FirstName: yup.string().required("First Name is required"),
-  LastName: yup.string().required("Last Name is required"),
+  // Salutation: yup.string().required("Salutation is required"),
+  // FirstName: yup.string().required("First Name is required"),
+  // LastName: yup.string().required("Last Name is required"),
   // Gender: yup.string().required("Gender is required"),
   // DateOfBirth: yup.string().required("Date of Birth is required"),
   // SpouseDateOfBirth: yup.string().required("Spouse Date of Birth is required"),
@@ -159,9 +159,7 @@ const availableRooms = createSlice({
 
 const roomSelection = createSlice({
   name: "roomSelection",
-  initialState: localStorage.getItem("userPickedHotel")
-    ? JSON.parse(localStorage.getItem("userPickedHotel"))
-    : {},
+  initialState: {},
   reducers: {
     setRoomSelection: (state, action) => {
       Object.assign(state, action.payload);
@@ -248,7 +246,7 @@ const billingInfoSlice = createSlice({
 const reservationInfoSlice = createSlice({
   name: "reservationInfo",
   initialState: {
-    hotelID: null,
+    hotelID: 10,
     arrivalDate: moment(new Date()).format("YYYY-MM-DD"),
     departureDate: moment(new Date()).format("YYYY-MM-DD"),
     adults: 1,

@@ -13,12 +13,16 @@ import "../styles/index.scss";
 import { Provider } from "react-redux";
 import { store } from "../store/store";
 import { Toaster } from 'react-hot-toast'
+import { initializeSDK } from "@/features/payment/CashFree.mjs"
 
 if (typeof window !== "undefined") {
   require("bootstrap/dist/js/bootstrap");
 }
 
 export default function RootLayout({ children }) {
+  useEffect(() => {
+    initializeSDK()
+  }, [])
   useEffect(() => {
     Aos.init({
       duration: 1200,
@@ -39,6 +43,7 @@ export default function RootLayout({ children }) {
           rel="stylesheet"
         />
         <link rel="icon" href="./favicon.ico" />
+        <script src="https://sdk.cashfree.com/js/v3/cashfree.js"></script>
       </head>
       <body>
         <main>
