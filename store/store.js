@@ -94,7 +94,7 @@ const authSlice = createSlice({
 const bookingQuerySlice = createSlice({
   name: "booking/query",
   initialState: {
-    hotelID: null,
+    hotelID: 10,
     arrivalDate: moment(new Date()).format("YYYY-MM-DD"),
     departureDate: moment(new Date()).format("YYYY-MM-DD"),
     adults: 1,
@@ -237,7 +237,6 @@ const billingInfoSlice = createSlice({
     builder.addMatcher(
       api.endpoints.addReservationFromWeb.matchFulfilled,
       (state, action) => {
-        console.log(action);
         state.reservationCompetitionDetails = action.payload;
       }
     );
@@ -264,7 +263,6 @@ const reservationInfoSlice = createSlice({
     builder.addCase(
       bookingQuerySlice.actions.setBookingQuery,
       (state, action) => {
-        console.log(action)
         Object.assign(state, action.payload);
       }
     ).addCase(
@@ -294,6 +292,11 @@ const hotelDetailsSlice = createSlice({
       api.endpoints.getHotelDetailsWebBooking.matchFulfilled,
       (state, action) => {
         state.locations = action.payload?.data;
+      }
+    ).addMatcher(
+      api.endpoints.getHotelDetailsWebBooking.matchFulfilled,
+      (state, action) => {
+        state.selectedHotel = action.payload?.data[0];
       }
     )
   }

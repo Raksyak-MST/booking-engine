@@ -5,8 +5,8 @@ import Hero1 from "@/components/hero/hero-1";
 import { destinations2 } from "../../../data/desinations";
 
 export const metadata = {
-  title: "Home || Oterra",
-  description: "Oterra",
+  title: "Home",
+  description: "",
 };
 
 const Home_1 = () => {
@@ -29,14 +29,13 @@ const Home_1 = () => {
         </div>
       </section>
 
-      <section className="layout-pt-lg layout-pb-md" data-aos="fade-up">
+      {/* <section className="layout-pt-lg layout-pb-md" data-aos="fade-up">
         <div className="container">
           <div className="relative pt-40 sm:pt-20">
             <PopularDestinations destinations={destinations2}/>
           </div>
         </div>
-        {/* End .container */}
-      </section>
+      </section> */}
       {/* End Popular Destinations */}
     </>
   );
