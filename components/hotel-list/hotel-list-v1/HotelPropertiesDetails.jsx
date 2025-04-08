@@ -55,11 +55,6 @@ const HotelPropertyDetails = (props) => {
     // localStorage.setItem("userPickedHotel", JSON.stringify(hotel))
 
     dispatch(roomSelectionActions.setRoomSelection(hotel));
-    dispatch(
-      roomSelectionActions.setRoomSelection({
-        selectedRoomTypeID: hotel?.roomTypeID,
-      })
-    );
     toast
       .promise(
         getReservationJsonLikeEzee({

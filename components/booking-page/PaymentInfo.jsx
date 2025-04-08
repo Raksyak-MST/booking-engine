@@ -5,15 +5,13 @@ import { useState } from "react";
 import { Tab, Tabs, TabList, TabPanel } from "react-tabs";
 import PricingSummary from "./sidebar/PricingSummary";
 import PaymentSchedule from "./sidebar/PaymentSchedule";
-import PromoCode from "./sidebar/PromoCode";
 import RatingInfo from "./RatingInfo";
-import { billingAction } from "@/store/store"
+import { reservationInfoActions } from "@/store/store"
 import { useSelector, useDispatch } from 'react-redux'
 
 const PaymentInfo = () => {
   const [itemsTabs, setItemsTabs] = useState(1);
   const dispatch = useDispatch();
-  const personalInfo = useSelector((state) => state.billing.personalInfo);
   const cardTabs = [
     { id: 1, name: "Credit/Debit Card" },
     // { id: 2, name: "Digital Payment" },
@@ -22,15 +20,13 @@ const PaymentInfo = () => {
   const handleChange = (e) => {
     const fieldName = e.target.name;
     const fieldValue = e.target.value;
-    dispatch(billingAction.setPersonalInfo({ ...personalInfo, [fieldName]: fieldValue}));
+    dispatch(reservationInfoActions.setGuestDetails({[fieldName]: fieldValue}));
   }
-
-  console.log(personalInfo)
 
   return (
     <>
       <div className="col-xl-7 col-lg-8">
-        <RatingInfo />
+        {/* <RatingInfo /> */}
         <div className="mt-40">
           <h3 className="text-22 fw-500 mb-20">How do you want to pay?</h3>
           <Tabs>
@@ -182,7 +178,6 @@ const PaymentInfo = () => {
         <div className="booking-sidebar">
           <PricingSummary />
           {/* <PaymentSchedule /> */}
-          <PromoCode />
         </div>
       </div>
       {/* payment sidebar info */}

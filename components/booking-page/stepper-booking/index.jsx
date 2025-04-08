@@ -5,9 +5,13 @@ import React, { useState } from "react";
 import CustomerInfo from "../CustomerInfo";
 import PaymentInfo from "../PaymentInfo";
 import OrderSubmittedInfo from "../OrderSubmittedInfo";
-import { useAddReservationFromWebMutation, useGetReservationJsonLikeEzeeWebBookingMutation } from "@/store/store"
+import {
+  useAddReservationFromWebMutation,
+  useGetReservationJsonLikeEzeeWebBookingMutation,
+  billingAction,
+  reservationInfoActions,
+} from "@/store/store";
 import { useDispatch, useSelector } from "react-redux"
-import { billingAction } from "@/store/store"
 import toast from "react-hot-toast";
 import { startCheckout } from "@/features/payment/CashFree.mjs"
 import { ERROR_MESSAGES } from "@/data/error-messages";
@@ -37,8 +41,7 @@ const Index = () => {
       Comment: "",
     },
     onSubmit: (values) => {
-      console.log(values);
-      dispatch(startCheckout())
+      dispatch(reservationInfoActions.setGuestDetails(values))
 
       // NOTE: .unwrap() is mandatory to catch errors
       toast
@@ -51,11 +54,9 @@ const Index = () => {
           }
         )
         .then(() => {
-          if (
-            currentStep < steps.length - 1 &&
-            billingInfo?.hasError == false
-          ) {
+          if ( currentStep < steps.length - 1) {
             setCurrentStep(currentStep + 1);
+            dispatch(startCheckout())
           }
         });
 
@@ -191,15 +192,17 @@ const Index = () => {
       {/* End main content */}
 
       <div className="row x-gap-20 y-gap-20 pt-20">
-        <div className="col-auto">
-          <button
-            className="button h-60 px-24 -blue-1 bg-light-2"
-            disabled={currentStep === 0}
-            onClick={previousStep}
-          >
-            Previous
-          </button>
-        </div>
+        {currentStep !== 1 ? null : (
+          <div className="col-auto">
+            <button
+              className="button h-60 px-24 -blue-1 bg-light-2"
+              disabled={currentStep === 0}
+              onClick={previousStep}
+            >
+              Previous
+            </button>
+          </div>
+        )}
         {/* End prvious btn */}
 
         <div className="col-auto">

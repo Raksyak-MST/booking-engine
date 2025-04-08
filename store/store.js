@@ -1,4 +1,7 @@
 import { configureStore, createSlice } from "@reduxjs/toolkit";
+
+localStorage.setItem("something", "valid")
+
 import findPlaceSlice from "../features/hero/findPlaceSlice";
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react"
 import moment from 'moment'
@@ -231,7 +234,8 @@ const billingInfoSlice = createSlice({
     builder.addMatcher(
       api.endpoints.getReservationJsonLikeEzeeWebBooking.matchFulfilled,
       (state, action) => {
-        state.reservationInfo = action.payload?.data;
+        // only extract the first object, this is because the API return an array of objects
+        state.reservationInfo = action.payload?.data?.Reservations?.Reservation;
       }
     );
     builder.addMatcher(
@@ -258,20 +262,23 @@ const reservationInfoSlice = createSlice({
       PromoCode: "",
     },
   },
-  reducers: {},
+  reducers: {
+    setGuestDetails: (state, action) => {
+      Object.assign(state?.guestDetails, action.payload);
+    }
+  },
   extraReducers: (builder) => {
     builder.addCase(
-      bookingQuerySlice.actions.setBookingQuery,
-      (state, action) => {
-        Object.assign(state, action.payload);
-      }
-    ).addCase(
       billingInfoSlice.actions.setPersonalInfo,
       (state, action) => {
-        Object.assign(state.guestDetails, action.payload)
+        Object.assign(state.guestDetails, action.payload);
       }
-    ).addCase(roomSelection.actions.setRoomSelection, (state, action) => {
-      Object.assign(state, action.payload)
+    );
+    builder.addCase(roomSelection.actions.setRoomSelection, (state, action) => {
+      // NOTE: roomTypeID is the key from the api response so it is not the same as the key in the state
+      Object.assign(state, {
+        selectedRoomTypeID: action.payload?.roomTypeID,
+      });
     });
   },
 });
@@ -337,3 +344,4 @@ export const availableRoomsActions = availableRooms.actions
 export const roomSelectionActions = roomSelection.actions
 export const billingAction = billingInfoSlice.actions
 export const hotelDetailsActions = hotelDetailsSlice.actions
+export const reservationInfoActions = reservationInfoSlice.actions
