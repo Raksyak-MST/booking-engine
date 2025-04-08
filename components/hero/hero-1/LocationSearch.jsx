@@ -40,7 +40,7 @@ const SearchBar = () => {
               type="search"
               placeholder="Where are you going?"
               className="js-search js-dd-focus"
-              value={selectedHotel?.name}
+              value={selectedHotel?.name ?? ""}
               onChange={(e) => setSearchValue(e.target.value)}
             />
           </div>
