@@ -32,17 +32,7 @@ const MainFilterSearchBox = () => {
     }
 
     try{
-      const payload = {
-        hotelID: bookingQuery.hotelID,
-        arrivalDate: moment(bookingQuery.arrivalDate).format("YYYY-MM-DD"),
-        departureDate: moment(bookingQuery.departureDate).format("YYYY-MM-DD"),
-        adults: bookingQuery.adults,
-        children: bookingQuery.children,
-        quantity: bookingQuery.quantity,
-        selectedPackageID: bookingQuery.selectedPackageID,
-        selectedRoomTypeID: bookingQuery.selectedRoomTypeID,
-      }
-      await getDataForWebBooking(payload)
+      await getDataForWebBooking(bookingQuery)
       Router.push("/room-types")
     }catch(error){
       console.error(error)

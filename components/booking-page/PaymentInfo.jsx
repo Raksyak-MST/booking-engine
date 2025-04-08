@@ -11,7 +11,6 @@ import { useSelector, useDispatch } from 'react-redux'
 
 const PaymentInfo = () => {
   const [itemsTabs, setItemsTabs] = useState(1);
-  const reservationInfo = useSelector(state => state.reservationInfo?.guestDetails)
   const dispatch = useDispatch();
   const cardTabs = [
     { id: 1, name: "Credit/Debit Card" },

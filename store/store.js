@@ -33,7 +33,9 @@ const validationYupSchema = yup.object().shape({
 const api = createApi({
   reducerPath: "api",
   baseQuery: async (args, api, extraOptions) => {
-    const baseQuery = fetchBaseQuery({ baseUrl: process.env.NEXT_PUBLIC_API_BASE_URL });
+    const baseQuery = fetchBaseQuery({
+      baseUrl: process.env.NEXT_PUBLIC_API_BASE_URL,
+    });
     const result = await baseQuery(args, api, extraOptions);
 
     // FIXME: intentional delay, this will cause an additional 1 second delay
@@ -45,7 +47,16 @@ const api = createApi({
       query: (data) => ({
         url: "/getDataforWebBooking",
         method: "POST",
-        body: data,
+        body: {
+          hotelID: data.hotelID,
+          arrivalDate: moment(data.arrivalDate).format("YYYY-MM-DD"),
+          departureDate: moment(data.departureDate).format("YYYY-MM-DD"),
+          adults: data.adults,
+          children: data.children,
+          quantity: data.quantity,
+          selectedPackageID: data.selectedPackageID,
+          selectedRoomTypeID: data.selectedRoomTypeID,
+        },
       }),
     }),
     webLogin: builder.mutation({
@@ -67,14 +78,14 @@ const api = createApi({
         url: "/addReservationFromWeb",
         method: "POST",
         body: data,
-      })
+      }),
     }),
     getHotelDetailsWebBooking: builder.mutation({
       query: () => ({
         url: "/getHotelDetailsWebBooking",
         method: "POST",
-      })
-    })
+      }),
+    }),
   }),
 });
 
