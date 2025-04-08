@@ -20,11 +20,6 @@ const index = () => {
           </div>
         </div>
         {/* End footer top */}
-
-        <div className="py-20 border-top-light">
-          <Copyright />
-        </div>
-        {/* End footer-copyright */}
       </div>
       {/* End container */}
     </footer>
