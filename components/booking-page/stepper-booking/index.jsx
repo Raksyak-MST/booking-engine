@@ -62,8 +62,8 @@ const Index = () => {
     },
     validationSchema: yup.object().shape({
       // Salutation: yup.string().required("Salutation is required"),
-      // FirstName: yup.string().required("First Name is required"),
-      // LastName: yup.string().required("Last Name is required"),
+      FirstName: yup.string().required("First Name is required"),
+      LastName: yup.string().required("Last Name is required"),
       // Gender: yup.string().required("Gender is required"),
       // DateOfBirth: yup.string().required("Date of Birth is required"),
       // SpouseDateOfBirth: yup.string().required("Spouse Date of Birth is required"),
