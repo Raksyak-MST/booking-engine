@@ -12,7 +12,7 @@ const DateSearch = () => {
   const {arrivalDate, departureDate } = useSelector(state => state.bookingQuery)
 
   const [dates, setDates] = useState(() => {
-    // fetch from the store if uer has picked date from previous page
+    // fetch from the store if user has picked date from previous page
     if (arrivalDate && departureDate) {
       return [new Date(arrivalDate), new Date(departureDate)];
     }
@@ -24,8 +24,8 @@ const DateSearch = () => {
     setDates(event)
     dispatch(
       bookingQueryActions.setBookingQuery({
-        arrivalDate: event[0],
-        departureDate: event[1],
+        arrivalDate: moment(new Date(event[0])).format("YYYY-MM-DD"),
+        departureDate: moment(new Date(event[1])).format("YYYY-MM-DD"),
       })
     );
   }, [dispatch])

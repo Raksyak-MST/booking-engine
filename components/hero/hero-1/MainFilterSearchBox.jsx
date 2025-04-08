@@ -24,8 +24,8 @@ const MainFilterSearchBox = () => {
     }
 
     if (
-      !bookingQuery.arrivalDate ||
-      !bookingQuery.departureDate
+      bookingQuery.arrivalDate == "Invalid date" ||
+      bookingQuery.departureDate == "Invalid date"
     ) {
       toast.error("Please select check-in check-out date");
       return;
