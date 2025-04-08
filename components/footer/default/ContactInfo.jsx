@@ -1,16 +1,20 @@
+"use client"
+
+import { useSelector } from "react-redux"
 const ContactInfo = () => {
+  const selectedHotel = useSelector(state => state?.pickedHotelDetails?.selectedHotel)
   const contactContent = [
     {
       id: 1,
       title: "Toll Free Customer Care",
-      action: "tel:+(1) 123 456 7890",
-      text: "+(1) 123 456 7890",
+      action: selectedHotel?.phoneNumber,
+      text: selectedHotel?.phoneNumber,
     },
     {
       id: 2,
-      title: "Need live support?",
-      action: "mailto:xyz@abc.com",
-      text: "hi@gotrip.com",
+      title: "Need live support? Contact front Office",
+      action: `mailto:${selectedHotel?.frontOfcEmail}`,
+      text: selectedHotel?.frontOfcEmail,
     },
   ];
   return (

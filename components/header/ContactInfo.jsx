@@ -1,16 +1,18 @@
+import { useSelector } from "react-redux"
 const ContactInfo = () => {
+  const selectedHotel = useSelector(state => state.hotelDetails?.selectedHotel)
   const contactContent = [
     {
       id: 1,
       title: "Toll Free Customer Care",
-      action: "tel:+(1) 123 456 7890",
-      text: "+(1) 123 456 7890",
+      action: selectedHotel?.phoneNumber,
+      text: selectedHotel?.phoneNumber,
     },
     {
       id: 2,
-      title: "Need live support?",
-      action: "mailto:xyz@abc.com",
-      text: "hi@gotrip.com",
+      title: "Need live support? Contact front Office",
+      action: `mailto:${selectedHotel?.frontOfcEmail}`,
+      text: selectedHotel?.frontOfcEmail,
     },
   ];
   return (
@@ -19,7 +21,7 @@ const ContactInfo = () => {
         <div className="mb-20" key={item.id}>
           <div className={"text-14"}>{item.title}</div>
           <a href={item.action} className="text-18 fw-500 text-dark-1 mt-5">
-            {item.text}
+            {item.text} 
           </a>
         </div>
       ))}
