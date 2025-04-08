@@ -1,13 +1,14 @@
 import { configureStore, createSlice } from "@reduxjs/toolkit";
+
 import findPlaceSlice from "../features/hero/findPlaceSlice";
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react"
 import moment from 'moment'
 import * as yup from 'yup'
 
 const validationYupSchema = yup.object().shape({
-  Salutation: yup.string().required("Salutation is required"),
-  FirstName: yup.string().required("First Name is required"),
-  LastName: yup.string().required("Last Name is required"),
+  // Salutation: yup.string().required("Salutation is required"),
+  // FirstName: yup.string().required("First Name is required"),
+  // LastName: yup.string().required("Last Name is required"),
   // Gender: yup.string().required("Gender is required"),
   // DateOfBirth: yup.string().required("Date of Birth is required"),
   // SpouseDateOfBirth: yup.string().required("Spouse Date of Birth is required"),
@@ -32,7 +33,9 @@ const validationYupSchema = yup.object().shape({
 const api = createApi({
   reducerPath: "api",
   baseQuery: async (args, api, extraOptions) => {
-    const baseQuery = fetchBaseQuery({ baseUrl: process.env.NEXT_PUBLIC_API_BASE_URL });
+    const baseQuery = fetchBaseQuery({
+      baseUrl: process.env.NEXT_PUBLIC_API_BASE_URL,
+    });
     const result = await baseQuery(args, api, extraOptions);
 
     // FIXME: intentional delay, this will cause an additional 1 second delay
@@ -44,7 +47,16 @@ const api = createApi({
       query: (data) => ({
         url: "/getDataforWebBooking",
         method: "POST",
-        body: data,
+        body: {
+          hotelID: data.hotelID,
+          arrivalDate: moment(data.arrivalDate).format("YYYY-MM-DD"),
+          departureDate: moment(data.departureDate).format("YYYY-MM-DD"),
+          adults: data.adults,
+          children: data.children,
+          quantity: data.quantity,
+          selectedPackageID: data.selectedPackageID,
+          selectedRoomTypeID: data.selectedRoomTypeID,
+        },
       }),
     }),
     webLogin: builder.mutation({
@@ -66,14 +78,14 @@ const api = createApi({
         url: "/addReservationFromWeb",
         method: "POST",
         body: data,
-      })
+      }),
     }),
     getHotelDetailsWebBooking: builder.mutation({
       query: () => ({
         url: "/getHotelDetailsWebBooking",
         method: "POST",
-      })
-    })
+      }),
+    }),
   }),
 });
 
@@ -165,7 +177,7 @@ const roomSelection = createSlice({
       Object.assign(state, action.payload);
     },
   },
-})
+});
 
 const billingInfoSlice = createSlice({
   name: "billing",
@@ -231,13 +243,13 @@ const billingInfoSlice = createSlice({
     builder.addMatcher(
       api.endpoints.getReservationJsonLikeEzeeWebBooking.matchFulfilled,
       (state, action) => {
-        state.reservationInfo = action.payload?.data;
+        // only extract the first object, this is because the API return an array of objects
+        state.reservationInfo = action.payload?.data?.Reservations?.Reservation;
       }
     );
     builder.addMatcher(
       api.endpoints.addReservationFromWeb.matchFulfilled,
       (state, action) => {
-        console.log(action);
         state.reservationCompetitionDetails = action.payload;
       }
     );
@@ -250,8 +262,8 @@ const reservationInfoSlice = createSlice({
     hotelID: 10,
     arrivalDate: moment(new Date()).format("YYYY-MM-DD"),
     departureDate: moment(new Date()).format("YYYY-MM-DD"),
-    adults: 2,
-    children: 1,
+    adults: 1,
+    children: 0,
     quantity: 1,
     selectedPackageID: "1",
     selectedRoomTypeID: "",
@@ -259,21 +271,23 @@ const reservationInfoSlice = createSlice({
       PromoCode: "",
     },
   },
-  reducers: {},
+  reducers: {
+    setGuestDetails: (state, action) => {
+      Object.assign(state?.guestDetails, action.payload);
+    }
+  },
   extraReducers: (builder) => {
     builder.addCase(
-      bookingQuerySlice.actions.setBookingQuery,
-      (state, action) => {
-        console.log(action)
-        Object.assign(state, action.payload);
-      }
-    ).addCase(
       billingInfoSlice.actions.setPersonalInfo,
       (state, action) => {
-        Object.assign(state.guestDetails, action.payload)
+        Object.assign(state.guestDetails, action.payload);
       }
-    ).addCase(roomSelection.actions.setRoomSelection, (state, action) => {
-      Object.assign(state, action.payload)
+    );
+    builder.addCase(roomSelection.actions.setRoomSelection, (state, action) => {
+      // NOTE: roomTypeID is the key from the api response so it is not the same as the key in the state
+      Object.assign(state, {
+        selectedRoomTypeID: action.payload?.roomTypeID,
+      });
     });
   },
 });
@@ -294,6 +308,11 @@ const hotelDetailsSlice = createSlice({
       api.endpoints.getHotelDetailsWebBooking.matchFulfilled,
       (state, action) => {
         state.locations = action.payload?.data;
+      }
+    ).addMatcher(
+      api.endpoints.getHotelDetailsWebBooking.matchFulfilled,
+      (state, action) => {
+        state.selectedHotel = action.payload?.data[0];
       }
     )
   }
@@ -334,3 +353,4 @@ export const availableRoomsActions = availableRooms.actions
 export const roomSelectionActions = roomSelection.actions
 export const billingAction = billingInfoSlice.actions
 export const hotelDetailsActions = hotelDetailsSlice.actions
+export const reservationInfoActions = reservationInfoSlice.actions

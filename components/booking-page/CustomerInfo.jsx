@@ -4,16 +4,21 @@ import BookingDetails from "./sidebar/BookingDetails";
 import { billingAction } from "@/store/store"
 import { useDispatch, useSelector } from "react-redux";
 
-const CustomerInfo = () => {
+const CustomerInfo = (props) => {
+  const { controller } = props;
 
   const personalInfo = useSelector((state) => state.billing.personalInfo);
-  const { errors } = useSelector((state) => state.billing)
   const dispatch = useDispatch();
 
   const handleChange = (e) => {
     const fieldName = e.target.name;
     const fieldValue = e.target.value;
-    dispatch(billingAction.setPersonalInfo({ ...personalInfo, [fieldName]: fieldValue}));
+    dispatch(
+      billingAction.setPersonalInfo({
+        ...personalInfo,
+        [fieldName]: fieldValue,
+      })
+    );
   };
 
   return (
@@ -37,10 +42,27 @@ const CustomerInfo = () => {
             <select
               className="form-select h-full text-light-1"
               name="Salutation"
-              onChange={handleChange}
+              values={controller?.values?.Salutation}
+              onChange={controller?.handleChange}
             >
-              <option value="Mr">Mr.</option>
-              <option value="Mrs">Mrs.</option>
+              {[
+                { id: 1, value: "Mr", label: "Mr." },
+                { id: 2, value: "Mrs", label: "Mrs." },
+                { id: 3, value: "Ms", label: "Ms." },
+                { id: 4, value: "Dr", label: "Dr." },
+                { id: 5, value: "Mast.", label: "Mast.." },
+                { id: 6, value: "Prof", label: "Prof." },
+                { id: 7, value: "Capt", label: "Capt." },
+                { id: 8, value: "Wg Cdr.", label: "Wg Cdr." },
+                { id: 9, value: "Major.", label: "Major." },
+                { id: 10, value: "Brig", label: "Brig." },
+                { id: 11, value: "Col.", label: "Col." },
+                { id: 12, value: "Lt Col", label: "Lt Col" },
+                { id: 13, value: "Lt", label: "Lt." },
+                { id: 14, value: "Maj Gen.", label: "Maj Gen" },
+              ].map((obj) => (
+                <option key={obj?.id} value={obj?.value}>{obj?.label}</option>
+              ))}
             </select>
           </div>
           {/* End col-12 */}
@@ -50,13 +72,15 @@ const CustomerInfo = () => {
               <input
                 type="text"
                 name="FirstName"
-                value={personalInfo?.FirstName}
-                onChange={handleChange}
+                value={controller?.values?.FirstName}
+                onChange={controller?.handleChange}
                 required
               />
               <label className="lh-1 text-16 text-light-1">First name</label>
             </div>
-            <div className="text-13 text-red-1">{errors?.FirstName}</div>
+            <div className="text-13 text-red-1">
+              {controller?.touched?.FirstName && controller?.errors?.FirstName}
+            </div>
           </div>
           {/* End col-12 */}
 
@@ -65,13 +89,15 @@ const CustomerInfo = () => {
               <input
                 type="text"
                 name="LastName"
-                value={personalInfo?.LastName}
-                onChange={handleChange}
+                value={controller?.values?.LastName}
+                onChange={controller?.handleChange}
                 required
               />
               <label className="lh-1 text-16 text-light-1">Last name</label>
             </div>
-            <div className="text-13 text-red-1">{errors?.LastName}</div>
+            <div className="text-13 text-red-1">
+              {controller?.touched?.LastName && controller?.errors?.LastName}
+            </div>
           </div>
           {/* End col-12 */}
 
@@ -80,13 +106,15 @@ const CustomerInfo = () => {
               <input
                 type="text"
                 name="Email"
-                value={personalInfo?.Email}
-                onChange={handleChange}
+                value={controller?.values?.Email}
+                onChange={controller?.handleChange}
                 required
               />
               <label className="lh-1 text-16 text-light-1">Email</label>
             </div>
-            <div className="text-13 text-red-1">{errors?.Email}</div>
+            <div className="text-13 text-red-1">
+              {controller?.errors?.Email}
+            </div>
           </div>
           {/* End col-12 */}
 
@@ -95,13 +123,15 @@ const CustomerInfo = () => {
               <input
                 type="text"
                 name="Mobile"
-                value={personalInfo?.Mobile}
-                onChange={handleChange}
+                value={controller?.values?.Mobile}
+                onChange={controller?.handleChange}
                 required
               />
               <label className="lh-1 text-16 text-light-1">Mobile</label>
             </div>
-            <div className="text-13 text-red-1">{errors?.Email}</div>
+            <div className="text-13 text-red-1">
+              {controller?.errors?.Mobile}
+            </div>
           </div>
           {/* End col-12 */}
 
@@ -111,14 +141,16 @@ const CustomerInfo = () => {
                 name="Address"
                 type="text"
                 required
-                value={personalInfo?.Address}
-                onChange={handleChange}
+                value={controller?.values?.Address}
+                onChange={controller?.handleChange}
               />
               <label className="lh-1 text-16 text-light-1">
                 Address line 1
               </label>
             </div>
-            <div className="text-13 text-red-1">{errors?.Address}</div>
+            <div className="text-13 text-red-1">
+              {controller?.errors?.Address}
+            </div>
           </div>
           {/* End col-12 */}
 
@@ -128,12 +160,14 @@ const CustomerInfo = () => {
                 type="text"
                 name="Country"
                 required
-                value={personalInfo?.Country}
-                onChange={handleChange}
+                value={controller?.values?.Country}
+                onChange={controller?.handleChange}
               />
               <label className="lh-1 text-16 text-light-1">Country</label>
             </div>
-            <div className="text-13 text-red-1">{errors?.Country}</div>
+            <div className="text-13 text-red-1">
+              {controller?.errors?.Country}
+            </div>
           </div>
           {/* End col-12 */}
 
@@ -143,14 +177,16 @@ const CustomerInfo = () => {
                 name="State"
                 type="text"
                 required
-                value={personalInfo?.State}
-                onChange={handleChange}
+                value={controller?.values?.State}
+                onChange={controller?.handleChange}
               />
               <label className="lh-1 text-16 text-light-1">
                 State/Province/Region
               </label>
             </div>
-            <div className="text-13 text-red-1">{errors?.State}</div>
+            <div className="text-13 text-red-1">
+              {controller?.errors?.State}
+            </div>
           </div>
           {/* End col-12 */}
 
@@ -160,14 +196,16 @@ const CustomerInfo = () => {
                 name="Zipcode"
                 type="text"
                 required
-                value={personalInfo?.Zipcode}
-                onChange={handleChange}
+                value={controller?.values?.Zipcode}
+                onChange={controller?.handleChange}
               />
               <label className="lh-1 text-16 text-light-1">
                 ZIP code/Postal code
               </label>
             </div>
-            <div className="text-13 text-red-1">{errors?.Zipcode}</div>
+            <div className="text-13 text-red-1">
+              {controller?.errors?.Zipcode}
+            </div>
           </div>
           {/* End col-12 */}
 
@@ -177,8 +215,8 @@ const CustomerInfo = () => {
                 name="Comment"
                 required
                 rows={6}
-                value={personalInfo?.Comment}
-                onChange={handleChange}
+                value={controller?.values?.Comment}
+                onChange={controller?.handleChange}
               ></textarea>
               <label className="lh-1 text-16 text-light-1">
                 Special Requests

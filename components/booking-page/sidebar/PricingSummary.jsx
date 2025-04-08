@@ -1,36 +1,37 @@
 import { useSelector } from "react-redux"
 
 const PricingSummary = () => {
+  const reservationInfo = useSelector(state => state?.billing?.reservationInfo)
 
-  const selectedRoom = useSelector(state => state.roomSelection)
-  const bookingQueryInfo = useSelector(state => state.bookingQuery)
-  const perNightCharges = selectedRoom?.perNightCharges?.filter(
-    (pkg) => pkg?.packageCode == "AP" 
-  )[0]?.rooms;
+  if(!Array.isArray(reservationInfo)) {
+    toast.error("Failed to fetch reservation info")
+  }
 
-  const { fulltotal, TotalTax, TotalAmountAfterTax } = perNightCharges ? perNightCharges[0] : {} ; 
+  const { BookingTran } = reservationInfo[0]
+
+  if(!Array.isArray(BookingTran)){
+    toast.error("Failed to fetch booking tran info")
+  }
+
+  const RentalInfo = BookingTran[0].RentalInfo
 
   return (
     <div className="px-30 py-30 border-light rounded-4 mt-30">
       <div className="text-20 fw-500 mb-20">Your price summary</div>
       <div className="row y-gap-5 justify-between">
         <div className="col-auto">
-          <div className="text-15">{selectedRoom?.roomTypeName}</div>
+          <div className="text-15">Amount before tax</div>
         </div>
-        {/* End col */}
         <div className="col-auto">
           <div className="text-15">
             {new Intl.NumberFormat("en-IN", {
-              currency: "INR",
-              currencyDisplay: "code",
+              currency: BookingTran[0]?.CurrencyCode ?? "INR",
+              currencyDisplay: "symbol",
               style: "currency",
-            }).format(fulltotal)}
+            }).format(RentalInfo[0]?.TotalAmountBeforeTax)}
           </div>
         </div>
-        {/* End col */}
       </div>
-      {/* End .row */}
-
       <div className="row y-gap-5 justify-between pt-5">
         <div className="col-auto">
           <div className="text-15">Taxes and fees</div>
@@ -38,21 +39,11 @@ const PricingSummary = () => {
         <div className="col-auto">
           <div className="text-15">
             {new Intl.NumberFormat("en-IN", {
-              currency: "INR",
-              currencyDisplay: "code",
+              currency:BookingTran[0]?.CurrencyCode ?? "INR",
+              currencyDisplay: "symbol",
               style: "currency",
-            }).format(TotalTax)}
+            }).format(RentalInfo[0]?.TotalTax)}
           </div>
-        </div>
-      </div>
-      {/* End .row */}
-
-      <div className="row y-gap-5 justify-between pt-5">
-        <div className="col-auto">
-          <div className="text-15">Booking fees</div>
-        </div>
-        <div className="col-auto">
-          <div className="text-15">FREE</div>
         </div>
       </div>
       {/* End .row */}
@@ -65,10 +56,10 @@ const PricingSummary = () => {
           <div className="col-auto">
             <div className="text-18 lh-13 fw-500">
               {new Intl.NumberFormat("en-IN", {
-                currency: "INR",
-                currencyDisplay: "code",
+                currency: BookingTran[0]?.CurrencyCode ?? "INR",
+                currencyDisplay: "symbol",
                 style: "currency",
-              }).format(TotalAmountAfterTax)}
+              }).format(RentalInfo[0]?.TotalAmountAfterTax)}
             </div>
           </div>
         </div>

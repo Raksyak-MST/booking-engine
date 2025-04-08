@@ -36,11 +36,6 @@ const Header1 = () => {
                   <img src="/img/general/logo-dark.svg" alt="logo icon" />
                 </Link>
                 {/* End logo */}
-
-                <div className="header-menu">
-                  <div className="header-menu__content">
-                    <MainMenu style="text-white" />
-                  </div>
                 </div>
                 {/* End header-menu */}
               </div>

@@ -15,6 +15,7 @@ const SearchBar = () => {
   }, [])
 
   const hotelLocations = useSelector(state => state.hotelDetails?.locations)
+  const selectedHotel = useSelector(state => state.hotelDetails?.selectedHotel)
   const dispatch = useDispatch()
 
   const handleOptionClick = (item) => {
@@ -32,14 +33,14 @@ const SearchBar = () => {
           data-bs-auto-close="true"
           data-bs-offset="0,22"
         >
-          <h4 className="text-15 fw-500 ls-2 lh-16">The Oterra, E-City</h4>
+          <h4 className="text-15 fw-500 ls-2 lh-16">Location *</h4>
           <div className="text-15 text-light-1 ls-2 lh-16">
             <input
               autoComplete="off"
               type="search"
               placeholder="Where are you going?"
               className="js-search js-dd-focus"
-              value={searchValue}
+              value={selectedHotel?.name ?? ""}
               onChange={(e) => setSearchValue(e.target.value)}
             />
           </div>
