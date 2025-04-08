@@ -1,7 +1,5 @@
 import { configureStore, createSlice } from "@reduxjs/toolkit";
 
-localStorage.setItem("something", "valid")
-
 import findPlaceSlice from "../features/hero/findPlaceSlice";
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react"
 import moment from 'moment'
