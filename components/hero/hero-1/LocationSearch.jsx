@@ -15,6 +15,7 @@ const SearchBar = () => {
   }, [])
 
   const hotelLocations = useSelector(state => state.hotelDetails?.locations)
+  const selectedHotel = useSelector(state => state.hotelDetails?.selectedHotel)
   const dispatch = useDispatch()
 
   const handleOptionClick = (item) => {
@@ -39,7 +40,7 @@ const SearchBar = () => {
               type="search"
               placeholder="Where are you going?"
               className="js-search js-dd-focus"
-              value={searchValue}
+              value={selectedHotel?.name}
               onChange={(e) => setSearchValue(e.target.value)}
             />
           </div>
