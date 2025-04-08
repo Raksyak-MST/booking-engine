@@ -46,22 +46,22 @@ const CustomerInfo = (props) => {
               onChange={controller?.handleChange}
             >
               {[
-                { value: "Mr", label: "Mr." },
-                { value: "Mrs", label: "Mrs." },
-                { value: "Ms", label: "Ms." },
-                { value: "Dr", label: "Dr." },
-                { value: "Mast.", label: "Mast.." },
-                { value: "Prof", label: "Prof." },
-                { value: "Capt", label: "Capt." },
-                { value: "Wg Cdr.", label: "Wg Cdr." },
-                { value: "Major.", label: "Major." },
-                { value: "Brig", label: "Brig." },
-                { value: "Col.", label: "Col." },
-                { value: "Lt Col", label: "Lt Col" },
-                { value: "Lt", label: "Lt." },
-                { value: "Maj Gen.", label: "Maj Gen" },
+                { id: 1, value: "Mr", label: "Mr." },
+                { id: 2, value: "Mrs", label: "Mrs." },
+                { id: 3, value: "Ms", label: "Ms." },
+                { id: 4, value: "Dr", label: "Dr." },
+                { id: 5, value: "Mast.", label: "Mast.." },
+                { id: 6, value: "Prof", label: "Prof." },
+                { id: 7, value: "Capt", label: "Capt." },
+                { id: 8, value: "Wg Cdr.", label: "Wg Cdr." },
+                { id: 9, value: "Major.", label: "Major." },
+                { id: 10, value: "Brig", label: "Brig." },
+                { id: 11, value: "Col.", label: "Col." },
+                { id: 12, value: "Lt Col", label: "Lt Col" },
+                { id: 13, value: "Lt", label: "Lt." },
+                { id: 14, value: "Maj Gen.", label: "Maj Gen" },
               ].map((obj) => (
-                <option value={obj?.value}>{obj?.label}</option>
+                <option key={obj?.id} value={obj?.value}>{obj?.label}</option>
               ))}
             </select>
           </div>
@@ -79,7 +79,7 @@ const CustomerInfo = (props) => {
               <label className="lh-1 text-16 text-light-1">First name</label>
             </div>
             <div className="text-13 text-red-1">
-              {controller?.errors?.FirstName}
+              {controller?.touched?.FirstName && controller?.errors?.FirstName}
             </div>
           </div>
           {/* End col-12 */}
@@ -96,7 +96,7 @@ const CustomerInfo = (props) => {
               <label className="lh-1 text-16 text-light-1">Last name</label>
             </div>
             <div className="text-13 text-red-1">
-              {controller?.errors?.LastName}
+              {controller?.touched?.LastName && controller?.errors?.LastName}
             </div>
           </div>
           {/* End col-12 */}
