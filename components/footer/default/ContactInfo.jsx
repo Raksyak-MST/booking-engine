@@ -2,7 +2,7 @@
 
 import { useSelector } from "react-redux"
 const ContactInfo = () => {
-  const selectedHotel = useSelector(state => state?.pickedHotelDetails?.selectedHotel)
+  const selectedHotel = useSelector(state => state?.hotelDetails?.selectedHotel)
   const contactContent = [
     {
       id: 1,
@@ -12,7 +12,7 @@ const ContactInfo = () => {
     },
     {
       id: 2,
-      title: "Need live support? Contact front Office",
+      title: "Need live support?",
       action: `mailto:${selectedHotel?.frontOfcEmail}`,
       text: selectedHotel?.frontOfcEmail,
     },

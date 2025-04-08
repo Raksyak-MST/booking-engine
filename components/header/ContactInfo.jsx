@@ -10,7 +10,7 @@ const ContactInfo = () => {
     },
     {
       id: 2,
-      title: "Need live support? Contact front Office",
+      title: "Need live support?",
       action: `mailto:${selectedHotel?.frontOfcEmail}`,
       text: selectedHotel?.frontOfcEmail,
     },
