@@ -1,13 +1,14 @@
 
 'use client'
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Tab, Tabs, TabList, TabPanel } from "react-tabs";
 import PricingSummary from "./sidebar/PricingSummary";
 import PaymentSchedule from "./sidebar/PaymentSchedule";
 import RatingInfo from "./RatingInfo";
 import { reservationInfoActions } from "@/store/store"
 import { useSelector, useDispatch } from 'react-redux'
+import { startCheckout } from "@/features/payment/CashFree.mjs"
 
 const PaymentInfo = () => {
   const [itemsTabs, setItemsTabs] = useState(1);
@@ -16,6 +17,10 @@ const PaymentInfo = () => {
     { id: 1, name: "Credit/Debit Card" },
     // { id: 2, name: "Digital Payment" },
   ];
+
+  useEffect(() => {
+    dispatch(startCheckout());
+  }, []);
 
   const handleChange = (e) => {
     const fieldName = e.target.name;

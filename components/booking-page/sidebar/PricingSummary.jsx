@@ -1,7 +1,8 @@
 import { useSelector } from "react-redux"
 
 const PricingSummary = () => {
-  const reservationInfo = useSelector(state => state?.billing?.reservationInfo)
+  const billingReservation = useSelector(state => state?.billing?.reservationInfo)
+  const reservationInfo = billingReservation?.Reservations?.Reservation 
 
   if(!Array.isArray(reservationInfo)) {
     toast.error("Failed to fetch reservation info")

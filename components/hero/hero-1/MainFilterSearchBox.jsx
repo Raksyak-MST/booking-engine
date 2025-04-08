@@ -17,10 +17,9 @@ const MainFilterSearchBox = () => {
   const [getDataForWebBooking, options] = useGetDataForWebBookingMutation()
 
   const handleSubmit = async () => {
-
-    if(!bookingQuery.hotelID){
-      toast.error("Please select a hotel")
-      return
+    if (!bookingQuery.hotelID) {
+      toast.error("Please select a hotel");
+      return;
     }
 
     if (
@@ -66,7 +65,10 @@ const MainFilterSearchBox = () => {
                 onClick={handleSubmit}
               >
                 {options.isLoading ? (
-                  <div className="spinner-border spinner-border-sm" role="status">
+                  <div
+                    className="spinner-border spinner-border-sm"
+                    role="status"
+                  >
                     <span className="sr-only"></span>
                   </div>
                 ) : (

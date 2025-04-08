@@ -31,5 +31,10 @@ export const startCheckout = createAsyncThunk('payment/checkout', async () => {
     cashFree.checkout({
       paymentSessionId: sessionId,
       returnUrl: window.location.href,
-    });
+    }).then((response) => {
+      console.info("CF checkout response: ", response)
+      window.location.href = response.redirectUrl;
+    }).catch((error) => {
+      console.error("CF checkout error: ", error)
+    })
 })

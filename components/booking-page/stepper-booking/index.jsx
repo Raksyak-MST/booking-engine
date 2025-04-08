@@ -13,7 +13,6 @@ import {
 } from "@/store/store";
 import { useDispatch, useSelector } from "react-redux"
 import toast from "react-hot-toast";
-import { startCheckout } from "@/features/payment/CashFree.mjs"
 import { ERROR_MESSAGES } from "@/data/error-messages";
 import { useFormik } from "formik"
 import * as yup from "yup";
@@ -23,7 +22,7 @@ const Index = () => {
   const [ addReservationFromWebMutation ] = useAddReservationFromWebMutation()
   const [ getReservationJsonLikeEzeeWebbooking, options ] = useGetReservationJsonLikeEzeeWebBookingMutation() 
   const reservationInfo = useSelector(state => state.reservationInfo)
-  const reservationsInfo = useSelector(state => state.billing?.reservationInfo)
+  const billingReservationInfo = useSelector(state => state.billing?.reservationInfo)
   const billingInfo = useSelector(state => state.billing)
   const dispatch = useDispatch()
   const formik = useFormik({
@@ -41,48 +40,38 @@ const Index = () => {
       Comment: "",
     },
     onSubmit: (values) => {
-      dispatch(reservationInfoActions.setGuestDetails(values))
+      dispatch(reservationInfoActions.setGuestDetails(values));
 
-      // NOTE: .unwrap() is mandatory to catch errors
-      toast
-        .promise(
-          getReservationJsonLikeEzeeWebbooking(reservationInfo).unwrap(),
-          {
-            loading: "Loading...",
-            success: "Your information is saved successfully.",
-            error: ERROR_MESSAGES.API_FAILED_RESERVATIONS_LIKE_WEB_BOOKING,
+      switch (currentStep) {
+        case 0:
+          toast
+            .promise(
+              // NOTE: .unwrap() is mandatory to catch errors in toast otherwise it will not work
+              getReservationJsonLikeEzeeWebbooking(reservationInfo).unwrap(),
+              {
+                loading: "Loading...",
+                success: "Your information is saved successfully.",
+                error: ERROR_MESSAGES.API_FAILED_RESERVATIONS_LIKE_WEB_BOOKING,
+              }
+            )
+            .then(() => {
+              if (currentStep < steps.length - 1) {
+                setCurrentStep(currentStep + 1);
+              }
+            });
+          break;
+        case 1:
+          try {
+            addReservationFromWebMutation(billingReservationInfo);
+          } catch (error) {
+            toast.error("Failed to book reservation. Please try again later.");
           }
-        )
-        .then(() => {
-          if ( currentStep < steps.length - 1) {
-            setCurrentStep(currentStep + 1);
-            dispatch(startCheckout())
-          }
-        });
-
+      }
     },
     validationSchema: yup.object().shape({
       // Salutation: yup.string().required("Salutation is required"),
       FirstName: yup.string().required("First Name is required"),
       LastName: yup.string().required("Last Name is required"),
-      // Gender: yup.string().required("Gender is required"),
-      // DateOfBirth: yup.string().required("Date of Birth is required"),
-      // SpouseDateOfBirth: yup.string().required("Spouse Date of Birth is required"),
-      // WeddingAnniversary: yup.string().required("Wedding Anniversary is required"),
-      // Password: yup.string().required("Password is required"),
-      // Address: yup.string().required("Address is required"),
-      // City: yup.string().required("City is required"),
-      // State: yup.string().required("State is required"),
-      // Country: yup.string().required("Country is required"),
-      // Nationality: yup.string().required("Nationality is required"),
-      // Zipcode: yup.string().required("Zipcode is required"),
-      // Phone: yup.string().required("Phone is required"),
-      // Mobile: yup.string().required("Mobile is required"),
-      // Fax: yup.string().required("Fax is required"),
-      // Email: yup.string().email().required("Email is required"),
-      // PromoCode: yup.string().required("Promo Code is required"),
-      // Comment: yup.string().required("Comment is required"),
-      // companyID: yup.string().required("Company ID is required"),
     }),
   });
 
@@ -132,14 +121,12 @@ const Index = () => {
       return;
     }
 
-    dispatch(startCheckout())
-
     if (billingInfo?.hasError === false) {
     }
 
     // FIXME: This is a temporary to test the creation of the reservation
     if (currentStep === 1) {
-      await addReservationFromWebMutation(reservationsInfo);
+      await addReservationFromWebMutation(billingReservationInfo);
     }
   };
 
@@ -204,7 +191,6 @@ const Index = () => {
           </div>
         )}
         {/* End prvious btn */}
-
         <div className="col-auto">
           <button
             className="button h-60 px-24 -dark-1 bg-blue-1 text-white"

@@ -65,6 +65,9 @@ const HotelPropertyDetails = (props) => {
           loading: "Loading...",
           success: "Redirecting to booking page",
           error: ERROR_MESSAGES.API_FAILED_DEFAULT_MESSAGE,
+        },
+        {
+          loading: { duration: 5000 },
         }
       )
       .then(() => {

@@ -5,30 +5,6 @@ import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react"
 import moment from 'moment'
 import * as yup from 'yup'
 
-const validationYupSchema = yup.object().shape({
-  // Salutation: yup.string().required("Salutation is required"),
-  // FirstName: yup.string().required("First Name is required"),
-  // LastName: yup.string().required("Last Name is required"),
-  // Gender: yup.string().required("Gender is required"),
-  // DateOfBirth: yup.string().required("Date of Birth is required"),
-  // SpouseDateOfBirth: yup.string().required("Spouse Date of Birth is required"),
-  // WeddingAnniversary: yup.string().required("Wedding Anniversary is required"),
-  // Password: yup.string().required("Password is required"),
-  // Address: yup.string().required("Address is required"),
-  // City: yup.string().required("City is required"),
-  // State: yup.string().required("State is required"),
-  // Country: yup.string().required("Country is required"),
-  // Nationality: yup.string().required("Nationality is required"),
-  // Zipcode: yup.string().required("Zipcode is required"),
-  // Phone: yup.string().required("Phone is required"),
-  // Mobile: yup.string().required("Mobile is required"),
-  // Fax: yup.string().required("Fax is required"),
-  // Email: yup.string().required("Email is required"),
-  // PromoCode: yup.string().required("Promo Code is required"),
-  // Comment: yup.string().required("Comment is required"),
-  // companyID: yup.string().required("Company ID is required"),
-});
-
 // [ API slice ]
 const api = createApi({
   reducerPath: "api",
@@ -223,20 +199,7 @@ const billingInfoSlice = createSlice({
       return !state.isPasswordVisible;
     },
     validateForm: (state) => {
-      try {
-        // abortEarly: false will return all errors at once instead of one by one which is default set with abortEarly: true
-        validationYupSchema.validateSync(state.personalInfo, {
-          abortEarly: false,
-        });
-        state.hasError = false;
-      } catch (err) {
-        const validationError = {};
-        err.inner.forEach((error) => {
-          validationError[error.path] = error.message;
-        });
-        state.errors = validationError;
-        state.hasError = true;
-      }
+      console.error("Use formik validation instead of calling this")
     },
   },
   extraReducers: (builder) => {
@@ -244,7 +207,7 @@ const billingInfoSlice = createSlice({
       api.endpoints.getReservationJsonLikeEzeeWebBooking.matchFulfilled,
       (state, action) => {
         // only extract the first object, this is because the API return an array of objects
-        state.reservationInfo = action.payload?.data?.Reservations?.Reservation;
+        state.reservationInfo = action.payload?.data;
       }
     );
     builder.addMatcher(

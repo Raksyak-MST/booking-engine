@@ -1,26 +1,9 @@
 import Link from "next/link";
 
 import BookingDetails from "./sidebar/BookingDetails";
-import { billingAction } from "@/store/store"
-import { useDispatch, useSelector } from "react-redux";
 
 const CustomerInfo = (props) => {
   const { controller } = props;
-
-  const personalInfo = useSelector((state) => state.billing.personalInfo);
-  const dispatch = useDispatch();
-
-  const handleChange = (e) => {
-    const fieldName = e.target.name;
-    const fieldValue = e.target.value;
-    dispatch(
-      billingAction.setPersonalInfo({
-        ...personalInfo,
-        [fieldName]: fieldValue,
-      })
-    );
-  };
-
   return (
     <>
       <div className="col-xl-7 col-lg-8 mt-30">
