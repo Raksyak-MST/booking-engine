@@ -45,8 +45,24 @@ const CustomerInfo = (props) => {
               values={controller?.values?.Salutation}
               onChange={controller?.handleChange}
             >
-              <option value="Mr">Mr.</option>
-              <option value="Mrs">Mrs.</option>
+              {[
+                { value: "Mr", label: "Mr." },
+                { value: "Mrs", label: "Mrs." },
+                { value: "Ms", label: "Ms." },
+                { value: "Dr", label: "Dr." },
+                { value: "Mast.", label: "Mast.." },
+                { value: "Prof", label: "Prof." },
+                { value: "Capt", label: "Capt." },
+                { value: "Wg Cdr.", label: "Wg Cdr." },
+                { value: "Major.", label: "Major." },
+                { value: "Brig", label: "Brig." },
+                { value: "Col.", label: "Col." },
+                { value: "Lt Col", label: "Lt Col" },
+                { value: "Lt", label: "Lt." },
+                { value: "Maj Gen.", label: "Maj Gen" },
+              ].map((obj) => (
+                <option value={obj?.value}>{obj?.label}</option>
+              ))}
             </select>
           </div>
           {/* End col-12 */}
@@ -62,7 +78,9 @@ const CustomerInfo = (props) => {
               />
               <label className="lh-1 text-16 text-light-1">First name</label>
             </div>
-            <div className="text-13 text-red-1">{controller?.errors?.FirstName}</div>
+            <div className="text-13 text-red-1">
+              {controller?.errors?.FirstName}
+            </div>
           </div>
           {/* End col-12 */}
 
@@ -77,7 +95,9 @@ const CustomerInfo = (props) => {
               />
               <label className="lh-1 text-16 text-light-1">Last name</label>
             </div>
-            <div className="text-13 text-red-1">{controller?.errors?.LastName}</div>
+            <div className="text-13 text-red-1">
+              {controller?.errors?.LastName}
+            </div>
           </div>
           {/* End col-12 */}
 
@@ -92,7 +112,9 @@ const CustomerInfo = (props) => {
               />
               <label className="lh-1 text-16 text-light-1">Email</label>
             </div>
-            <div className="text-13 text-red-1">{controller?.errors?.Email}</div>
+            <div className="text-13 text-red-1">
+              {controller?.errors?.Email}
+            </div>
           </div>
           {/* End col-12 */}
 
@@ -107,7 +129,9 @@ const CustomerInfo = (props) => {
               />
               <label className="lh-1 text-16 text-light-1">Mobile</label>
             </div>
-            <div className="text-13 text-red-1">{controller?.errors?.Mobile}</div>
+            <div className="text-13 text-red-1">
+              {controller?.errors?.Mobile}
+            </div>
           </div>
           {/* End col-12 */}
 
@@ -124,7 +148,9 @@ const CustomerInfo = (props) => {
                 Address line 1
               </label>
             </div>
-            <div className="text-13 text-red-1">{controller?.errors?.Address}</div>
+            <div className="text-13 text-red-1">
+              {controller?.errors?.Address}
+            </div>
           </div>
           {/* End col-12 */}
 
@@ -139,7 +165,9 @@ const CustomerInfo = (props) => {
               />
               <label className="lh-1 text-16 text-light-1">Country</label>
             </div>
-            <div className="text-13 text-red-1">{controller?.errors?.Country}</div>
+            <div className="text-13 text-red-1">
+              {controller?.errors?.Country}
+            </div>
           </div>
           {/* End col-12 */}
 
@@ -156,7 +184,9 @@ const CustomerInfo = (props) => {
                 State/Province/Region
               </label>
             </div>
-            <div className="text-13 text-red-1">{controller?.errors?.State}</div>
+            <div className="text-13 text-red-1">
+              {controller?.errors?.State}
+            </div>
           </div>
           {/* End col-12 */}
 
@@ -173,7 +203,9 @@ const CustomerInfo = (props) => {
                 ZIP code/Postal code
               </label>
             </div>
-            <div className="text-13 text-red-1">{controller?.errors?.Zipcode}</div>
+            <div className="text-13 text-red-1">
+              {controller?.errors?.Zipcode}
+            </div>
           </div>
           {/* End col-12 */}
 
