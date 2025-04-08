@@ -59,6 +59,11 @@
     "@babel/helper-validator-identifier" "^7.22.20"
     to-fast-properties "^2.0.0"
 
+"@cashfreepayments/cashfree-js@^1.0.5":
+  version "1.0.5"
+  resolved "https://registry.yarnpkg.com/@cashfreepayments/cashfree-js/-/cashfree-js-1.0.5.tgz#904bbef75be5e9d821037fd5fbf95f5abb6cbe2d"
+  integrity sha512-fP9wi9mseXJmESGIkD9vb6RAKdSZw42jXiQY2LUt5A2STyEqMv0mYLgK2zqpMNSbdK9QdN1c4YnEv9mmyxC8mg==
+
 "@emotion/babel-plugin@^11.11.0":
   version "11.11.0"
   resolved "https://registry.yarnpkg.com/@emotion/babel-plugin/-/babel-plugin-11.11.0.tgz#c2d872b6a7767a9d176d007f5b31f7d504bb5d6c"
