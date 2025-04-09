@@ -5,12 +5,13 @@ import { roomSelectionActions, bookingQueryActions, useGetReservationJsonLikeEze
 import toast from "react-hot-toast";
 import { ERROR_MESSAGES } from "@/data/error-messages";
 
-const DEFAULT_ROOM_RATE = 0.0;
+const DEFAULT_ROOM_RATE = 0.0; 
 
 const HotelPropertyDetails = (props) => {
   const { hotel } = props;
   const [selectedMealPlan, setSelectedMealPlan] = useState({ EP: true, type: "EP" }); // default selected package name
   const [roomRate, setRoomRate] = useState(DEFAULT_ROOM_RATE);
+  const [perNight, setPerNight] = useState(DEFAULT_ROOM_RATE);
   const [ getReservationJsonLikeEzee, options ] = useGetReservationJsonLikeEzeeWebBookingMutation();
   const reservationInfo = useSelector(state => state.reservationInfo)
 
@@ -34,9 +35,13 @@ const HotelPropertyDetails = (props) => {
       ?.filter((pkg) => pkg.packageCode === "EP")
       .slice(0, 1)
       .pop();
-    const roomAndPackageRate = parseInt(pkg?.rentPreTax);
-    const DefaultESPackageRate = parseInt(EPPackage?.rentPreTax);
+    const roomAndPackageRate = parseInt(pkg?.fullTotal);
+    const DefaultESPackageRate = parseInt(EPPackage?.fullTotal);
+
+    const perNight = parseInt(pkg?.rentPreTax ?? EPPackage?.rentPreTax);
+
     setRoomRate(roomAndPackageRate ?? DefaultESPackageRate);
+    setPerNight(perNight);
   }, [selectedMealPlan]);
 
   const handleMealPlanSelection = (e) => {
@@ -120,7 +125,14 @@ const HotelPropertyDetails = (props) => {
                 style: "currency",
               }).format(roomRate)}
             </p>
-            <p className="text-13 text-light-1 text-md-end">Per Night</p>
+            <p className="text-13 text-light-1 text-md-end">
+              {new Intl.NumberFormat("en-IN", {
+                currency: "INR",
+                style: "currency",
+                currencyDisplay: "symbol",
+              }).format(perNight)}{" "}
+              Per Night
+            </p>
             <p className="text-light-1 text-14 text-md-end">{`${hotel?.adults} adults, ${hotel?.children} children and ${hotel?.roomQuantity} room`}</p>
           </div>
           <div
