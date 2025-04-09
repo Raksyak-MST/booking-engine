@@ -56,6 +56,8 @@ const Index = () => {
           success: "Your information is saved successfully.",
           error: ERROR_MESSAGES.API_FAILED_RESERVATIONS_LIKE_WEB_BOOKING,
         }
+      ).then(
+        createOrder()
       );
     },
     validationSchema: yup.object().shape({
@@ -67,7 +69,7 @@ const Index = () => {
     }),
   });
 
-  const handleOnClick = (e) => {
+  const createOrder = (e) => {
     if (formik.isValid) {
       toast.promise(
         CFCreateOrder({
@@ -163,8 +165,7 @@ const Index = () => {
                 <label className="lh-1 text-16 text-light-1">First name</label>
               </div>
               <div className="text-13 text-red-1">
-                {formik?.touched?.FirstName &&
-                  formik?.errors?.FirstName}
+                {formik?.touched?.FirstName && formik?.errors?.FirstName}
               </div>
             </div>
             {/* End col-12 */}
@@ -197,9 +198,7 @@ const Index = () => {
                 />
                 <label className="lh-1 text-16 text-light-1">Email</label>
               </div>
-              <div className="text-13 text-red-1">
-                {formik?.errors?.Email}
-              </div>
+              <div className="text-13 text-red-1">{formik?.errors?.Email}</div>
             </div>
             {/* End col-12 */}
 
@@ -214,9 +213,7 @@ const Index = () => {
                 />
                 <label className="lh-1 text-16 text-light-1">Mobile</label>
               </div>
-              <div className="text-13 text-red-1">
-                {formik?.errors?.Mobile}
-              </div>
+              <div className="text-13 text-red-1">{formik?.errors?.Mobile}</div>
             </div>
             {/* End col-12 */}
 
@@ -269,9 +266,7 @@ const Index = () => {
                   State/Province/Region
                 </label>
               </div>
-              <div className="text-13 text-red-1">
-                {formik?.errors?.State}
-              </div>
+              <div className="text-13 text-red-1">{formik?.errors?.State}</div>
             </div>
             {/* End col-12 */}
 
@@ -321,6 +316,18 @@ const Index = () => {
                 {/* End col-12 */}
               </div>
             </div>
+            <div className="row x-gap-20 y-gap-20 pt-20">
+              <div className="col-auto">
+                <button
+                  className="button h-60 px-24 -dark-1 bg-blue-1 text-white"
+                  onClick={formik.handleSubmit}
+                  type="submit"
+                >
+                  Book Now
+                </button>
+              </div>
+              {/* End next btn */}
+            </div>
           </form>
         </div>
         <div className="col-xl-5 col-lg-4 mt-30">
@@ -330,18 +337,6 @@ const Index = () => {
         </div>
       </div>
       {/* End main content */}
-      <div className="row x-gap-20 y-gap-20 pt-20">
-        <div className="col-auto">
-          <button
-            className="button h-60 px-24 -dark-1 bg-blue-1 text-white"
-            onClick={formik.handleSubmit}
-            type="submit"
-          >
-            Book Now
-          </button>
-        </div>
-        {/* End next btn */}
-      </div>
       {/* End stepper button */}
     </>
   );
