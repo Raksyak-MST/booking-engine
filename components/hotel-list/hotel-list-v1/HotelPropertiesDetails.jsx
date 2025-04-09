@@ -21,18 +21,20 @@ const HotelPropertyDetails = (props) => {
     packageCode: roomPackage.packageCode,
     packageId: roomPackage.packageID,
     packageRate: roomPackage.rooms[0]?.packageRate,
-    fulltotal: roomPackage.rooms[0]?.fulltotal,
+    rentPreTax: roomPackage.rooms[0]?.RentPreTax,
   }));
 
   useMemo(() => {
     const pkg = roomPackages
       ?.filter((pkg) => pkg.packageCode === selectedMealPlan.type)
+      .slice(0, 1)
       .pop();
     const EPPackage = roomPackages
       ?.filter((pkg) => pkg.packageCode === "EP")
+      .slice(0, 1)
       .pop();
-    const roomAndPackageRate = parseInt(pkg?.fulltotal);
-    const DefaultESPackageRate = parseInt(EPPackage?.fulltotal);
+    const roomAndPackageRate = parseInt(pkg?.rentPreTax);
+    const DefaultESPackageRate = parseInt(EPPackage?.rentPreTax);
     setRoomRate(roomAndPackageRate ?? DefaultESPackageRate);
   }, [selectedMealPlan]);
 

@@ -18,9 +18,9 @@ const PaymentInfo = () => {
     // { id: 2, name: "Digital Payment" },
   ];
 
-  useEffect(() => {
-    dispatch(startCheckout());
-  }, []);
+  // useEffect(() => {
+  //   dispatch(startCheckout());
+  // }, []);
 
   const handleChange = (e) => {
     const fieldName = e.target.name;

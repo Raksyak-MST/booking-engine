@@ -10,6 +10,7 @@ import {
   useGetReservationJsonLikeEzeeWebBookingMutation,
   billingAction,
   reservationInfoActions,
+  cashFreeApiActions,
 } from "@/store/store";
 import { useDispatch, useSelector } from "react-redux"
 import toast from "react-hot-toast";
@@ -24,10 +25,11 @@ const Index = () => {
   const reservationInfo = useSelector(state => state.reservationInfo)
   const billingReservationInfo = useSelector(state => state.billing?.reservationInfo)
   const billingInfo = useSelector(state => state.billing)
+  const [ CFCreateOrder ] = cashFreeApiActions.useCreateOrderMutation()
   const dispatch = useDispatch()
   const formik = useFormik({
     initialValues: {
-      Salutation: "",
+      Salutation: "Mr",
       FirstName: "",
       LastName: "",
       Email: "",
@@ -38,6 +40,7 @@ const Index = () => {
       Zipcode: "",
       Country: "",
       Comment: "",
+      PromoCode: "",
     },
     onSubmit: (values) => {
       dispatch(reservationInfoActions.setGuestDetails(values));
@@ -47,7 +50,11 @@ const Index = () => {
           toast
             .promise(
               // NOTE: .unwrap() is mandatory to catch errors in toast otherwise it will not work
-              getReservationJsonLikeEzeeWebbooking(reservationInfo).unwrap(),
+              // cannot update state in async function because it will cause a race condition
+              getReservationJsonLikeEzeeWebbooking({
+                ...reservationInfo,
+                guestDetails: { ...values },
+              }).unwrap(),
               {
                 loading: "Loading...",
                 success: "Your information is saved successfully.",
@@ -69,9 +76,11 @@ const Index = () => {
       }
     },
     validationSchema: yup.object().shape({
-      // Salutation: yup.string().required("Salutation is required"),
+      Salutation: yup.string().required("Salutation is required"),
       FirstName: yup.string().required("First Name is required"),
       LastName: yup.string().required("Last Name is required"),
+      Email: yup.string().email("Invalid email").required("Email is required"),
+      Mobile: yup.string().required("Mobile is required"),
     }),
   });
 
@@ -138,43 +147,6 @@ const Index = () => {
 
   return (
     <>
-      <div className="row x-gap-40 y-gap-30 items-center">
-        {steps.map((step, index) => (
-          <React.Fragment key={index}>
-            <div className="col-auto">
-              <div
-                className="d-flex items-center cursor-pointer transition"
-                onClick={() => setCurrentStep(index)}
-              >
-                <div
-                  className={
-                    currentStep === index
-                      ? "active size-40 rounded-full flex-center bg-blue-1"
-                      : "size-40 rounded-full flex-center bg-blue-1-05 text-blue-1 fw-500"
-                  }
-                >
-                  {currentStep === index ? (
-                    <>
-                      <i className="icon-check text-16 text-white"></i>
-                    </>
-                  ) : (
-                    <>
-                      <span>{step.stepNo}</span>
-                    </>
-                  )}
-                </div>
-
-                <div className="text-18 fw-500 ml-10"> {step.title}</div>
-              </div>
-            </div>
-            {/* End .col */}
-
-            {step.stepBar}
-          </React.Fragment>
-        ))}
-      </div>
-      {/* End stepper header part */}
-
       <div className="row">{renderStep()}</div>
       {/* End main content */}
 
@@ -195,10 +167,37 @@ const Index = () => {
           <button
             className="button h-60 px-24 -dark-1 bg-blue-1 text-white"
             disabled={currentStep === steps.length - 1}
-            onClick={formik.handleSubmit}
+            onClick={(e) => {
+              formik.handleSubmit(e);
+            }}
             type="submit"
           >
-            Next <div className="icon-arrow-top-right ml-15" />
+            Save
+          </button>
+        </div>
+        <div className="col-auto">
+          <button
+            className="button h-60 px-24 -dark-1 bg-blue-1 text-white"
+            disabled={currentStep === steps.length - 1}
+            onClick={(e) => {
+              if (formik.isValid) {
+                CFCreateOrder({
+                  order_amount: 1.0,
+                  order_currency: "INR",
+                  customer_details: {
+                    customer_id: "1234567890",
+                    customer_phone: formik.values.Mobile,
+                  },
+                }).unwrap().then(res => {
+                  alert(JSON.stringify(res))
+                });
+              } else {
+                toast.error("Please fill your details before payment");
+              }
+            }}
+            type="submit"
+          >
+            Pay Now
           </button>
         </div>
         {/* End next btn */}

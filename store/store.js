@@ -65,6 +65,20 @@ const api = createApi({
   }),
 });
 
+const cashFreeApiSlice = createApi({
+  reducerPath: "cashFreeApi",
+  baseQuery: fetchBaseQuery({ baseUrl: "api" }),
+  endpoints: (builder) => ({
+    createOrder: builder.mutation({
+      query: (data) => ({
+        url: "/create-order",
+        method: "POST",
+        body: data,
+      })
+    })
+  }) 
+});
+
 // [ Store slice]
 const authSlice = createSlice({
   name: "auth",
@@ -80,7 +94,7 @@ const authSlice = createSlice({
 })
 
 const bookingQuerySlice = createSlice({
-  name: "booking/query",
+  name: "bookingQuery",
   initialState: {
     hotelID: 10,
     arrivalDate: moment(new Date()).format("YYYY-MM-DD"),
@@ -96,6 +110,31 @@ const bookingQuerySlice = createSlice({
     setBookingQuery: (state, action) => {
       Object.assign(state, action.payload);
     },
+    increaseAdults: (state) => {
+      const maxAdults = state.quantity * 3;
+      if (state.adults >= maxAdults){return state}
+      else state.adults += 1;
+    },
+    increaseChildren: (state) => {
+      const maxChildren = state.quantity * 2;
+      if (state.children >= maxChildren){return state}
+      state.children += 1;
+    },
+    increaseQuantity: (state) => {
+      state.quantity += 1;
+    },
+    decreaseAdults: (state) => {
+      if (state.adults <= 1){return state}
+      state.adults -= 1;
+    },
+    decreaseChildren: (state) => {
+      if (state.children <= 0){return state}
+      state.children -= 1;
+    },
+    decreaseQuantity: (state) => {
+      if(state.quantity <= 1){return state}
+      state.quantity -= 1;
+    }
   },
 });
 
@@ -294,9 +333,12 @@ export const store = configureStore({
     reservationInfo: reservationInfoSlice.reducer,
     hotelDetails: hotelDetailsSlice.reducer,
     [api.reducerPath]: api.reducer,
+    [cashFreeApiSlice.reducerPath]: cashFreeApiSlice.reducer,
   },
   middleware: (getDefaultMiddleware) =>
-    getDefaultMiddleware().concat(api.middleware),
+    getDefaultMiddleware()
+      .concat(api.middleware)
+      .concat(cashFreeApiSlice.middleware),
 });
 
 // [ Actions exports ]
@@ -307,6 +349,7 @@ export const {
   useAddReservationFromWebMutation,
   useGetHotelDetailsWebBookingMutation,
 } = api;
+export const cashFreeApiActions = cashFreeApiSlice
 
 export const { setIsUserLogin } = authSlice.actions
 export const { setBookingQuery, updateGuest } = bookingSlice.actions

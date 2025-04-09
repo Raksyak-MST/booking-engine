@@ -21,7 +21,7 @@ const PricingSummary = () => {
       <div className="text-20 fw-500 mb-20">Your price summary</div>
       <div className="row y-gap-5 justify-between">
         <div className="col-auto">
-          <div className="text-15">Amount before tax</div>
+          <div className="text-15">Total room charges</div>
         </div>
         <div className="col-auto">
           <div className="text-15">
@@ -44,6 +44,20 @@ const PricingSummary = () => {
               currencyDisplay: "symbol",
               style: "currency",
             }).format(RentalInfo[0]?.TotalTax)}
+          </div>
+        </div>
+      </div>
+      <div className="row y-gap-5 justify-between pt-5">
+        <div className="col-auto">
+          <div className="text-15">Total Price (Inc. Of Taxes)</div>
+        </div>
+        <div className="col-auto">
+          <div className="text-15">
+            {new Intl.NumberFormat("en-IN", {
+              currency:BookingTran[0]?.CurrencyCode ?? "INR",
+              currencyDisplay: "symbol",
+              style: "currency",
+            }).format(RentalInfo[0]?.TotalAmountAfterTax)}
           </div>
         </div>
       </div>

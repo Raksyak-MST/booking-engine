@@ -43,7 +43,6 @@ export default function RootLayout({ children }) {
           rel="stylesheet"
         />
         <link rel="icon" href="./favicon.ico" />
-        <script src="https://sdk.cashfree.com/js/v3/cashfree.js" crossOrigin="anonymous"></script>
       </head>
       <body>
         <main>

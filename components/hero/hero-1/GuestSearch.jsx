@@ -5,40 +5,20 @@ import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { bookingQueryActions } from "@/store/store"
 
-const counters = [
-  { name: "adults", defaultValue: 1 },
-  { name: "children", defaultValue: 0 },
-  { name: "quantity", defaultValue: 1 },
-];
-
-const Counter = ({ name, defaultValue, onCounterChange }) => {
-  const [count, setCount] = useState(defaultValue);
-
-  const incrementCount = () => {
-    if(name === "adults" && count >= 5) return
-    if(name === "children" && count >= 5) return
-    if(name === "quantity" && count >= 5) return
-    setCount(count + 1);
-    onCounterChange(name, count + 1);
-    return
-
-  };
-
-  const decrementCount = () => {
-    if(name === "adults" && count <= 1) return 
-    if(name === "quantity" && count <= 1) return 
-    if (count > 0) {
-      setCount(count - 1);
-      onCounterChange(name, count - 1);
-    }
-  };
-
+const Counter = ({
+  name,
+  title,
+  defaultValue,
+  count,
+  increment = () => {},
+  decrement = () => {},
+}) => {
   return (
     <>
       <div className="row y-gap-10 justify-between items-center">
         <div className="col-auto">
-          <div className="text-15 lh-12 fw-500">{name}</div>
-          {name === "Children" && (
+          <div className="text-15 lh-12 fw-500">{title}</div>
+          {title === "Children" && (
             <div className="text-14 lh-12 text-light-1 mt-5">Ages 0 - 17</div>
           )}
         </div>
@@ -47,7 +27,7 @@ const Counter = ({ name, defaultValue, onCounterChange }) => {
           <div className="d-flex items-center js-counter">
             <button
               className="button -outline-blue-1 text-blue-1 size-38 rounded-4 js-down"
-              onClick={decrementCount}
+              onClick={decrement}
             >
               <i className="icon-minus text-12" />
             </button>
@@ -58,7 +38,7 @@ const Counter = ({ name, defaultValue, onCounterChange }) => {
             {/* counter text  */}
             <button
               className="button -outline-blue-1 text-blue-1 size-38 rounded-4 js-up"
-              onClick={incrementCount}
+              onClick={increment}
             >
               <i className="icon-plus text-12" />
             </button>
@@ -76,10 +56,6 @@ const Counter = ({ name, defaultValue, onCounterChange }) => {
 const GuestSearch = () => {
   const state = useSelector(state => state.bookingQuery)
   const dispatch = useDispatch()
-
-  const handleCounterChange = (name, value) => {
-    dispatch(bookingQueryActions.setBookingQuery({[name]: value}))
-  };
 
   return (
     <div className="searchMenu-guests px-30 lg:py-20 lg:px-0 js-form-dd js-form-counters position-relative">
@@ -101,14 +77,30 @@ const GuestSearch = () => {
 
       <div className="shadow-2 dropdown-menu min-width-400">
         <div className="bg-white px-30 py-30 rounded-4 counter-box">
-          {counters.map((counter) => (
-            <Counter
-              key={counter.name}
-              name={counter.name}
-              defaultValue={state[counter.name]}
-              onCounterChange={handleCounterChange}
-            />
-          ))}
+          <Counter
+            name="adults"
+            title="Adults"
+            defaultValue={1}
+            count={state?.adults}
+            increment={(e) => dispatch(bookingQueryActions.increaseAdults())}
+            decrement={((e) => dispatch(bookingQueryActions.decreaseAdults()))}
+          />
+          <Counter
+            name="children"
+            title="Children"
+            defaultValue={state?.children}
+            count={state?.children}
+            increment={(e) => dispatch(bookingQueryActions.increaseChildren())}
+            decrement={((e) => dispatch(bookingQueryActions.decreaseChildren()))}
+          />
+          <Counter
+            name="quantity"
+            title="Rooms"
+            defaultValue={1}
+            count={state?.quantity}
+            increment={(e) => dispatch(bookingQueryActions.increaseQuantity())}
+            decrement={((e) => dispatch(bookingQueryActions.decreaseQuantity()))}
+          />
         </div>
       </div>
     </div>

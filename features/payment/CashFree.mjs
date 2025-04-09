@@ -4,9 +4,9 @@ import { createAsyncThunk } from "@reduxjs/toolkit";
 let cashFree = null;
 export const initializeSDK= async function () {          
     if (!cashFree) {
-      cashFree = await load({
-        mode: "sandbox",
-      });
+      // cashFree = await load({
+      //   mode: "sandbox",
+      // });
       console.info("CF SDK initialized")
       return cashFree
     }
@@ -27,14 +27,4 @@ export const startCheckout = createAsyncThunk('payment/checkout', async () => {
     console.info("CF SDK accessed: ", cashFree)
 
     if(!cashFree) throw new Error("CashFree SDK is not initialized");
-
-    cashFree.checkout({
-      paymentSessionId: sessionId,
-      returnUrl: window.location.href,
-    }).then((response) => {
-      console.info("CF checkout response: ", response)
-      window.location.href = response.redirectUrl;
-    }).catch((error) => {
-      console.error("CF checkout error: ", error)
-    })
 })
