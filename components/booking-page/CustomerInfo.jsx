@@ -44,7 +44,9 @@ const CustomerInfo = (props) => {
                 { id: 13, value: "Lt", label: "Lt." },
                 { id: 14, value: "Maj Gen.", label: "Maj Gen" },
               ].map((obj) => (
-                <option key={obj?.id} value={obj?.value}>{obj?.label}</option>
+                <option key={obj?.id} value={obj?.value}>
+                  {obj?.label}
+                </option>
               ))}
             </select>
           </div>

@@ -2,19 +2,23 @@ import { useSelector } from "react-redux"
 
 const PricingSummary = () => {
   const billingReservation = useSelector(state => state?.billing?.reservationInfo)
-  const reservationInfo = billingReservation?.Reservations?.Reservation 
+  let reservationInfo = billingReservation?.Reservations?.Reservation 
 
   if(!Array.isArray(reservationInfo)) {
-    toast.error("Failed to fetch reservation info")
+    reservationInfo = [{}]
   }
 
-  const { BookingTran } = reservationInfo[0]
+  let { BookingTran } = reservationInfo[0]
 
   if(!Array.isArray(BookingTran)){
-    toast.error("Failed to fetch booking tran info")
+    BookingTran = [{}]
   }
 
-  const RentalInfo = BookingTran[0].RentalInfo
+  let RentalInfo =  BookingTran[0].RentalInfo
+
+  if(!Array.isArray(RentalInfo)){
+    RentalInfo = [{}]
+  }
 
   return (
     <div className="px-30 py-30 border-light rounded-4 mt-30">
@@ -29,7 +33,7 @@ const PricingSummary = () => {
               currency: BookingTran[0]?.CurrencyCode ?? "INR",
               currencyDisplay: "symbol",
               style: "currency",
-            }).format(RentalInfo[0]?.TotalAmountBeforeTax)}
+            }).format(RentalInfo[0]?.fulltotal)}
           </div>
         </div>
       </div>

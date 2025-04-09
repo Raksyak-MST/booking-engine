@@ -22,6 +22,7 @@ const HotelPropertyDetails = (props) => {
     packageId: roomPackage.packageID,
     packageRate: roomPackage.rooms[0]?.packageRate,
     rentPreTax: roomPackage.rooms[0]?.RentPreTax,
+    fullTotal: roomPackage.rooms[0]?.fulltotal,
   }));
 
   useMemo(() => {
@@ -80,7 +81,7 @@ const HotelPropertyDetails = (props) => {
   return (
     <div className="y-gap-30">
       <div className="row y-gap-10 items-end">
-        <div className="col-md-6">
+        <div className="col-md-6 align-self-start">
           {/* <p className="text-15 fw-500 text-red-1">Rate Details</p> */}
           <p className="text-14 fw-500 mb-10">Select meal plan</p>
           <div className="radio-group">
@@ -110,18 +111,20 @@ const HotelPropertyDetails = (props) => {
             ))}
           </div>
         </div>
-        <div className="col-md-6">
-          <p className="text-18 fw-500 text-md-end">
-            {new Intl.NumberFormat("en-IN", {
-              currencyDisplay: "symbol",
-              currency: "INR",
-              style: "currency",
-            }).format(roomRate)}
-          </p>
-          <p className="text-13 text-light-1 text-md-end">Per Night</p>
-          <p className="text-light-1 text-14 text-md-end">{`${hotel?.adults} adults, ${hotel?.children} children and ${hotel?.roomQuantity} room`}</p>
+        <div className="col-md-6 d-flex flex-column gap-md-2">
+          <div>
+            <p className="text-18 fw-500 text-md-end">
+              {new Intl.NumberFormat("en-IN", {
+                currencyDisplay: "symbol",
+                currency: "INR",
+                style: "currency",
+              }).format(roomRate)}
+            </p>
+            <p className="text-13 text-light-1 text-md-end">Per Night</p>
+            <p className="text-light-1 text-14 text-md-end">{`${hotel?.adults} adults, ${hotel?.children} children and ${hotel?.roomQuantity} room`}</p>
+          </div>
           <div
-            className="button -md -dark-1 bg-blue-1 text-white cursor-pointer"
+            className="button -md -dark-1 bg-blue-1 text-white cursor-pointer align-self-end"
             onClick={handleRoomSelection}
           >
             BOOK NOW

@@ -13,16 +13,12 @@ import "../styles/index.scss";
 import { Provider } from "react-redux";
 import { store } from "../store/store";
 import { Toaster } from 'react-hot-toast'
-import { initializeSDK } from "@/features/payment/CashFree.mjs"
 
 if (typeof window !== "undefined") {
   require("bootstrap/dist/js/bootstrap");
 }
 
 export default function RootLayout({ children }) {
-  useEffect(() => {
-    initializeSDK()
-  }, [])
   useEffect(() => {
     Aos.init({
       duration: 1200,
