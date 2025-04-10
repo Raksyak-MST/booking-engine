@@ -14,11 +14,8 @@ import toast from "react-hot-toast";
 import { ERROR_MESSAGES } from "@/data/error-messages";
 import { useFormik } from "formik";
 import * as yup from "yup";
-// next/router is a client-side-only module, so we need to import useRouter from next/navigation
-import { useRouter } from "next/navigation"
 
 const Index = () => {
-  const Router = useRouter();
   const [addReservationFromWebMutation] = useAddReservationFromWebMutation();
   const [getReservationJsonLikeEzeeWebbooking] =
     useGetReservationJsonLikeEzeeWebBookingMutation();
