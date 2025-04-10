@@ -17,7 +17,7 @@ import * as yup from "yup";
 
 const Index = () => {
   const [addReservationFromWebMutation] = useAddReservationFromWebMutation();
-  const [getReservationJsonLikeEzeeWebbooking] =
+  const [getReservationJsonLikeEzeeWebbooking, options ] =
     useGetReservationJsonLikeEzeeWebBookingMutation();
   const [CFCreateOrder] = cashFreeApiActions.useCreateOrderMutation();
   const reservationInfo = useSelector((state) => state.reservationInfo);
@@ -318,10 +318,20 @@ const Index = () => {
             <div className="row x-gap-20 y-gap-20 pt-20">
               <div className="col-auto">
                 <button
-                  className="button h-60 px-24 -dark-1 bg-blue-1 text-white"
+                  className="button h-60 px-24 -dark-1 bg-blue-1 text-white gap-2"
                   onClick={formik.handleSubmit}
                   type="submit"
                 >
+                  {options.isLoading ? (
+                    <div
+                      className="spinner-border spinner-border-sm"
+                      role="status"
+                    >
+                      <span className="sr-only"></span>
+                    </div>
+                  ) : (
+                    null
+                  )}
                   Book Now
                 </button>
               </div>
