@@ -55,18 +55,6 @@ const SignUpForm = () => {
       {/* End .col */}
 
       <div className="col-12">
-        <div className="d-flex ">
-          <div className="form-checkbox mt-5">
-            <input type="checkbox" name="name" />
-            <div className="form-checkbox__mark">
-              <div className="form-checkbox__icon icon-check" />
-            </div>
-          </div>
-          <div className="text-15 lh-15 text-light-1 ml-10">
-            Email me exclusive Agoda promotions. I can opt out later as stated
-            in the Privacy Policy.
-          </div>
-        </div>
       </div>
       {/* End .col */}
 
