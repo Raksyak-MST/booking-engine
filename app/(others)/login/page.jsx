@@ -1,6 +1,6 @@
 import dynamic from "next/dynamic";
 import CallToActions from "@/components/common/CallToActions";
-import DefaultHeader from "@/components/header/default-header";
+import DefaultHeader from "@/components/header/header-11";
 import DefaultFooter from "@/components/footer/default";
 import LoginWithSocial from "@/components/common/LoginWithSocial";
 import LoginForm from "@/components/common/LoginForm";
@@ -31,10 +31,6 @@ const LogIn = () => {
 
                 <div className="row y-gap-20 pt-30">
                   <div className="col-12">
-                    <div className="text-center">or sign in with</div>
-                  </div>
-                  <LoginWithSocial />
-                  <div className="col-12">
                     <div className="text-center px-30">
                       By creating an account, you agree to our Terms of Service
                       and Privacy Statement.
@@ -50,9 +46,6 @@ const LogIn = () => {
       {/* End login section */}
 
       <CallToActions />
-      {/* End Call To Actions Section */}
-
-      <DefaultFooter />
       {/* End Call To Actions Section */}
     </>
   );

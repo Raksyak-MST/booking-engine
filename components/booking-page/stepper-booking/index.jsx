@@ -21,9 +21,6 @@ const Index = () => {
     useGetReservationJsonLikeEzeeWebBookingMutation();
   const [CFCreateOrder] = cashFreeApiActions.useCreateOrderMutation();
   const reservationInfo = useSelector((state) => state.reservationInfo);
-  const billingReservationInfo = useSelector(
-    (state) => state.billing?.reservationInfo
-  );
   const dispatch = useDispatch();
   const formik = useFormik({
     initialValues: {
@@ -41,24 +38,31 @@ const Index = () => {
       PromoCode: "",
     },
     isValid: false,
-    onSubmit: (values) => {
+    onSubmit: async (values) => {
       dispatch(reservationInfoActions.setGuestDetails(values));
 
-      toast.promise(
-        // NOTE: .unwrap() is mandatory to catch errors in toast otherwise it will not work
-        // cannot update state in async function because it will cause a race condition
-        getReservationJsonLikeEzeeWebbooking({
+      try {
+        const response = await getReservationJsonLikeEzeeWebbooking({
           ...reservationInfo,
           guestDetails: { ...values },
-        }).unwrap(),
-        {
-          loading: "Loading...",
-          success: "Your information is saved successfully.",
-          error: ERROR_MESSAGES.API_FAILED_RESERVATIONS_LIKE_WEB_BOOKING,
+        }).unwrap();
+        if(response?.statusCode !== 200){
+          toast.error(ERROR_MESSAGES.API_FAILED_RESERVATIONS_LIKE_WEB_BOOKING);
+          return;
         }
-      ).then(
-        createOrder()
-      );
+        if(!response?.data){
+          toast.error("Not able to get reservation details. Please try after some time.");
+          return;
+        }
+        if(!Object.hasOwn(response?.data, "Reservations")){
+          toast.error(ERROR_MESSAGES.API_FAILED_RESERVATIONS_LIKE_WEB_BOOKING);
+          return;
+        }
+        await createOrder(response?.data)
+        toast.success("Reservation is being processed. Please wait for confirmation.");
+      } catch (error) {
+        toast.error(ERROR_MESSAGES.API_FAILED_RESERVATIONS_LIKE_WEB_BOOKING);
+      }
     },
     validationSchema: yup.object().shape({
       Salutation: yup.string().required("Salutation is required"),
@@ -69,39 +73,34 @@ const Index = () => {
     }),
   });
 
-  const createOrder = (e) => {
-    if (formik.isValid) {
-      toast.promise(
-        CFCreateOrder({
-          order_amount: 1.0,
-          order_currency: "INR",
-          customer_details: {
-            customer_id: "1234567890",
-            customer_name: formik.values.FirstName,
-            customer_email: formik.values.Email,
-            customer_phone: formik.values.Mobile,
-          },
-        })
-          .unwrap()
-          .then((res) => {
-            alert(JSON.stringify(res));
-            try {
-              addReservationFromWebMutation(billingReservationInfo);
-            } catch (error) {
-              toast.error(
-                "Failed to book reservation. Please try again later."
-              );
-            }
-          }),
-        {
-          loading: "Loading...",
-          success: "You are being redirected to payment page",
-          error: "Failed to proceed.",
-        }
-      );
-    } else {
-      toast.error("Please fill your details before payment");
-    }
+  const createOrder = async (data) => {
+    toast.promise(
+      CFCreateOrder({
+        order_amount: 1.0,
+        order_currency: "INR",
+        customer_details: {
+          customer_id: "1234567890",
+          customer_name: formik.values.FirstName,
+          customer_email: formik.values.Email,
+          customer_phone: formik.values.Mobile,
+        },
+      })
+        .unwrap()
+        .then((res) => {
+          const { payment_link } = res;
+          window.open(payment_link, "_blank");
+          try {
+            addReservationFromWebMutation(data);
+          } catch (error) {
+            toast.error("Failed to book reservation. Please try again later.");
+          }
+        }),
+      {
+        loading: "Loading...",
+        success: "You are being redirected to payment page",
+        error: "Failed to proceed.",
+      }
+    );
   };
 
   return (
