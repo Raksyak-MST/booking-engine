@@ -11,6 +11,7 @@ const api = createApi({
   baseQuery: async (args, api, extraOptions) => {
     const baseQuery = fetchBaseQuery({
       baseUrl: process.env.NEXT_PUBLIC_API_BASE_URL,
+      timeout: 10000,
     });
     const result = await baseQuery(args, api, extraOptions);
 
@@ -67,16 +68,16 @@ const api = createApi({
 
 const cashFreeApiSlice = createApi({
   reducerPath: "cashFreeApi",
-  baseQuery: fetchBaseQuery({ baseUrl: "api" }),
+  baseQuery: fetchBaseQuery({ baseUrl: "api", timeout: 10000 }),
   endpoints: (builder) => ({
     createOrder: builder.mutation({
       query: (data) => ({
         url: "/create-order",
         method: "POST",
         body: data,
-      })
-    })
-  }) 
+      }),
+    }),
+  }),
 });
 
 // [ Store slice]
