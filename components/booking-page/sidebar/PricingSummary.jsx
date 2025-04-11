@@ -1,23 +1,44 @@
 import { useSelector } from "react-redux"
 
+function formateCurrency(num) {
+  return new Intl.NumberFormat("en-IN", {
+    currency: "INR",
+    currencyDisplay: "symbol",
+    style: "currency",
+  }).format(num);
+}
+
 const PricingSummary = () => {
-  const billingReservation = useSelector(state => state?.billing?.reservationInfo)
-  let reservationInfo = billingReservation?.Reservations?.Reservation 
+  const pickedPackageId = useSelector(
+    (state) => state?.bookingQuery?.selectedPackageID
+  );
+  const roomSelection = useSelector((state) => state?.roomSelection);
+  const pickedPackage = roomSelection?.perNightCharges?.filter(
+    (pack) => pack?.packageID === parseInt(pickedPackageId)
+  );
 
-  if(!Array.isArray(reservationInfo)) {
-    reservationInfo = [{}]
+  const rates = !pickedPackage?.length ? {} : pickedPackage[0];
+  const room = !rates?.rooms?.length ? {} : rates.rooms[0];
+
+  const billingReservation = useSelector(
+    (state) => state?.billing?.reservationInfo
+  );
+  let reservationInfo = billingReservation?.Reservations?.Reservation;
+
+  if (!Array.isArray(reservationInfo)) {
+    reservationInfo = [{}];
   }
 
-  let { BookingTran } = reservationInfo[0]
+  let { BookingTran } = reservationInfo[0];
 
-  if(!Array.isArray(BookingTran)){
-    BookingTran = [{}]
+  if (!Array.isArray(BookingTran)) {
+    BookingTran = [{}];
   }
 
-  let RentalInfo =  BookingTran[0].RentalInfo
+  let RentalInfo = BookingTran[0].RentalInfo;
 
-  if(!Array.isArray(RentalInfo)){
-    RentalInfo = [{}]
+  if (!Array.isArray(RentalInfo)) {
+    RentalInfo = [{}];
   }
 
   return (
@@ -29,11 +50,7 @@ const PricingSummary = () => {
         </div>
         <div className="col-auto">
           <div className="text-15">
-            {new Intl.NumberFormat("en-IN", {
-              currency: BookingTran[0]?.CurrencyCode ?? "INR",
-              currencyDisplay: "symbol",
-              style: "currency",
-            }).format(RentalInfo[0]?.fulltotal)}
+            {formateCurrency(room?.TotalAmountBeforeTax)}
           </div>
         </div>
       </div>
@@ -43,11 +60,7 @@ const PricingSummary = () => {
         </div>
         <div className="col-auto">
           <div className="text-15">
-            {new Intl.NumberFormat("en-IN", {
-              currency:BookingTran[0]?.CurrencyCode ?? "INR",
-              currencyDisplay: "symbol",
-              style: "currency",
-            }).format(RentalInfo[0]?.TotalTax)}
+            {formateCurrency(room?.TotalTax)}
           </div>
         </div>
       </div>
@@ -57,11 +70,7 @@ const PricingSummary = () => {
         </div>
         <div className="col-auto">
           <div className="text-15">
-            {new Intl.NumberFormat("en-IN", {
-              currency:BookingTran[0]?.CurrencyCode ?? "INR",
-              currencyDisplay: "symbol",
-              style: "currency",
-            }).format(RentalInfo[0]?.TotalAmountAfterTax)}
+            {formateCurrency(room?.TotalAmountAfterTax)}
           </div>
         </div>
       </div>
@@ -74,11 +83,7 @@ const PricingSummary = () => {
           </div>
           <div className="col-auto">
             <div className="text-18 lh-13 fw-500">
-              {new Intl.NumberFormat("en-IN", {
-                currency: BookingTran[0]?.CurrencyCode ?? "INR",
-                currencyDisplay: "symbol",
-                style: "currency",
-              }).format(RentalInfo[0]?.TotalAmountAfterTax)}
+              {formateCurrency(room?.TotalAmountAfterTax)}
             </div>
           </div>
         </div>
