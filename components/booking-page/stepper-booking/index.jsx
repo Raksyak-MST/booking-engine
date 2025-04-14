@@ -24,7 +24,7 @@ const Index = () => {
   const dispatch = useDispatch();
   const formik = useFormik({
     initialValues: {
-      Salutation: "",
+      Salutation: "Mr",
       FirstName: "",
       LastName: "",
       Email: "",
