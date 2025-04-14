@@ -1,4 +1,4 @@
-import { configureStore, createSlice } from "@reduxjs/toolkit";
+import { configureStore, createListenerMiddleware, createSlice } from "@reduxjs/toolkit";
 
 import findPlaceSlice from "../features/hero/findPlaceSlice";
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react"
@@ -315,6 +315,16 @@ const hotelDetailsSlice = createSlice({
   }
 });
 
+//[ Middleware ]
+
+const localStorageMiddleware = createListenerMiddleware();
+localStorageMiddleware.startListening({
+  actionCreator: roomSelection.actions.setRoomSelection,
+  effect: (action, api) => {
+    localStorage.setItem("roomSelection", JSON.stringify(action.payload));
+  }
+})
+
 // [ Root Store ]
 export const store = configureStore({
   reducer: {
@@ -332,6 +342,7 @@ export const store = configureStore({
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware()
+      .prepend(localStorageMiddleware.middleware)
       .concat(api.middleware)
       .concat(cashFreeApiSlice.middleware),
 });

@@ -1,25 +1,26 @@
 "use client";
 
 import Link from "next/link";
-import React from "react";
+import React, { useEffect } from "react";
 import BookingDetails from "../sidebar/BookingDetails";
 import {
   useAddReservationFromWebMutation,
   useGetReservationJsonLikeEzeeWebBookingMutation,
   reservationInfoActions,
   cashFreeApiActions,
+  roomSelectionActions,
 } from "@/store/store";
 import { useDispatch, useSelector } from "react-redux";
 import toast from "react-hot-toast";
 import { ERROR_MESSAGES } from "@/data/error-messages";
 import { useFormik, FormikProvider, ErrorMessage } from "formik";
 import * as yup from "yup";
-import { useRouter } from 'next/navigation'
+import { useRouter } from "next/navigation";
 
 const Index = () => {
   const router = useRouter();
   const [addReservationFromWebMutation] = useAddReservationFromWebMutation();
-  const [getReservationJsonLikeEzeeWebbooking, options ] =
+  const [getReservationJsonLikeEzeeWebbooking, options] =
     useGetReservationJsonLikeEzeeWebBookingMutation();
   const [CFCreateOrder] = cashFreeApiActions.useCreateOrderMutation();
   const reservationInfo = useSelector((state) => state.reservationInfo);
@@ -34,6 +35,15 @@ const Index = () => {
 
   const rates = !pickedPackage?.length ? {} : pickedPackage[0];
   const room = !rates?.rooms?.length ? {} : rates.rooms[0];
+
+  useEffect(() => {
+    const data = localStorage.getItem("roomSelection");
+    if (data) {
+      // FIXME: Not able to handle this in store.js as it was not defined at server rendering.
+      // did it here because localStorage is not define at the store.js (preloadedState property)
+      dispatch(roomSelectionActions.setRoomSelection(JSON.parse(data)));
+    }
+  }, []);
 
   const dispatch = useDispatch();
   const formik = useFormik({
@@ -60,30 +70,34 @@ const Index = () => {
           ...reservationInfo,
           guestDetails: { ...values },
         }).unwrap();
-        if(response?.statusCode !== 200){
+        if (response?.statusCode !== 200) {
           toast.error(ERROR_MESSAGES.API_FAILED_RESERVATIONS_LIKE_WEB_BOOKING);
           return;
         }
-        if(!response?.data){
-          toast.error("Not able to get reservation details. Please try after some time.");
+        if (!response?.data) {
+          toast.error(
+            "Not able to get reservation details. Please try after some time."
+          );
           return;
         }
-        if(!Object.hasOwn(response?.data, "Reservations")){
+        if (!Object.hasOwn(response?.data, "Reservations")) {
           toast.error(ERROR_MESSAGES.API_FAILED_RESERVATIONS_LIKE_WEB_BOOKING);
           return;
         }
         const orderDetails = {
-        order_amount: room?.TotalAmountAfterTax,
-        order_currency: "INR",
-        customer_details: {
-          customer_id: "1",
-          customer_phone: "8765432190",
-          customer_email: "testuser@gmail.com",
-          customer_name: "test user",
-        },
-      }
-        await createOrder(orderDetails, response?.data)
-        toast.success("Reservation is being processed. Please wait for confirmation.");
+          order_amount: room?.TotalAmountAfterTax,
+          order_currency: "INR",
+          customer_details: {
+            customer_id: "1",
+            customer_phone: "8765432190",
+            customer_email: "testuser@gmail.com",
+            customer_name: "test user",
+          },
+        };
+        await createOrder(orderDetails, response?.data);
+        toast.success(
+          "Reservation is being processed. Please wait for confirmation."
+        );
       } catch (error) {
         toast.error(ERROR_MESSAGES.API_FAILED_RESERVATIONS_LIKE_WEB_BOOKING);
       }
@@ -98,18 +112,18 @@ const Index = () => {
   });
 
   const createOrder = async (orderDetails, ezeeFormattedReservationDetails) => {
-    try{
+    try {
       // TODO: Api call from server to fetch payment session id
       const response = await CFCreateOrder(orderDetails);
 
-      if(response?.error){
-        console.error("Error creating Cashfree order:", response.error); 
+      if (response?.error) {
+        console.error("Error creating Cashfree order:", response.error);
         return;
       }
 
-      console.info("CF Order created.")
+      console.info("CF Order created.");
 
-      if(!response?.data?.payment_session_id){
+      if (!response?.data?.payment_session_id) {
         console.error("Payment session id is missing from response");
         toast.error("Error creating CF order. Please try after some time.");
         return;
@@ -121,27 +135,28 @@ const Index = () => {
 
       const checkoutResponse = await cashFree.checkout({
         mode: "sandbox",
-        paymentSessionId: data?.payment_session_id	,
+        paymentSessionId: data?.payment_session_id,
         redirectTarget: "_modal",
-      })
+      });
 
-      if(checkoutResponse?.error){
-        toast.error(checkoutResponse?.error?.message)
+      if (checkoutResponse?.error) {
+        toast.error(checkoutResponse?.error?.message);
       }
 
       console.info("Checkout response : ", checkoutResponse);
 
       // TODO: Add reservation
-      const addReservationResponse = await addReservationFromWebMutation(ezeeFormattedReservationDetails)
+      const addReservationResponse = await addReservationFromWebMutation(
+        ezeeFormattedReservationDetails
+      );
 
-      if(addReservationResponse?.error){
+      if (addReservationResponse?.error) {
         toast.error("Error adding reservation. Please try after some time.");
         console.error(addReservationResponse?.error);
       }
 
-      router.push("/order-submitted")
-
-    }catch(error){
+      router.push("/order-submitted");
+    } catch (error) {
       console.error("Error creating Cashfree order:", error);
     }
   };
@@ -206,9 +221,15 @@ const Index = () => {
                     onBlur={formik?.handleBlur}
                     required
                   />
-                  <label className="lh-1 text-16 text-light-1">First name</label>
+                  <label className="lh-1 text-16 text-light-1">
+                    First name
+                  </label>
                 </div>
-                <ErrorMessage component="span" className="text-13 text-red-1" name="FirstName"/>
+                <ErrorMessage
+                  component="span"
+                  className="text-13 text-red-1"
+                  name="FirstName"
+                />
               </div>
               {/* End col-12 */}
               <div className="col-md-4">
@@ -223,7 +244,11 @@ const Index = () => {
                   />
                   <label className="lh-1 text-16 text-light-1">Last name</label>
                 </div>
-                <ErrorMessage component="span" className="text-13 text-red-1" name="LastName" />
+                <ErrorMessage
+                  component="span"
+                  className="text-13 text-red-1"
+                  name="LastName"
+                />
               </div>
               {/* End col-12 */}
               <div className="col-md-12">
@@ -238,7 +263,11 @@ const Index = () => {
                   />
                   <label className="lh-1 text-16 text-light-1">Email</label>
                 </div>
-                <ErrorMessage component="span" className="text-13 text-red-1" name="Email"/>
+                <ErrorMessage
+                  component="span"
+                  className="text-13 text-red-1"
+                  name="Email"
+                />
               </div>
               {/* End col-12 */}
               <div className="col-md-12">
@@ -253,7 +282,11 @@ const Index = () => {
                   />
                   <label className="lh-1 text-16 text-light-1">Mobile</label>
                 </div>
-                <ErrorMessage component="span" className="text-13 text-red-1" name="Mobile" />
+                <ErrorMessage
+                  component="span"
+                  className="text-13 text-red-1"
+                  name="Mobile"
+                />
               </div>
               {/* End col-12 */}
               <div className="col-12">
@@ -303,7 +336,9 @@ const Index = () => {
                     State/Province/Region
                   </label>
                 </div>
-                <div className="text-13 text-red-1">{formik?.errors?.State}</div>
+                <div className="text-13 text-red-1">
+                  {formik?.errors?.State}
+                </div>
               </div>
               {/* End col-12 */}
               <div className="col-md-6">
@@ -343,8 +378,8 @@ const Index = () => {
                 <div className="row y-gap-20 items-center justify-between">
                   <div className="col-auto">
                     <div className="text-14 text-light-1">
-                      By proceeding with this booking, I agree to Oterra Terms of
-                      Use and Privacy Policy.
+                      By proceeding with this booking, I agree to Oterra Terms
+                      of Use and Privacy Policy.
                     </div>
                   </div>
                   {/* End col-12 */}
@@ -364,9 +399,7 @@ const Index = () => {
                       >
                         <span className="sr-only"></span>
                       </div>
-                    ) : (
-                      null
-                    )}
+                    ) : null}
                     Book Now
                   </button>
                 </div>
