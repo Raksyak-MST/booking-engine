@@ -1,20 +1,21 @@
 // app/api/create-order/route.ts
 import { NextResponse } from 'next/server';
+import { Cashfree } from "cashfree-pg"
 
 export async function POST(req) {
-  const body = await req.json();
-
-  const cfRes = await fetch('https://sandbox.cashfree.com/pg/orders', {
-    method: 'POST',
-    headers: {
-      'x-api-version': process.env.CF_API_VERSION,
-      'x-client-id': process.env.CASHFREE_API_CLIENT_ID,
-      'x-client-secret': process.env.CASHFREE_API_CLIENT_SECRET,
-      'Content-Type': 'application/json'
-    },
-    body: JSON.stringify(body),
-  });
-
-  const data = await cfRes.json();
-  return NextResponse.json(data, { status: cfRes.status });
+  const cashFree = new Cashfree(
+    Cashfree.SANDBOX,
+    process.env.CASHFREE_API_CLIENT_ID,
+    process.env.CASHFREE_API_CLIENT_SECRET
+  );
+  const request = await req.json();
+  console.log("Request:", request);
+  try {
+    const response = await cashFree.PGCreateOrder(request);
+    console.log("Cashfree response:", response);
+    return NextResponse.json(response?.data, { status: 200 });
+  } catch (error) {
+    console.error("Error creating shfree order:", error?.message);
+    return NextResponse.json({ error: error.message }, { status: 500 });
+  }
 }

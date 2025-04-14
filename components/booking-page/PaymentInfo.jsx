@@ -8,7 +8,7 @@ import PaymentSchedule from "./sidebar/PaymentSchedule";
 import RatingInfo from "./RatingInfo";
 import { reservationInfoActions } from "@/store/store"
 import { useSelector, useDispatch } from 'react-redux'
-import { startCheckout } from "@/features/payment/CashFree.mjs"
+import { startCheckout } from "@/features/payment/CashFree"
 
 const PaymentInfo = () => {
   const [itemsTabs, setItemsTabs] = useState(1);

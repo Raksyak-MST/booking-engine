@@ -74,33 +74,53 @@ const Index = () => {
   });
 
   const createOrder = async (data) => {
-    toast.promise(
-      CFCreateOrder({
-        order_amount: 1.0,
+    try{
+      // TODO: Api call from server to fetch payment session id
+      const response = await CFCreateOrder({
+        order_amount: 100.0,
         order_currency: "INR",
         customer_details: {
-          customer_id: "1234567890",
-          customer_name: formik.values.FirstName,
-          customer_email: formik.values.Email,
-          customer_phone: formik.values.Mobile,
+          customer_id: "1",
+          customer_phone: "8765432190",
+          customer_email: "testuser@gmail.com",
+          customer_name: "test user",
         },
-      })
-        .unwrap()
-        .then((res) => {
-          const { payment_link } = res;
-          window.open(payment_link, "_blank");
-          try {
-            addReservationFromWebMutation(data);
-          } catch (error) {
-            toast.error("Failed to book reservation. Please try again later.");
-          }
-        }),
-      {
-        loading: "Loading...",
-        success: "You are being redirected to payment page",
-        error: "Failed to proceed.",
+      });
+
+      if(response?.error){
+        console.error("Error creating Cashfree order:", response.error); 
+        return;
       }
-    );
+
+      console.info("CF Order created.")
+
+      if(!response?.data?.payment_session_id){
+        console.log("Payment session id is missing from response");
+        toast.error("Error creating CF order. Please try after some time.");
+        return;
+      }
+
+      const data = response?.data;
+      console.log("Cashfree created order response : ", data);
+      const cashFree = Cashfree({ mode: "sendbox" });
+
+      console.log("Cashfree object : ", cashFree);
+
+      const checkoutResponse = await cashFree.checkout({
+        mode: "sandbox",
+        paymentSessionId: data?.payment_session_id	,
+        redirectTarget: "_modal",
+      })
+
+      if(checkoutResponse?.error){
+        toast.error(checkoutResponse?.error?.message)
+      }
+
+      console.log("Checkout response : ", checkoutResponse);
+
+    }catch(error){
+      console.error("Error creating Cashfree order:", error);
+    }
   };
 
   return (
