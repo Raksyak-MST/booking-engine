@@ -9,10 +9,8 @@ export async function POST(req) {
     process.env.CASHFREE_API_CLIENT_SECRET
   );
   const request = await req.json();
-  console.log("Request:", request);
   try {
     const response = await cashFree.PGCreateOrder(request);
-    console.log("Cashfree response:", response);
     return NextResponse.json(response?.data, { status: 200 });
   } catch (error) {
     console.error("Error creating shfree order:", error?.message);

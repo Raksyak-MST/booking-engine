@@ -1,9 +1,28 @@
+'use client'
+
 import { useSelector } from "react-redux"
+import toast from "react-hot-toast"
 import moment from "moment"
 
 const OrderSubmittedInfo = () => {
   const personalInfo = useSelector((state) => state.billing.personalInfo) 
-  const reservationInfo = useSelector((state) => state.billing.reservationInfo)
+  const reservationCompetitionDetails = useSelector((state) => state.billing.reservationCompetitionDetails)
+
+  let reservationNumber,
+    reservationResults,
+    reservationDate,
+    reservationTotalAmount,
+    reservationPaymentMethod;
+
+  if(!Array.isArray(reservationCompetitionDetails?.reservationResults)){
+    toast.error("Reservation details not found")
+    reservationResults = [{}]
+  }
+
+  if (reservationCompetitionDetails?.reservationResults?.length > 0) {
+    reservationNumber =
+      reservationCompetitionDetails?.reservationResults[0].reservationDetails;
+  }
 
   return (
     <>
@@ -27,7 +46,7 @@ const OrderSubmittedInfo = () => {
               <div className="col-lg-3 col-md-6">
                 <div className="text-15 lh-2812">Reservation Number</div>
                 <div className="text-15 lh-12 fw-500 text-blue-1 mt-10">
-                  13119
+                  {reservationNumber}
                 </div>
               </div>
               {/* End .col */}

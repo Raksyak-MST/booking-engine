@@ -14,13 +14,27 @@ import toast from "react-hot-toast";
 import { ERROR_MESSAGES } from "@/data/error-messages";
 import { useFormik, FormikProvider, ErrorMessage } from "formik";
 import * as yup from "yup";
+import { useRouter } from 'next/navigation'
 
 const Index = () => {
+  const router = useRouter();
   const [addReservationFromWebMutation] = useAddReservationFromWebMutation();
   const [getReservationJsonLikeEzeeWebbooking, options ] =
     useGetReservationJsonLikeEzeeWebBookingMutation();
   const [CFCreateOrder] = cashFreeApiActions.useCreateOrderMutation();
   const reservationInfo = useSelector((state) => state.reservationInfo);
+
+  const pickedPackageId = useSelector(
+    (state) => state?.bookingQuery?.selectedPackageID
+  );
+  const roomSelection = useSelector((state) => state?.roomSelection);
+  const pickedPackage = roomSelection?.perNightCharges?.filter(
+    (pack) => pack?.packageID === parseInt(pickedPackageId)
+  );
+
+  const rates = !pickedPackage?.length ? {} : pickedPackage[0];
+  const room = !rates?.rooms?.length ? {} : rates.rooms[0];
+
   const dispatch = useDispatch();
   const formik = useFormik({
     initialValues: {
@@ -58,7 +72,17 @@ const Index = () => {
           toast.error(ERROR_MESSAGES.API_FAILED_RESERVATIONS_LIKE_WEB_BOOKING);
           return;
         }
-        await createOrder({}, response?.data)
+        const orderDetails = {
+        order_amount: room?.TotalAmountAfterTax,
+        order_currency: "INR",
+        customer_details: {
+          customer_id: "1",
+          customer_phone: "8765432190",
+          customer_email: "testuser@gmail.com",
+          customer_name: "test user",
+        },
+      }
+        await createOrder(orderDetails, response?.data)
         toast.success("Reservation is being processed. Please wait for confirmation.");
       } catch (error) {
         toast.error(ERROR_MESSAGES.API_FAILED_RESERVATIONS_LIKE_WEB_BOOKING);
@@ -76,16 +100,7 @@ const Index = () => {
   const createOrder = async (orderDetails, ezeeFormattedReservationDetails) => {
     try{
       // TODO: Api call from server to fetch payment session id
-      const response = await CFCreateOrder({
-        order_amount: 100.0,
-        order_currency: "INR",
-        customer_details: {
-          customer_id: "1",
-          customer_phone: "8765432190",
-          customer_email: "testuser@gmail.com",
-          customer_name: "test user",
-        },
-      });
+      const response = await CFCreateOrder(orderDetails);
 
       if(response?.error){
         console.error("Error creating Cashfree order:", response.error); 
@@ -95,16 +110,14 @@ const Index = () => {
       console.info("CF Order created.")
 
       if(!response?.data?.payment_session_id){
-        console.log("Payment session id is missing from response");
+        console.error("Payment session id is missing from response");
         toast.error("Error creating CF order. Please try after some time.");
         return;
       }
 
       const data = response?.data;
-      console.log("Cashfree created order response : ", data);
+      console.info("Cashfree created order response : ", data);
       const cashFree = Cashfree({ mode: "sendbox" });
-
-      console.log("Cashfree object : ", cashFree);
 
       const checkoutResponse = await cashFree.checkout({
         mode: "sandbox",
@@ -116,7 +129,7 @@ const Index = () => {
         toast.error(checkoutResponse?.error?.message)
       }
 
-      console.log("Checkout response : ", checkoutResponse);
+      console.info("Checkout response : ", checkoutResponse);
 
       // TODO: Add reservation
       const addReservationResponse = await addReservationFromWebMutation(ezeeFormattedReservationDetails)
@@ -125,6 +138,8 @@ const Index = () => {
         toast.error("Error adding reservation. Please try after some time.");
         console.error(addReservationResponse?.error);
       }
+
+      router.push("/order-submitted")
 
     }catch(error){
       console.error("Error creating Cashfree order:", error);
