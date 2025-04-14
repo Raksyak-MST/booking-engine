@@ -280,12 +280,6 @@ const reservationInfoSlice = createSlice({
     }
   },
   extraReducers: (builder) => {
-    builder.addCase(
-      billingInfoSlice.actions.setPersonalInfo,
-      (state, action) => {
-        Object.assign(state.guestDetails, action.payload);
-      }
-    );
     builder.addCase(roomSelection.actions.setRoomSelection, (state, action) => {
       // NOTE: roomTypeID is the key from the api response so it is not the same as the key in the state
       Object.assign(state, {
