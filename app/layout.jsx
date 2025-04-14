@@ -13,6 +13,7 @@ import "../styles/index.scss";
 import { Provider } from "react-redux";
 import { store } from "../store/store";
 import { Toaster } from 'react-hot-toast'
+import Script from "next/script";
 
 if (typeof window !== "undefined") {
   require("bootstrap/dist/js/bootstrap");
@@ -39,6 +40,7 @@ export default function RootLayout({ children }) {
           rel="stylesheet"
         />
         <link rel="icon" href="./favicon.ico" />
+        <Script src="https://sdk.cashfree.com/js/v3/cashfree.js"></Script>
       </head>
       <body>
         <main>
