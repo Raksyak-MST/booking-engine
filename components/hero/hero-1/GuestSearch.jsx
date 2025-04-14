@@ -82,24 +82,24 @@ const GuestSearch = () => {
             title="Adults"
             defaultValue={1}
             count={state?.adults}
-            increment={(e) => dispatch(bookingQueryActions.increaseAdults())}
-            decrement={((e) => dispatch(bookingQueryActions.decreaseAdults()))}
+            increment={(e) => dispatch(bookingQueryActions.onAdultChange(state?.adults + 1))}
+            decrement={((e) => dispatch(bookingQueryActions.onAdultChange(state?.adults - 1)))}
           />
           <Counter
             name="children"
             title="Children"
             defaultValue={state?.children}
             count={state?.children}
-            increment={(e) => dispatch(bookingQueryActions.increaseChildren())}
-            decrement={((e) => dispatch(bookingQueryActions.decreaseChildren()))}
+            increment={(e) => dispatch(bookingQueryActions.onChildrenChange(state?.children + 1))}
+            decrement={((e) => dispatch(bookingQueryActions.onChildrenChange(state?.children - 1)))}
           />
           <Counter
             name="quantity"
             title="Rooms"
             defaultValue={1}
             count={state?.quantity}
-            increment={(e) => dispatch(bookingQueryActions.increaseQuantity())}
-            decrement={((e) => dispatch(bookingQueryActions.decreaseQuantity()))}
+            increment={(e) => dispatch(bookingQueryActions.onRoomChange(state?.quantity + 1))}
+            decrement={((e) => dispatch(bookingQueryActions.onRoomChange(Math.max(1, state?.quantity - 1))))}
           />
         </div>
       </div>

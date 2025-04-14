@@ -189,6 +189,7 @@ const OrderSubmittedInfo = () => {
           </div>
           {/* End order information */}
         </div>
+        <button>Download</button>
       </div>
     </>
   );

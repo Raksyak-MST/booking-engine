@@ -94,6 +94,11 @@ const authSlice = createSlice({
   }
 })
 
+const getMaxAdults = (rooms) => rooms * 2;
+const getMaxChildren = (rooms) => rooms * 3;
+const getMaxTotalGuests = (rooms) => rooms * 5;
+const clamp = (value, min, max) => Math.max(min, Math.min(value, max));
+
 const bookingQuerySlice = createSlice({
   name: "bookingQuery",
   initialState: {
@@ -110,6 +115,40 @@ const bookingQuerySlice = createSlice({
   reducers: {
     setBookingQuery: (state, action) => {
       Object.assign(state, action.payload);
+    },
+    onRoomChange: (state, action) => {
+      const maxA = getMaxAdults(action.payload);
+      const maxC = getMaxChildren(action.payload);
+      const maxT = getMaxTotalGuests(action.payload);
+
+      let total = state.adults + state.children;
+
+      if(total > maxT) {
+        const overflow = total - maxT;
+        const newChildren = clamp(state.children - overflow, 0, maxC)
+        const newAdults = clamp(state.adults, 1, maxA);
+        state.children = newChildren;
+        state.adults = newAdults;
+      }else{
+        state.adults = clamp(state.adults, 1, maxA);
+        state.children = clamp(state.children, 0, maxC);
+      }
+      state.quantity = action.payload;
+    },
+    onAdultChange: (state, action) => {
+      const maxA = getMaxAdults(state.quantity)
+      const total = action.payload  + state.children
+
+      if(total <= getMaxTotalGuests(state.quantity)){
+        state.adults = clamp(action.payload, 1, maxA);
+      }
+    },
+    onChildrenChange: (state, action) => {
+      const maxC = getMaxChildren(state.quantity) 
+      const total = state.adults + action.payload
+      if(total <= getMaxTotalGuests(state.quantity)){
+        state.children = clamp(action.payload, 0, maxC);
+      }
     },
     increaseAdults: (state) => {
       const maxAdults = state.quantity * 3;
