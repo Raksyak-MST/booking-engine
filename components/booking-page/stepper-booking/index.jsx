@@ -58,7 +58,7 @@ const Index = () => {
           toast.error(ERROR_MESSAGES.API_FAILED_RESERVATIONS_LIKE_WEB_BOOKING);
           return;
         }
-        await createOrder(response?.data)
+        await createOrder({}, response?.data)
         toast.success("Reservation is being processed. Please wait for confirmation.");
       } catch (error) {
         toast.error(ERROR_MESSAGES.API_FAILED_RESERVATIONS_LIKE_WEB_BOOKING);
@@ -73,7 +73,7 @@ const Index = () => {
     }),
   });
 
-  const createOrder = async (data) => {
+  const createOrder = async (orderDetails, ezeeFormattedReservationDetails) => {
     try{
       // TODO: Api call from server to fetch payment session id
       const response = await CFCreateOrder({
@@ -117,6 +117,14 @@ const Index = () => {
       }
 
       console.log("Checkout response : ", checkoutResponse);
+
+      // TODO: Add reservation
+      const addReservationResponse = await addReservationFromWebMutation(ezeeFormattedReservationDetails)
+
+      if(addReservationResponse?.error){
+        toast.error("Error adding reservation. Please try after some time.");
+        console.error(addReservationResponse?.error);
+      }
 
     }catch(error){
       console.error("Error creating Cashfree order:", error);
