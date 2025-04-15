@@ -3,6 +3,7 @@
 import { useSelector } from "react-redux"
 import toast from "react-hot-toast"
 import moment from "moment"
+import { useEffect } from "react";
 
 const OrderSubmittedInfo = () => {
   const personalInfo = useSelector((state) => state.reservationInfo.guestDetails) 
@@ -34,6 +35,10 @@ const OrderSubmittedInfo = () => {
     reservationNumber =
       reservationCompetitionDetails?.reservationResults[0].reservationDetails;
   }
+
+  useEffect(() => {
+    sessionStorage.removeItem("roomSelection")
+  }, [])
 
   return (
     <>

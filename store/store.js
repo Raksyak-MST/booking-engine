@@ -104,7 +104,7 @@ const bookingQuerySlice = createSlice({
   initialState: {
     hotelID: 10,
     arrivalDate: moment(new Date()).format("YYYY-MM-DD"),
-    departureDate: moment(new Date()).format("YYYY-MM-DD"),
+    departureDate: moment(new Date()).add(1, "days").format("YYYY-MM-DD"),
     adults: 1,
     children: 0,
     quantity: 1,
