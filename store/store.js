@@ -360,7 +360,7 @@ const localStorageMiddleware = createListenerMiddleware();
 localStorageMiddleware.startListening({
   actionCreator: roomSelection.actions.setRoomSelection,
   effect: (action, api) => {
-    localStorage.setItem("roomSelection", JSON.stringify(action.payload));
+    sessionStorage.setItem("roomSelection", JSON.stringify(action.payload));
   }
 })
 

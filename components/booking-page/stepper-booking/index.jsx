@@ -37,7 +37,7 @@ const Index = () => {
   const room = !rates?.rooms?.length ? {} : rates.rooms[0];
 
   useEffect(() => {
-    const data = localStorage.getItem("roomSelection");
+    const data = sessionStorage.getItem("roomSelection");
     if (data) {
       // FIXME: Not able to handle this in store.js as it was not defined at server rendering.
       // did it here because localStorage is not define at the store.js (preloadedState property)
