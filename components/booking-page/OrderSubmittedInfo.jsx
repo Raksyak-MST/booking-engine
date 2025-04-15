@@ -1,11 +1,14 @@
 'use client'
 
-import { useSelector } from "react-redux"
+import { useSelector, useDispatch } from "react-redux"
 import toast from "react-hot-toast"
 import moment from "moment"
 import { useEffect } from "react";
+import { reservationInfoActions } from "@/store/store"
 
 const OrderSubmittedInfo = () => {
+  let rendered; // FIXME: used it to show the toast message only once
+  const dispatch = useDispatch()
   const personalInfo = useSelector((state) => state.reservationInfo.guestDetails) 
   const reservationCompetitionDetails = useSelector((state) => state.billing.reservationCompetitionDetails)
 
@@ -22,14 +25,22 @@ const OrderSubmittedInfo = () => {
 
   let reservationNumber,
     reservationResults,
-    reservationDate,
+    reservationDate = new Date(),
     reservationTotalAmount,
     reservationPaymentMethod;
 
-  if(!Array.isArray(reservationCompetitionDetails?.reservationResults)){
-    toast.error("Reservation details not found")
-    reservationResults = [{}]
-  }
+    useEffect(() => {
+      if(!rendered){
+        if (!Array.isArray(reservationCompetitionDetails?.reservationResults)) {
+          toast.error("Reservation details not found");
+          reservationResults = [{}];
+        }
+      }
+      return () => {
+        rendered = true;
+      }
+    }, [reservationCompetitionDetails?.reservationResults]);
+
 
   if (reservationCompetitionDetails?.reservationResults?.length > 0) {
     reservationNumber =
@@ -37,8 +48,20 @@ const OrderSubmittedInfo = () => {
   }
 
   useEffect(() => {
-    sessionStorage.removeItem("roomSelection")
-  }, [])
+    if (sessionStorage.getItem("guestDetails")) {
+      dispatch(
+        reservationInfoActions.setGuestDetails(
+          JSON.parse(sessionStorage.getItem("guestDetails"))
+        )
+      );
+    }
+  }, []);
+
+  function renderMessage() {
+    return reservationNumber
+      ? `${personalInfo?.Salutation} ${personalInfo?.LastName}, your reservation was submitted successfully!`
+      : "Reservation details not found";
+  }
 
   return (
     <>
@@ -48,13 +71,12 @@ const OrderSubmittedInfo = () => {
             <div className="size-80 flex-center rounded-full bg-dark-3">
               <i className="icon-check text-30 text-white" />
             </div>
-            <div className="text-26 lh-1 fw-600 mt-20">
-              {`${personalInfo?.Salutation} ${personalInfo?.LastName}`}, your
-              reservation was submitted successfully!
-            </div>
-            <div className="text-15 text-light-1 mt-10">
-              Booking details has been sent to: {personalInfo?.Email}
-            </div>
+            <div className="text-26 lh-1 fw-600 mt-20">{renderMessage()}</div>
+            {reservationNumber && (
+              <div className="text-15 text-light-1 mt-10">
+                Booking details has been sent to: {personalInfo?.Email}
+              </div>
+            )}
           </div>
           {/* End header */}
 
@@ -63,25 +85,25 @@ const OrderSubmittedInfo = () => {
               <div className="col-lg-3 col-md-6">
                 <div className="text-15 lh-2812">Reservation Number</div>
                 <div className="text-15 lh-12 fw-500 text-blue-1 mt-10">
-                  {reservationNumber}
+                  {reservationNumber || "N/A"}
                 </div>
               </div>
               {/* End .col */}
               <div className="col-lg-3 col-md-6">
                 <div className="text-15 lh-12">Date</div>
                 <div className="text-15 lh-12 fw-500 text-blue-1 mt-10">
-                  {moment(new Date()).format("ddd DD MMM YYYY")}
+                  {reservationNumber ? moment(reservationDate).format("ddd DD MMM YYYY") : "N/A"}
                 </div>
               </div>
               {/* End .col */}
               <div className="col-lg-3 col-md-6">
                 <div className="text-15 lh-12">Total</div>
                 <div className="text-15 lh-12 fw-500 text-blue-1 mt-10">
-                  {new Intl.NumberFormat("en-IN", {
+                  {reservationNumber ? new Intl.NumberFormat("en-IN", {
                     currency: "INR",
                     style: "currency",
                     currencyDisplay: "symbol",
-                  }).format(room?.TotalAmountAfterTax)}
+                  }).format(room?.TotalAmountAfterTax) : "N/A"}
                 </div>
               </div>
               {/* End .col */}
@@ -194,7 +216,6 @@ const OrderSubmittedInfo = () => {
           </div>
           {/* End order information */}
         </div>
-        <button>Download</button>
       </div>
     </>
   );

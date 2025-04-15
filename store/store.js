@@ -364,6 +364,20 @@ localStorageMiddleware.startListening({
   }
 })
 
+localStorageMiddleware.startListening({
+  actionCreator: reservationInfoSlice.actions.setGuestDetails,
+  effect: (action, api) => {
+    sessionStorage.setItem("guestDetails", JSON.stringify(action.payload))
+  }
+})
+
+localStorageMiddleware.startListening({
+  matcher: api.endpoints.addReservationFromWeb.matchFulfilled,
+  effect: () => {
+    sessionStorage.removeItem("roomSelection")
+  }
+})
+
 // [ Root Store ]
 export const store = configureStore({
   reducer: {

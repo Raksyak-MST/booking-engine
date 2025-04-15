@@ -45,6 +45,13 @@ const Index = () => {
     }
   }, []);
 
+  useEffect(() => {
+    const data = sessionStorage.getItem("guestDetails");
+    if (data) {
+      dispatch(reservationInfoActions.setGuestDetails(JSON.parse(data)));
+    }
+  }, []);
+
   const dispatch = useDispatch();
   const formik = useFormik({
     initialValues: {
@@ -60,11 +67,13 @@ const Index = () => {
       Country: "",
       Comment: "",
       PromoCode: "",
+      ...reservationInfo?.guestDetails
     },
+    enableReinitialize: true,
     isValid: false,
     onSubmit: async (values) => {
       dispatch(reservationInfoActions.setGuestDetails(values));
-      
+
       try {
         const response = await getReservationJsonLikeEzeeWebbooking({
           ...reservationInfo,
@@ -94,7 +103,12 @@ const Index = () => {
             customer_name: "test user",
           },
         };
-        await createOrder(orderDetails, response?.data);
+        const { error } = await createOrder(orderDetails, response?.data);
+
+        if (error) {
+          return;
+        }
+
         toast.success(
           "Reservation is being processed. Please wait for confirmation."
         );
@@ -144,6 +158,12 @@ const Index = () => {
       }
 
       console.info("Checkout response : ", checkoutResponse);
+
+      if(checkoutResponse?.error){
+        // user has closed the payment modal
+        console.error(checkoutResponse?.error?.message)
+        return { error: checkoutResponse?.error } // skip adding reservation
+      }
 
       // TODO: Add reservation
       const addReservationResponse = await addReservationFromWebMutation(
