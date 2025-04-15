@@ -64,7 +64,7 @@ const Index = () => {
     isValid: false,
     onSubmit: async (values) => {
       dispatch(reservationInfoActions.setGuestDetails(values));
-
+      
       try {
         const response = await getReservationJsonLikeEzeeWebbooking({
           ...reservationInfo,
@@ -389,7 +389,14 @@ const Index = () => {
                 <div className="col-auto">
                   <button
                     className="button h-60 px-24 -dark-1 bg-blue-1 text-white gap-2"
-                    onClick={formik.handleSubmit}
+                    onClick={(e) => {
+                      formik.validateForm().then((errors) => {
+                        if (Object.keys(errors).length > 0) {
+                          toast.error("Please fill all the fields");
+                        }
+                      });
+                      formik.handleSubmit(e);
+                    }}
                     type="submit"
                   >
                     {options.isLoading ? (
