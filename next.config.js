@@ -1,7 +1,13 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
     images: {
-        domains: ["theoterra.com"]
+        // domains: ["theoterra.com"],
+        remotePatterns: [
+            {
+                hostname: "theoterra.com",
+                pathname: "**"
+            }
+        ]
     }
 }
 
