@@ -80,7 +80,7 @@ const Index = () => {
           guestDetails: { ...values },
         }).unwrap();
         if (response?.statusCode !== 200) {
-          toast.error(ERROR_MESSAGES.API_FAILED_RESERVATIONS_LIKE_WEB_BOOKING);
+          toast.error("Error while getting reservation like Ezee");
           return;
         }
         if (!response?.data) {
@@ -90,7 +90,7 @@ const Index = () => {
           return;
         }
         if (!Object.hasOwn(response?.data, "Reservations")) {
-          toast.error(ERROR_MESSAGES.API_FAILED_RESERVATIONS_LIKE_WEB_BOOKING);
+          toast.error("Not able to get the Reservations property in response");
           return;
         }
         const orderDetails = {
@@ -113,7 +113,8 @@ const Index = () => {
           "Reservation is being processed. Please wait for confirmation."
         );
       } catch (error) {
-        toast.error(ERROR_MESSAGES.API_FAILED_RESERVATIONS_LIKE_WEB_BOOKING);
+        toast.error(error?.message);
+        console.error(error?.message, error)
       }
     },
     validationSchema: yup.object().shape({
@@ -162,7 +163,7 @@ const Index = () => {
       if(checkoutResponse?.error){
         // user has closed the payment modal
         console.error(checkoutResponse?.error?.message)
-        return { error: checkoutResponse?.error } // skip adding reservation
+        return { error: checkoutResponse?.error } // skip adding reservation if user close the modal
       }
 
       // TODO: Add reservation
@@ -176,6 +177,7 @@ const Index = () => {
       }
 
       router.push("/order-submitted");
+      return { checkoutResponse };
     } catch (error) {
       console.error("Error creating Cashfree order:", error);
     }

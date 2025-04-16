@@ -1,4 +1,4 @@
-import { configureStore, createListenerMiddleware, createSlice } from "@reduxjs/toolkit";
+import { configureStore, createListenerMiddleware, createSlice, isAnyOf } from "@reduxjs/toolkit";
 
 import findPlaceSlice from "../features/hero/findPlaceSlice";
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react"
@@ -357,6 +357,8 @@ const hotelDetailsSlice = createSlice({
 //[ Middleware ]
 
 const localStorageMiddleware = createListenerMiddleware();
+const apiHandlerListenerMiddleware = createListenerMiddleware();
+
 localStorageMiddleware.startListening({
   actionCreator: roomSelection.actions.setRoomSelection,
   effect: (action, api) => {
