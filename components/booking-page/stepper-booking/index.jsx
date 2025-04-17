@@ -67,7 +67,7 @@ const Index = () => {
       Country: "",
       Comment: "",
       PromoCode: "",
-      ...reservationInfo?.guestDetails
+      ...reservationInfo?.guestDetails,
     },
     enableReinitialize: true,
     isValid: false,
@@ -85,7 +85,7 @@ const Index = () => {
         }
         if (!response?.data) {
           toast.error(
-            "Not able to get reservation details. Please try after some time."
+            "Not able to get reservation details. Please try after some time.",
           );
           return;
         }
@@ -110,11 +110,11 @@ const Index = () => {
         }
 
         toast.success(
-          "Reservation is being processed. Please wait for confirmation."
+          "Reservation is being processed. Please wait for confirmation.",
         );
       } catch (error) {
         toast.error(error?.message);
-        console.error(error?.message, error)
+        console.error(error?.message, error);
       }
     },
     validationSchema: yup.object().shape({
@@ -160,15 +160,15 @@ const Index = () => {
 
       console.info("Checkout response : ", checkoutResponse);
 
-      if(checkoutResponse?.error){
+      if (checkoutResponse?.error) {
         // user has closed the payment modal
-        console.error(checkoutResponse?.error?.message)
-        return { error: checkoutResponse?.error } // skip adding reservation if user close the modal
+        console.error(checkoutResponse?.error?.message);
+        return { error: checkoutResponse?.error }; // skip adding reservation if user close the modal
       }
 
       // TODO: Add reservation
       const addReservationResponse = await addReservationFromWebMutation(
-        ezeeFormattedReservationDetails
+        ezeeFormattedReservationDetails,
       );
 
       if (addReservationResponse?.error) {

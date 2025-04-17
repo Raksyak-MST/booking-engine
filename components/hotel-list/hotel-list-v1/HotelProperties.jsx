@@ -1,13 +1,13 @@
-'use client'
+"use client";
 
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Navigation, Pagination } from "swiper";
 import Image from "next/image";
-import { useSelector } from "react-redux"
-import { useEffect } from "react"
-import HotelPropertiesDetails from "./HotelPropertiesDetails"
-import RoomAmenities from "./RoomAmenities"
-import {useGetDataForWebBookingMutation  } from "@/store/store"
+import { useSelector } from "react-redux";
+import { useEffect } from "react";
+import HotelPropertiesDetails from "./HotelPropertiesDetails";
+import RoomAmenities from "./RoomAmenities";
+import { useGetDataForWebBookingMutation } from "@/store/store";
 
 export const HotelProperties2 = () => {
   const availableRooms = useSelector((state) => state.availableRooms.roomTypes);
@@ -16,8 +16,8 @@ export const HotelProperties2 = () => {
 
   useEffect(() => {
     // need to refetch after coming back from next step, this has to be done manually.
-      getDataForWebBooking(bookingQuery);
-    }, []);
+    getDataForWebBooking(bookingQuery);
+  }, []);
 
   if (options?.isError) {
     return (
@@ -34,7 +34,7 @@ export const HotelProperties2 = () => {
     return <Loader />;
   }
 
-  if(availableRooms?.length === 0) {
+  if (availableRooms?.length === 0) {
     return (
       <div className="col-12 text-center">
         <h2>Sorry, No Rooms for this Search</h2>
@@ -68,7 +68,7 @@ export const HotelProperties2 = () => {
                           width={250}
                           height={250}
                           className="rounded-4 col-12 js-lazy h-full object-fit-cover"
-                          style={{objectPosition: "left center"}}
+                          style={{ objectPosition: "left center" }}
                           src={
                             slide.includes("http")
                               ? slide
@@ -87,8 +87,8 @@ export const HotelProperties2 = () => {
           {/* End .col */}
           <div className="col-md">
             <h3 className="text-18 lh-16 fw-500 mb-2">
-              {item?.roomTypeName}
-              <div className="d-inline-block ml-10">
+              <span>{item?.roomTypeName}</span>
+              <div className="d-inline-block ml-10 mr-10">
                 <i className="icon-star text-10 text-yellow-2"></i>
                 <i className="icon-star text-10 text-yellow-2"></i>
                 <i className="icon-star text-10 text-yellow-2"></i>
@@ -123,12 +123,12 @@ export const HotelProperties2 = () => {
       </div>
     </div>
   ));
-}
+};
 
 const Loader = () => {
   return (
     <div className="col-12 text-center">
       <div className="spinner-border" role="status"></div>
     </div>
-  )
-}
+  );
+};

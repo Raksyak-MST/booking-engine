@@ -1,25 +1,36 @@
 import { useState, memo, useMemo } from "react";
 import { useRouter } from "next/navigation";
-import { useDispatch, useSelector} from "react-redux";
-import { roomSelectionActions, bookingQueryActions, useGetReservationJsonLikeEzeeWebBookingMutation } from "@/store/store";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  roomSelectionActions,
+  bookingQueryActions,
+  roomPickActions,
+  useGetReservationJsonLikeEzeeWebBookingMutation,
+} from "@/store/store";
 import toast from "react-hot-toast";
 import { ERROR_MESSAGES } from "@/data/error-messages";
 
-const DEFAULT_ROOM_RATE = 0.0; 
+const DEFAULT_ROOM_RATE = 0.0;
 
 const HotelPropertyDetails = (props) => {
   const { hotel } = props;
-  const [selectedMealPlan, setSelectedMealPlan] = useState({ EP: true, type: "EP" }); // default selected package name
+  const [selectedMealPlan, setSelectedMealPlan] = useState({
+    EP: true,
+    type: "EP",
+  }); // default selected package name
   const [roomRate, setRoomRate] = useState(DEFAULT_ROOM_RATE);
   const [perNight, setPerNight] = useState(DEFAULT_ROOM_RATE);
-  const [ getReservationJsonLikeEzee, options ] = useGetReservationJsonLikeEzeeWebBookingMutation();
-  const reservationInfo = useSelector(state => state.reservationInfo)
+  const [getReservationJsonLikeEzee, options] =
+    useGetReservationJsonLikeEzeeWebBookingMutation();
+  const reservationInfo = useSelector((state) => state.reservationInfo);
+  const currentRoom = useSelector((state) => state.roomPick?.currentRoom);
 
   const dispatch = useDispatch();
   const Router = useRouter();
 
   const roomPackages = hotel?.perNightCharges?.map((roomPackage) => ({
     packageCode: roomPackage.packageCode,
+    packageDescription: roomPackage.PackageDescription,
     packageId: roomPackage.packageID,
     packageRate: roomPackage.rooms[0]?.packageRate,
     rentPreTax: roomPackage.rooms[0]?.RentPreTax,
@@ -38,10 +49,10 @@ const HotelPropertyDetails = (props) => {
     const roomAndPackageRate = parseInt(pkg?.fullTotal);
     const DefaultESPackageRate = parseInt(EPPackage?.fullTotal);
 
-    const perNight = parseInt(pkg?.rentPreTax ?? EPPackage?.rentPreTax);
+    const perNightRate = parseInt(pkg?.rentPreTax ?? EPPackage?.rentPreTax);
 
     setRoomRate(roomAndPackageRate ?? DefaultESPackageRate);
-    setPerNight(perNight);
+    setPerNight(perNightRate);
   }, [selectedMealPlan]);
 
   const handleMealPlanSelection = (e) => {
@@ -52,41 +63,27 @@ const HotelPropertyDetails = (props) => {
       bookingQueryActions.setBookingQuery({
         selectedPackageID: packageId,
         selectedRoomTypeID: hotel?.roomTypeID,
-      })
+      }),
     );
   };
 
   const handleRoomSelection = async () => {
-
-    // FIXME: clean after payment successful 
-    // localStorage.setItem("userRoomTypeID", hotel?.roomTypeID);
-    // localStorage.setItem("userPickedHotel", JSON.stringify(hotel))
-
     dispatch(roomSelectionActions.setRoomSelection(hotel));
-    toast
-      .promise(
-        getReservationJsonLikeEzee({
-          ...reservationInfo,
-          selectedRoomTypeID: hotel?.roomTypeID,
-        }).unwrap(),
-        {
-          loading: "Loading...",
-          success: "Redirecting to booking page",
-          error: ERROR_MESSAGES.API_FAILED_DEFAULT_MESSAGE,
+    dispatch(
+      roomPickActions.addRoom({
+        [currentRoom?.id]: {
+          selectedRoomOptions: currentRoom?.name,
+          roomTypeID: hotel?.roomTypeID,
+          roomTypeName: hotel?.roomTypeName,
         },
-        {
-          loading: { duration: 5000 },
-        }
-      )
-      .then(() => {
-        Router.push("/booking-page");
-      });
+      }),
+    );
   };
 
   return (
     <div className="y-gap-30">
       <div className="row y-gap-10 items-end">
-        <div className="col-md-6 align-self-start">
+        <div className="col-md-8 align-self-start">
           {/* <p className="text-15 fw-500 text-red-1">Rate Details</p> */}
           <p className="text-14 fw-500 mb-10">Select meal plan</p>
           <div className="radio-group">
@@ -105,7 +102,7 @@ const HotelPropertyDetails = (props) => {
                   }`}
                   name={pack?.packageCode}
                 >
-                  {pack?.packageCode}{" "}
+                  {pack?.packageDescription}{" "}
                   {`(${new Intl.NumberFormat("en-IN", {
                     currency: "INR",
                     style: "currency",
@@ -116,7 +113,7 @@ const HotelPropertyDetails = (props) => {
             ))}
           </div>
         </div>
-        <div className="col-md-6 d-flex flex-column gap-md-2">
+        <div className="col-md-4 d-flex flex-column gap-md-2">
           <div>
             <p className="text-18 fw-500 text-md-end">
               {new Intl.NumberFormat("en-IN", {
@@ -131,15 +128,15 @@ const HotelPropertyDetails = (props) => {
                 style: "currency",
                 currencyDisplay: "symbol",
               }).format(perNight)}{" "}
-              Per Night
+              / Per Night
             </p>
-            <p className="text-light-1 text-14 text-md-end">{`${hotel?.adults} adults, ${hotel?.children} children and ${hotel?.roomQuantity} room`}</p>
+            <p className="text-12 text-md-end">tax excluded</p>
           </div>
           <div
-            className="button -md -dark-1 bg-blue-1 text-white cursor-pointer align-self-end"
+            className="button -md -dark-1 bg-blue-1 text-white cursor-pointer align-self-md-end"
             onClick={handleRoomSelection}
           >
-            BOOK NOW
+            {"Select"}
           </div>
         </div>
       </div>

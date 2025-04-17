@@ -1,9 +1,15 @@
-import { configureStore, createListenerMiddleware, createSlice, isAnyOf } from "@reduxjs/toolkit";
+import {
+  configureStore,
+  createListenerMiddleware,
+  createSlice,
+  isAnyOf,
+} from "@reduxjs/toolkit";
 
 import findPlaceSlice from "../features/hero/findPlaceSlice";
-import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react"
-import moment from 'moment'
-import * as yup from 'yup'
+import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
+import moment from "moment";
+import * as yup from "yup";
+import { act } from "react";
 
 // [ API slice ]
 const api = createApi({
@@ -84,17 +90,17 @@ const cashFreeApiSlice = createApi({
 const authSlice = createSlice({
   name: "auth",
   initialState: {
-  isLogin: null
-},
+    isLogin: null,
+  },
   reducers: {
     setIsUserLogin: (state, action) => {
-      state.isLogin = action.payload; 
-      return state 
+      state.isLogin = action.payload;
+      return state;
     },
-  }
-})
+  },
+});
 
-const getMaxAdults = (rooms) => rooms * 2;
+const getMaxAdults = (rooms) => rooms * 3;
 const getMaxChildren = (rooms) => rooms * 3;
 const getMaxTotalGuests = (rooms) => rooms * 5;
 const clamp = (value, min, max) => Math.max(min, Math.min(value, max));
@@ -123,69 +129,78 @@ const bookingQuerySlice = createSlice({
 
       let total = state.adults + state.children;
 
-      if(total > maxT) {
+      if (total > maxT) {
         const overflow = total - maxT;
-        const newChildren = clamp(state.children - overflow, 0, maxC)
+        const newChildren = clamp(state.children - overflow, 0, maxC);
         const newAdults = clamp(state.adults, 1, maxA);
         state.children = newChildren;
         state.adults = newAdults;
-      }else{
+      } else {
         state.adults = clamp(state.adults, 1, maxA);
         state.children = clamp(state.children, 0, maxC);
       }
       state.quantity = action.payload;
     },
     onAdultChange: (state, action) => {
-      const maxA = getMaxAdults(state.quantity)
-      const total = action.payload  + state.children
+      const maxA = getMaxAdults(state.quantity);
+      const total = action.payload + state.children;
 
-      if(total <= getMaxTotalGuests(state.quantity)){
+      if (total <= getMaxTotalGuests(state.quantity)) {
         state.adults = clamp(action.payload, 1, maxA);
       }
     },
     onChildrenChange: (state, action) => {
-      const maxC = getMaxChildren(state.quantity) 
-      const total = state.adults + action.payload
-      if(total <= getMaxTotalGuests(state.quantity)){
+      const maxC = getMaxChildren(state.quantity);
+      const total = state.adults + action.payload;
+      if (total <= getMaxTotalGuests(state.quantity)) {
         state.children = clamp(action.payload, 0, maxC);
       }
     },
     increaseAdults: (state) => {
       const maxAdults = state.quantity * 3;
-      if (state.adults >= maxAdults){return state}
-      else state.adults += 1;
+      if (state.adults >= maxAdults) {
+        return state;
+      } else state.adults += 1;
     },
     increaseChildren: (state) => {
       const maxChildren = state.quantity * 2;
-      if (state.children >= maxChildren){return state}
+      if (state.children >= maxChildren) {
+        return state;
+      }
       state.children += 1;
     },
     increaseQuantity: (state) => {
       state.quantity += 1;
     },
     decreaseAdults: (state) => {
-      if (state.adults <= 1){return state}
+      if (state.adults <= 1) {
+        return state;
+      }
       state.adults -= 1;
     },
     decreaseChildren: (state) => {
-      if (state.children <= 0){return state}
+      if (state.children <= 0) {
+        return state;
+      }
       state.children -= 1;
     },
     decreaseQuantity: (state) => {
-      if(state.quantity <= 1){return state}
+      if (state.quantity <= 1) {
+        return state;
+      }
       state.quantity -= 1;
-    }
+    },
   },
 });
 
 const bookingSlice = createSlice({
   name: "booking",
   initialState: {
-  roomSelection: {
-    package: "",
-    mealPlan: "",
+    roomSelection: {
+      package: "",
+      mealPlan: "",
+    },
   },
-},
   reducers: {
     setBookingQuery: (state, action) => {
       Object.assign(state.bookingQuery, action.payload);
@@ -208,18 +223,18 @@ const availableRooms = createSlice({
   extraReducers: (builder) => {
     builder
       .addMatcher(
+        // WARNING: do not change the state to (initiate) matchPending is intentionally used
         api.endpoints.getDataForWebBooking.matchPending,
         (state, action) => {
           // FIXME: this handles the loading deception when user click on the search button
-          // WARNING: do not change the state to (initiate) matchPending is intentionally used
           state.roomTypes = [];
-        }
+        },
       )
       .addMatcher(
         api.endpoints.getDataForWebBooking.matchFulfilled,
         (state, action) => {
           state.roomTypes = action?.payload?.data;
-        }
+        },
       );
   },
 });
@@ -278,7 +293,7 @@ const billingInfoSlice = createSlice({
       return !state.isPasswordVisible;
     },
     validateForm: (state) => {
-      console.error("Use formik validation instead of calling this")
+      console.error("Use formik validation instead of calling this");
     },
   },
   extraReducers: (builder) => {
@@ -287,13 +302,13 @@ const billingInfoSlice = createSlice({
       (state, action) => {
         // only extract the first object, this is because the API return an array of objects
         state.reservationInfo = action.payload?.data;
-      }
+      },
     );
     builder.addMatcher(
       api.endpoints.addReservationFromWeb.matchFulfilled,
       (state, action) => {
         state.reservationCompetitionDetails = action.payload;
-      }
+      },
     );
   },
 });
@@ -316,7 +331,7 @@ const reservationInfoSlice = createSlice({
   reducers: {
     setGuestDetails: (state, action) => {
       Object.assign(state?.guestDetails, action.payload);
-    }
+    },
   },
   extraReducers: (builder) => {
     builder.addCase(roomSelection.actions.setRoomSelection, (state, action) => {
@@ -336,25 +351,64 @@ const hotelDetailsSlice = createSlice({
   },
   reducers: {
     setUserPickedHotelDetail: (state, action) => {
-      state.selectedHotel = action.payload
-    }
+      state.selectedHotel = action.payload;
+    },
   },
   extraReducers: (builder) => {
-    builder.addMatcher(
-      api.endpoints.getHotelDetailsWebBooking.matchFulfilled,
-      (state, action) => {
-        state.locations = action.payload?.data;
-      }
-    ).addMatcher(
-      api.endpoints.getHotelDetailsWebBooking.matchFulfilled,
-      (state, action) => {
-        state.selectedHotel = action.payload?.data[0];
-      }
-    )
-  }
+    builder
+      .addMatcher(
+        api.endpoints.getHotelDetailsWebBooking.matchFulfilled,
+        (state, action) => {
+          state.locations = action.payload?.data;
+        },
+      )
+      .addMatcher(
+        api.endpoints.getHotelDetailsWebBooking.matchFulfilled,
+        (state, action) => {
+          state.selectedHotel = action.payload?.data[0];
+        },
+      );
+  },
 });
 
-//[ Middleware ]
+const roomPickSlice = createSlice({
+  name: "roomPick",
+  initialState: {
+    currentRoom: { id: 1, name: "Room1" },
+    roomChooises: [{ id: 1, name: "Room1", isSelected: true }],
+    roomPicked: [],
+  },
+  reducers: {
+    addRoom: (state, action) => {
+      state.roomPicked.push(action.payload);
+    },
+    removeRoom: (state, action) => {
+      if (state.roomChooises?.length == 1) {
+        // this will keep the last entry in the array.
+        return state;
+      }
+      state.roomChooises.pop();
+    },
+    selectRoom: (state, action) => {
+      state.roomChooises.forEach((room) => {
+        if (room.id == action.payload?.id) {
+          room.isSelected = true;
+          state.currentRoom = room;
+        } else {
+          room.isSelected = false;
+        }
+      });
+    },
+    createRoomOption: (state, action) => {
+      if (state.roomChooises.some((room) => room.id === action.payload?.id)) {
+        return;
+      }
+      state.roomChooises.push({ ...action.payload, isSelected: false });
+    },
+  },
+});
+
+// [ Middleware ]
 
 const localStorageMiddleware = createListenerMiddleware();
 const apiHandlerListenerMiddleware = createListenerMiddleware();
@@ -363,22 +417,22 @@ localStorageMiddleware.startListening({
   actionCreator: roomSelection.actions.setRoomSelection,
   effect: (action, api) => {
     sessionStorage.setItem("roomSelection", JSON.stringify(action.payload));
-  }
-})
+  },
+});
 
 localStorageMiddleware.startListening({
   actionCreator: reservationInfoSlice.actions.setGuestDetails,
   effect: (action, api) => {
-    sessionStorage.setItem("guestDetails", JSON.stringify(action.payload))
-  }
-})
+    sessionStorage.setItem("guestDetails", JSON.stringify(action.payload));
+  },
+});
 
 localStorageMiddleware.startListening({
   matcher: api.endpoints.addReservationFromWeb.matchFulfilled,
   effect: () => {
-    sessionStorage.removeItem("roomSelection")
-  }
-})
+    sessionStorage.removeItem("roomSelection");
+  },
+});
 
 // [ Root Store ]
 export const store = configureStore({
@@ -392,6 +446,7 @@ export const store = configureStore({
     billing: billingInfoSlice.reducer,
     reservationInfo: reservationInfoSlice.reducer,
     hotelDetails: hotelDetailsSlice.reducer,
+    roomPick: roomPickSlice.reducer,
     [api.reducerPath]: api.reducer,
     [cashFreeApiSlice.reducerPath]: cashFreeApiSlice.reducer,
   },
@@ -410,14 +465,14 @@ export const {
   useAddReservationFromWebMutation,
   useGetHotelDetailsWebBookingMutation,
 } = api;
-export const cashFreeApiActions = cashFreeApiSlice
-
-export const { setIsUserLogin } = authSlice.actions
-export const { setBookingQuery, updateGuest } = bookingSlice.actions
-export const bookingQueryActions = bookingQuerySlice.actions
-export const bookingActions = bookingSlice.actions
-export const availableRoomsActions = availableRooms.actions
-export const roomSelectionActions = roomSelection.actions
-export const billingAction = billingInfoSlice.actions
-export const hotelDetailsActions = hotelDetailsSlice.actions
-export const reservationInfoActions = reservationInfoSlice.actions
+export const cashFreeApiActions = cashFreeApiSlice;
+export const { setIsUserLogin } = authSlice.actions;
+export const { setBookingQuery, updateGuest } = bookingSlice.actions;
+export const bookingQueryActions = bookingQuerySlice.actions;
+export const bookingActions = bookingSlice.actions;
+export const availableRoomsActions = availableRooms.actions;
+export const roomSelectionActions = roomSelection.actions;
+export const billingAction = billingInfoSlice.actions;
+export const hotelDetailsActions = hotelDetailsSlice.actions;
+export const reservationInfoActions = reservationInfoSlice.actions;
+export const roomPickActions = roomPickSlice.actions;

@@ -3,15 +3,15 @@ import Header11 from "@/components/header/header-11";
 import DefaultFooter from "@/components/footer/default";
 import MainFilterSearchBox from "@/components/hero/hero-1/MainFilterSearchBox";
 import TopHeaderFilter from "@/components/hotel-list/hotel-list-v1/TopHeaderFilter";
-import {HotelProperties2} from "@/components/hotel-list/hotel-list-v1/HotelProperties";
+import { HotelProperties2 } from "@/components/hotel-list/hotel-list-v1/HotelProperties";
 import Sidebar from "@/components/hotel-list/hotel-list-v1/Sidebar";
+import { SelectiveRooms } from "@/components/hero/hero-1/SelectiveRooms";
 
 export const metadata = {
   title: "Hotel list",
 };
 
 const index = () => {
-
   return (
     <>
       {/* End Page Title */}
@@ -77,6 +77,7 @@ const index = () => {
             {/* End col */}
 
             <div className="col-xl-9 ">
+              <SelectiveRooms />
               <div className="mt-30"></div>
               {/* End mt--30 */}
               <div className="row y-gap-30">
