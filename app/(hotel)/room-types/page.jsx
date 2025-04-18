@@ -41,6 +41,15 @@ const index = () => {
       <section className="layout-pt-md layout-pb-lg">
         <div className="container">
           <div className="row y-gap-30">
+            <div className="col-xl-9 ">
+              <SelectiveRooms />
+              <div className="mt-30"></div>
+              {/* End mt--30 */}
+              <div className="row y-gap-30">
+                <HotelProperties2 />
+              </div>
+              {/* End .row */}
+            </div>
             <div className="col-xl-3">
               <aside className="sidebar y-gap-40 xl:d-none">
                 <Sidebar />
@@ -74,18 +83,6 @@ const index = () => {
               </div>
               {/* End mobile menu sidebar */}
             </div>
-            {/* End col */}
-
-            <div className="col-xl-9 ">
-              <SelectiveRooms />
-              <div className="mt-30"></div>
-              {/* End mt--30 */}
-              <div className="row y-gap-30">
-                <HotelProperties2 />
-              </div>
-              {/* End .row */}
-            </div>
-            {/* End .col for right content */}
           </div>
           {/* End .row */}
         </div>

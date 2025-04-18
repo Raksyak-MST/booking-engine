@@ -22,7 +22,7 @@ const GuestSearch = () => {
   }, [state?.quantity]);
 
   const handleAddRoom = () => {
-    dispatch(roomPickActions.addRoom());
+    dispatch(bookingQueryActions.onRoomChange(state?.quantity + 1));
   };
 
   return (
@@ -54,7 +54,7 @@ const GuestSearch = () => {
             <div>Children</div>
           </div>
           {roomChooises.map((id, index) => (
-            <div className="text-12">
+            <div className="text-12" key={index}>
               <div className="d-flex gap-2 align-items-center mb-2 justify-content-between">
                 <div className="d-flex gap-2">
                   <button className="btn border text-12">X</button>
@@ -62,20 +62,20 @@ const GuestSearch = () => {
                 </div>
                 <div className="d-flex gap-2 ">
                   <button className="btn border text-12">
-                    <i className="icon-plus" />
+                    <i className="icon-minus" />
                   </button>
                   <span>{state?.adults}</span>
-                  <buttoni className="btn border text-12">
-                    <i className="icon-minus" />
-                  </buttoni>
-                </div>
-                <div className="d-flex gap-2">
                   <button className="btn border text-12">
                     <i className="icon-plus" />
                   </button>
+                </div>
+                <div className="d-flex gap-2">
+                  <button className="btn border text-12">
+                    <i className="icon-minus" />
+                  </button>
                   <span>{state?.children}</span>
                   <buttoni className="btn border text-12">
-                    <i className="icon-minus" />
+                    <i className="icon-plus" />
                   </buttoni>
                 </div>
               </div>
