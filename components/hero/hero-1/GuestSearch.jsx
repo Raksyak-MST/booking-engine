@@ -7,10 +7,8 @@ import { useEffect } from "react";
 
 const GuestSearch = () => {
   const state = useSelector((state) => state.bookingQuery);
-  const roomPicked = useSelector((state) => state.roomPick?.roomPicked);
+  const roomChooises = useSelector((state) => state.roomPick?.roomChooises);
   const dispatch = useDispatch();
-
-  console.log(roomPicked);
 
   useEffect(() => {
     // FIXME: create a new room option after the state is updated this ensures
@@ -55,7 +53,7 @@ const GuestSearch = () => {
             <div>Adults</div>
             <div>Children</div>
           </div>
-          {roomPicked.map((id, index) => (
+          {roomChooises.map((id, index) => (
             <div className="text-12">
               <div className="d-flex gap-2 align-items-center mb-2 justify-content-between">
                 <div className="d-flex gap-2">
