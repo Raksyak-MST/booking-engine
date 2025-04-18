@@ -18,6 +18,9 @@ export const ReservationSummary = () => {
               }).format(room[1]?.perNightRate)}
             </p>
           </div>
+          <a href="#" className="text-14 -underline text-blue-1">
+            Change room
+          </a>
         </div>
       ))}
       <div className="d-flex justify-content-between align-items-center">

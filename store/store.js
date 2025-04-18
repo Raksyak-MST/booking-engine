@@ -374,14 +374,26 @@ const hotelDetailsSlice = createSlice({
 const roomPickSlice = createSlice({
   name: "roomPick",
   initialState: {
-    currentRoom: { id: 1, name: "Room1" },
-    roomChooises: [{ id: 1, name: "Room1", isSelected: true }],
+    currentRoom: { id: 1, name: "Room1", adults: 1, children: 0 },
+    roomChooises: [
+      { id: 1, name: "Room1", isSelected: true, adults: 1, children: 0 },
+    ],
     roomPicked: {},
   },
   reducers: {
     addRoom: (state, action) => {
       state.roomPicked[state.currentRoom?.id] = action.payload;
     },
+    removeRoom: (state, action) => {
+      delete state.roomPicked[action.payload];
+    },
+    updateAdults: (state, action) => {
+      const room = state.roomChooises?.filter(
+        (room) => room.id === state.currentRoom?.id,
+      )[0];
+      room.adults = action.payload;
+    },
+    updateChildren: (state, action) => {},
     removeRoom: (state, action) => {
       if (state.roomChooises?.length == 1) {
         // this will keep the last entry in the array.

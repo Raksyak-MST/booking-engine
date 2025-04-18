@@ -25,6 +25,31 @@ const GuestSearch = () => {
     dispatch(bookingQueryActions.onRoomChange(state?.quantity + 1));
   };
 
+  const handleRoomRemove = (id) => {
+    dispatch(
+      bookingQueryActions.onRoomChange(Math.max(1, state?.quantity - 1)),
+    );
+    dispatch(roomPickActions.removeRoom(id));
+  };
+
+  const handleAdultsMinus = () => {
+    dispatch(bookingQueryActions.onAdultChange(Math.max(1, state?.adults - 1)));
+  };
+
+  const handleAdultsPlus = () => {
+    dispatch(roomPickActions.updateAdults(state?.adults + 1));
+  };
+
+  const handleChildrenMinus = () => {
+    dispatch(
+      bookingQueryActions.onChildrenChange(Math.max(0, state?.children - 1)),
+    );
+  };
+
+  const handleChildrenPlus = () => {
+    dispatch(bookingQueryActions.onChildrenChange(state?.children + 1));
+  };
+
   return (
     <div className="searchMenu-guests px-30 lg:py-20 lg:px-0 js-form-dd js-form-counters position-relative">
       <div
@@ -57,7 +82,12 @@ const GuestSearch = () => {
             <div className="text-12" key={index}>
               <div className="d-flex gap-2 align-items-center mb-2 justify-content-between">
                 <div className="d-flex gap-2">
-                  <button className="btn border text-12">X</button>
+                  <button
+                    className="btn border text-12"
+                    onClick={() => handleRoomRemove(id)}
+                  >
+                    X
+                  </button>
                   <span>Room {index + 1}</span>
                 </div>
                 <div className="d-flex gap-2 ">
@@ -65,7 +95,10 @@ const GuestSearch = () => {
                     <i className="icon-minus" />
                   </button>
                   <span>{state?.adults}</span>
-                  <button className="btn border text-12">
+                  <button
+                    className="btn border text-12"
+                    onClick={handleAdultsPlus}
+                  >
                     <i className="icon-plus" />
                   </button>
                 </div>
