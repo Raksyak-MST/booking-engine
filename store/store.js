@@ -376,11 +376,11 @@ const roomPickSlice = createSlice({
   initialState: {
     currentRoom: { id: 1, name: "Room1" },
     roomChooises: [{ id: 1, name: "Room1", isSelected: true }],
-    roomPicked: [],
+    roomPicked: {},
   },
   reducers: {
     addRoom: (state, action) => {
-      state.roomPicked.push(action.payload);
+      state.roomPicked[state.currentRoom?.id] = action.payload;
     },
     removeRoom: (state, action) => {
       if (state.roomChooises?.length == 1) {

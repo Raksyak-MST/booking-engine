@@ -71,11 +71,11 @@ const HotelPropertyDetails = (props) => {
     dispatch(roomSelectionActions.setRoomSelection(hotel));
     dispatch(
       roomPickActions.addRoom({
-        [currentRoom?.id]: {
-          selectedRoomOptions: currentRoom?.name,
-          roomTypeID: hotel?.roomTypeID,
-          roomTypeName: hotel?.roomTypeName,
-        },
+        selectedRoomOptions: currentRoom?.name,
+        roomTypeID: hotel?.roomTypeID,
+        roomTypeName: hotel?.roomTypeName,
+        perNightRate: perNight,
+        roomRate: roomRate,
       }),
     );
   };

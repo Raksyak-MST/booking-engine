@@ -74,9 +74,9 @@ const GuestSearch = () => {
                     <i className="icon-minus" />
                   </button>
                   <span>{state?.children}</span>
-                  <buttoni className="btn border text-12">
+                  <button className="btn border text-12">
                     <i className="icon-plus" />
-                  </buttoni>
+                  </button>
                 </div>
               </div>
             </div>
