@@ -371,6 +371,16 @@ const hotelDetailsSlice = createSlice({
   },
 });
 
+const createRoomOption = (roomOptions) => {
+  return {
+    id: roomOptions.id,
+    name: roomOptions.name,
+    isSelected: false,
+    adults: 1,
+    children: 0,
+  };
+};
+
 const roomPickSlice = createSlice({
   name: "roomPick",
   initialState: {
@@ -381,6 +391,10 @@ const roomPickSlice = createSlice({
     roomPicked: {},
   },
   reducers: {
+    insertRoomOptions: (state, action) => {
+      const room = createRoomOption(action.payload);
+      state.roomChooises.push(room);
+    },
     addRoom: (state, action) => {
       state.roomPicked[state.currentRoom?.id] = action.payload;
     },
@@ -388,12 +402,23 @@ const roomPickSlice = createSlice({
       delete state.roomPicked[action.payload];
     },
     updateAdults: (state, action) => {
-      const room = state.roomChooises?.filter(
-        (room) => room.id === state.currentRoom?.id,
-      )[0];
-      room.adults = action.payload;
+      const index = state.roomChooises?.findIndex(
+        (room) => room.id == action.payload.id,
+      );
+      // console.log(state.roomChooises[0].id, index);
+      const room = state.roomChooises[index];
+      room.adults = action.payload.adults;
+      state.currentRoom = room;
     },
-    updateChildren: (state, action) => {},
+    updateChildren: (state, action) => {
+      const index = state.roomChooises?.findIndex(
+        (room) => room.id == action.payload.id,
+      );
+      // console.log(state.roomChooises[0].id, index);
+      const room = state.roomChooises[index];
+      room.children = action.payload.children;
+      state.currentRoom = room;
+    },
     removeRoom: (state, action) => {
       if (state.roomChooises?.length == 1) {
         // this will keep the last entry in the array.
@@ -410,12 +435,6 @@ const roomPickSlice = createSlice({
           room.isSelected = false;
         }
       });
-    },
-    createRoomOption: (state, action) => {
-      if (state.roomChooises.some((room) => room.id === action.payload?.id)) {
-        return;
-      }
-      state.roomChooises.push({ ...action.payload, isSelected: false });
     },
   },
 });

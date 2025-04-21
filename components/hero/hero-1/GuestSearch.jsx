@@ -6,24 +6,10 @@ import { bookingQueryActions, roomPickActions } from "@/store/store";
 import { useEffect } from "react";
 
 const GuestSearch = () => {
-  const state = useSelector((state) => state.bookingQuery);
+  const state = useSelector((state) => state.roomPick?.currentRoom);
   const roomChooises = useSelector((state) => state.roomPick?.roomChooises);
+  const roomPick = useSelector((state) => state.roomPick);
   const dispatch = useDispatch();
-
-  useEffect(() => {
-    // FIXME: create a new room option after the state is updated this ensures
-    // it will run after the state is been updated.
-    dispatch(
-      roomPickActions.createRoomOption({
-        id: state.quantity,
-        name: `Room${state.quantity}`,
-      }),
-    );
-  }, [state?.quantity]);
-
-  const handleAddRoom = () => {
-    dispatch(bookingQueryActions.onRoomChange(state?.quantity + 1));
-  };
 
   const handleRoomRemove = (id) => {
     dispatch(
@@ -36,9 +22,7 @@ const GuestSearch = () => {
     dispatch(bookingQueryActions.onAdultChange(Math.max(1, state?.adults - 1)));
   };
 
-  const handleAdultsPlus = () => {
-    dispatch(roomPickActions.updateAdults(state?.adults + 1));
-  };
+  const handleAdultsPlus = () => {};
 
   const handleChildrenMinus = () => {
     dispatch(
@@ -78,36 +62,73 @@ const GuestSearch = () => {
             <div>Adults</div>
             <div>Children</div>
           </div>
-          {roomChooises.map((id, index) => (
-            <div className="text-12" key={index}>
+          {roomChooises.map((room, index) => (
+            <div className="text-12" key={room?.id}>
               <div className="d-flex gap-2 align-items-center mb-2 justify-content-between">
                 <div className="d-flex gap-2">
                   <button
                     className="btn border text-12"
-                    onClick={() => handleRoomRemove(id)}
+                    onClick={() => handleRoomRemove(room.id)}
                   >
                     X
                   </button>
-                  <span>Room {index + 1}</span>
+                  <span>{room?.name}</span>
                 </div>
                 <div className="d-flex gap-2 ">
-                  <button className="btn border text-12">
-                    <i className="icon-minus" />
-                  </button>
-                  <span>{state?.adults}</span>
                   <button
                     className="btn border text-12"
-                    onClick={handleAdultsPlus}
+                    onClick={() =>
+                      dispatch(
+                        roomPickActions.updateAdults({
+                          id: room?.id,
+                          adults: room?.adults - 1,
+                        }),
+                      )
+                    }
+                  >
+                    <i className="icon-minus" />
+                  </button>
+                  <span>{room?.adults}</span>
+                  <button
+                    className="btn border text-12"
+                    onClick={() =>
+                      dispatch(
+                        roomPickActions.updateAdults({
+                          id: room?.id,
+                          adults: room?.adults + 1,
+                        }),
+                      )
+                    }
                   >
                     <i className="icon-plus" />
                   </button>
                 </div>
                 <div className="d-flex gap-2">
-                  <button className="btn border text-12">
+                  <button
+                    className="btn border text-12"
+                    onClick={() =>
+                      dispatch(
+                        roomPickActions.updateChildren({
+                          id: room?.id,
+                          children: room?.children - 1,
+                        }),
+                      )
+                    }
+                  >
                     <i className="icon-minus" />
                   </button>
-                  <span>{state?.children}</span>
-                  <button className="btn border text-12">
+                  <span>{room?.children}</span>
+                  <button
+                    className="btn border text-12"
+                    onClick={() => {
+                      dispatch(
+                        roomPickActions.updateChildren({
+                          id: room?.id,
+                          children: room?.children + 1,
+                        }),
+                      );
+                    }}
+                  >
                     <i className="icon-plus" />
                   </button>
                 </div>
@@ -115,7 +136,18 @@ const GuestSearch = () => {
             </div>
           ))}
           <div className="border-top-light mt-28" />
-          <button className="text-14" onClick={handleAddRoom}>
+          <button
+            className="text-14"
+            onClick={() => {
+              const count = roomPick.roomChooises.length + 1;
+              dispatch(
+                roomPickActions.insertRoomOptions({
+                  id: count,
+                  name: `Room${count}`,
+                }),
+              );
+            }}
+          >
             <i className="icon-plus m-2" />
             <span>Add rooms</span>
           </button>

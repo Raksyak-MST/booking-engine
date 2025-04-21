@@ -6,11 +6,8 @@ import { roomPickActions } from "@/store/store";
 
 export const SelectiveRooms = () => {
   const dispatch = useDispatch();
-  const rooms = useSelector((state) => state.bookingQuery.quantity);
+  const rooms = useSelector((state) => state.roomPick.roomChooises);
   const roomPick = useSelector((state) => state.roomPick.currentRoom);
-  const numberOfRooms = useCallback(() => {
-    return Array(rooms).fill("Room");
-  }, [rooms]);
 
   const handleRoomClick = (e) => {
     const element = e.target;
@@ -23,12 +20,12 @@ export const SelectiveRooms = () => {
 
   return (
     <div>
-      {numberOfRooms().length > 1 && (
+      {rooms.length > 1 && (
         <div
           className="d-flex gap-2 flex-wrap align-items-start"
           onClick={handleRoomClick}
         >
-          {numberOfRooms().map((room, index) => (
+          {rooms.map((room, index) => (
             <button
               className={
                 roomPick?.id != index + 1
@@ -37,9 +34,9 @@ export const SelectiveRooms = () => {
               }
               key={index}
               id={index + 1}
-              name={room + (index + 1)}
+              name={room.name}
             >
-              {room + (index + 1)}
+              {room.name}
             </button>
           ))}
         </div>
