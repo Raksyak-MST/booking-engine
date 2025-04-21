@@ -11,29 +11,6 @@ const GuestSearch = () => {
   const roomPick = useSelector((state) => state.roomPick);
   const dispatch = useDispatch();
 
-  const handleRoomRemove = (id) => {
-    dispatch(
-      bookingQueryActions.onRoomChange(Math.max(1, state?.quantity - 1)),
-    );
-    dispatch(roomPickActions.removeRoom(id));
-  };
-
-  const handleAdultsMinus = () => {
-    dispatch(bookingQueryActions.onAdultChange(Math.max(1, state?.adults - 1)));
-  };
-
-  const handleAdultsPlus = () => {};
-
-  const handleChildrenMinus = () => {
-    dispatch(
-      bookingQueryActions.onChildrenChange(Math.max(0, state?.children - 1)),
-    );
-  };
-
-  const handleChildrenPlus = () => {
-    dispatch(bookingQueryActions.onChildrenChange(state?.children + 1));
-  };
-
   return (
     <div className="searchMenu-guests px-30 lg:py-20 lg:px-0 js-form-dd js-form-counters position-relative">
       <div
@@ -68,7 +45,9 @@ const GuestSearch = () => {
                 <div className="d-flex gap-2">
                   <button
                     className="btn border text-12"
-                    onClick={() => handleRoomRemove(room.id)}
+                    onClick={() => {
+                      dispatch(roomPickActions.removeRoom(room?.id));
+                    }}
                   >
                     X
                   </button>
@@ -139,7 +118,9 @@ const GuestSearch = () => {
           <button
             className="text-14"
             onClick={() => {
-              const count = roomPick.roomChooises.length + 1;
+              const lastRoom =
+                roomPick.roomChooises[roomPick.roomChooises?.length - 1];
+              const count = lastRoom.id + 1;
               dispatch(
                 roomPickActions.insertRoomOptions({
                   id: count,

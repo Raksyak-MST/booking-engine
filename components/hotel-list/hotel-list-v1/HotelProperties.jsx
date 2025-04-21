@@ -8,6 +8,7 @@ import { useEffect } from "react";
 import HotelPropertiesDetails from "./HotelPropertiesDetails";
 import RoomAmenities from "./RoomAmenities";
 import { useGetDataForWebBookingMutation } from "@/store/store";
+import { Loader } from "./Loader";
 
 export const HotelProperties2 = () => {
   const availableRooms = useSelector((state) => state.availableRooms.roomTypes);
@@ -123,12 +124,4 @@ export const HotelProperties2 = () => {
       </div>
     </div>
   ));
-};
-
-const Loader = () => {
-  return (
-    <div className="col-12 text-center">
-      <div className="spinner-border" role="status"></div>
-    </div>
-  );
 };

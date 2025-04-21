@@ -9,7 +9,10 @@ export const ReservationSummary = () => {
         <div key={room[0]} className="mb-3 bg-light-2 p-2 rounded">
           <h2 className="text-14">{`Room ${room[0]}`}</h2>
           <div className="d-flex justify-content-between align-items-center">
-            <p>{room[1]?.roomTypeName}</p>
+            <div>
+              <p>{room[1]?.roomTypeName}</p>
+              <p className="text-12">{`${room[1]?.adults ?? 1} adults, ${room[1]?.children ?? 0} children`}</p>
+            </div>
             <p>
               {new Intl.NumberFormat("en-IN", {
                 style: "currency",

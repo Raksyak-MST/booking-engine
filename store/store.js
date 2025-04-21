@@ -399,7 +399,20 @@ const roomPickSlice = createSlice({
       state.roomPicked[state.currentRoom?.id] = action.payload;
     },
     removeRoom: (state, action) => {
+      console.log("removed room");
+      if (state?.roomChooises?.length === 1) return state;
       delete state.roomPicked[action.payload];
+      const index = state.roomChooises.findIndex(
+        (room) => room.id == action.payload,
+      );
+      const previousRoomIndex = index - 1;
+      console.log(index, previousRoomIndex);
+      const previousRoom = state.roomChooises[previousRoomIndex];
+      if (previousRoom) {
+        // if previous room exists, set it as the current room
+        state.currentRoom = previousRoom;
+      }
+      state.roomChooises.splice(index, 1);
     },
     updateAdults: (state, action) => {
       const index = state.roomChooises?.findIndex(
@@ -418,13 +431,6 @@ const roomPickSlice = createSlice({
       const room = state.roomChooises[index];
       room.children = action.payload.children;
       state.currentRoom = room;
-    },
-    removeRoom: (state, action) => {
-      if (state.roomChooises?.length == 1) {
-        // this will keep the last entry in the array.
-        return state;
-      }
-      state.roomChooises.pop();
     },
     selectRoom: (state, action) => {
       state.roomChooises.forEach((room) => {
