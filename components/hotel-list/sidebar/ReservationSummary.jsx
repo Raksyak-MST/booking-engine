@@ -16,7 +16,7 @@ export const ReservationSummary = () => {
           <div className="d-flex justify-content-between align-items-center">
             <div>
               <p>{room[1]?.roomTypeName}</p>
-              <p className="text-12">{`${room[1]?.adults ?? 1} adults, ${room[1]?.children ?? 0} children`}</p>
+              <p className="text-12">{`${room[1]?.adults} adults, ${room[1]?.children} children`}</p>
             </div>
             <p>
               {new Intl.NumberFormat("en-IN", {
@@ -37,6 +37,10 @@ export const ReservationSummary = () => {
           </a>
         </div>
       ))}
+      <p>
+        {rooms.reduce((acc, room) => (acc += room[1]?.adults), 0)} adults,{" "}
+        {rooms.reduce((acc, room) => (acc += room[1]?.children), 0)} children
+      </p>
       <div className="d-flex justify-content-between align-items-center">
         <h2 className="text-18 bg-light-3 p-2 rounded">Total for stay:</h2>
         <p className="text-14">
@@ -44,7 +48,9 @@ export const ReservationSummary = () => {
             currency: "INR",
             style: "currency",
             currencyDisplay: "symbol",
-          }).format(0.0)}
+          }).format(
+            rooms.reduce((acc, room) => (acc += room[1]?.perNightRate), 0.0),
+          )}
         </p>
       </div>
       <div className="p-2">

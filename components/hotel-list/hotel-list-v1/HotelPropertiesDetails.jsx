@@ -71,6 +71,8 @@ const HotelPropertyDetails = (props) => {
     dispatch(roomSelectionActions.setRoomSelection(hotel));
     dispatch(
       roomPickActions.pickRoom({
+        adults: currentRoom?.adults,
+        children: currentRoom?.children,
         selectedRoomOptions: currentRoom?.name,
         roomTypeID: hotel?.roomTypeID,
         roomTypeName: hotel?.roomTypeName,
