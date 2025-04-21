@@ -9,35 +9,22 @@ export const SelectiveRooms = () => {
   const rooms = useSelector((state) => state.roomPick.roomChooises);
   const roomPick = useSelector((state) => state.roomPick.currentRoom);
 
-  const handleRoomClick = (e) => {
-    const element = e.target;
-    if (element?.name) {
-      dispatch(
-        roomPickActions.selectRoom({ name: element.name, id: element.id }),
-      );
-    }
-  };
-
   return (
     <div>
       {rooms.length > 1 && (
-        <div
-          className="d-flex gap-2 flex-wrap align-items-start"
-          onClick={handleRoomClick}
-        >
+        <div className="d-flex gap-2 flex-wrap align-items-start">
           {rooms.map((room, index) => (
-            <button
+            <span
               className={
                 roomPick?.id != index + 1
-                  ? "button -outline-blue-1 px-3 py-2 cursor-pointer text-blue-1"
-                  : "button bg-blue-1 px-3 py-2 cursor-pointer text-white"
+                  ? "border border-blue-1 bg-white text-blue-1 px-3 rounded"
+                  : "border border-blue-1 bg-blue-1 text-white px-3 rounded"
               }
-              key={index}
-              id={index + 1}
-              name={room.name}
+              key={room?.id}
+              id={room?.id}
             >
               {room.name}
-            </button>
+            </span>
           ))}
         </div>
       )}

@@ -70,7 +70,7 @@ const HotelPropertyDetails = (props) => {
   const handleRoomSelection = async () => {
     dispatch(roomSelectionActions.setRoomSelection(hotel));
     dispatch(
-      roomPickActions.addRoom({
+      roomPickActions.pickRoom({
         selectedRoomOptions: currentRoom?.name,
         roomTypeID: hotel?.roomTypeID,
         roomTypeName: hotel?.roomTypeName,

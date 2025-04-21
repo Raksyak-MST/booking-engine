@@ -1,6 +1,11 @@
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
+import { roomPickActions } from "@/store/store";
+import { useRouter } from "next/navigation";
 export const ReservationSummary = () => {
+  const dispatch = useDispatch();
+  const router = useRouter();
   const roomPicked = useSelector((state) => state.roomPick?.roomPicked);
+  const roomsOptions = useSelector((state) => state.roomPick?.roomChooises);
   const rooms = Object.entries(roomPicked);
   return (
     <div className="mb-3 border rounded mt-3 p-2 ">
@@ -21,7 +26,13 @@ export const ReservationSummary = () => {
               }).format(room[1]?.perNightRate)}
             </p>
           </div>
-          <a href="#" className="text-14 -underline text-blue-1">
+          <a
+            href="#"
+            className="text-14 -underline text-blue-1"
+            onClick={() => {
+              dispatch(roomPickActions.changeRoomOption(room[0]));
+            }}
+          >
             Change room
           </a>
         </div>
@@ -35,6 +46,15 @@ export const ReservationSummary = () => {
             currencyDisplay: "symbol",
           }).format(0.0)}
         </p>
+      </div>
+      <div className="p-2">
+        <button
+          className="button -dark-1 py-20 col-12 rounded bg-blue-1 text-white"
+          onClick={() => router.push("booking-page")}
+          disabled={rooms.length < roomsOptions.length}
+        >
+          Book Reservation
+        </button>
       </div>
     </div>
   );

@@ -391,12 +391,27 @@ const roomPickSlice = createSlice({
     roomPicked: {},
   },
   reducers: {
+    changeRoomOption: (state, action) => {
+      console.log(action.payload);
+      const index = state.roomChooises.findIndex(
+        (room) => room.id == parseInt(action.payload),
+      );
+      const room = state.roomChooises[index];
+      state.currentRoom = room;
+    },
     insertRoomOptions: (state, action) => {
       const room = createRoomOption(action.payload);
       state.roomChooises.push(room);
     },
-    addRoom: (state, action) => {
+    pickRoom: (state, action) => {
       state.roomPicked[state.currentRoom?.id] = action.payload;
+      const index = state.roomChooises.findIndex(
+        (room) => room.id === state.currentRoom?.id,
+      );
+      if (index === state.roomChooises.length - 1) return state;
+      const nextRoomOption = state.roomChooises[index + 1];
+      console.log(nextRoomOption?.id, nextRoomOption?.name);
+      state.currentRoom = nextRoomOption;
     },
     removeRoom: (state, action) => {
       console.log("removed room");
