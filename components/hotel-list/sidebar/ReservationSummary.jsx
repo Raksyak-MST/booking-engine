@@ -26,15 +26,15 @@ export const ReservationSummary = () => {
               }).format(room[1]?.perNightRate)}
             </p>
           </div>
-          <a
+          <button
             href="#"
-            className="text-14 -underline text-blue-1"
+            className="text-14 -underline text-blue-1 cursor-pointer"
             onClick={() => {
               dispatch(roomPickActions.changeRoomOption(room[0]));
             }}
           >
             Change room
-          </a>
+          </button>
         </div>
       ))}
       <p>

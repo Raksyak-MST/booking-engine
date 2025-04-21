@@ -40,9 +40,9 @@ const index = () => {
 
       <section className="layout-pt-md layout-pb-lg">
         <div className="container">
+          <SelectiveRooms />
           <div className="row y-gap-30">
             <div className="col-xl-9 ">
-              <SelectiveRooms />
               <div className="mt-30"></div>
               {/* End mt--30 */}
               <div className="row y-gap-30">
