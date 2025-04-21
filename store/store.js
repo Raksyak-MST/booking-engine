@@ -392,7 +392,6 @@ const roomPickSlice = createSlice({
   },
   reducers: {
     changeRoomOption: (state, action) => {
-      console.log(action.payload);
       const index = state.roomChooises.findIndex(
         (room) => room.id == parseInt(action.payload),
       );
@@ -410,18 +409,15 @@ const roomPickSlice = createSlice({
       );
       if (index === state.roomChooises.length - 1) return state;
       const nextRoomOption = state.roomChooises[index + 1];
-      console.log(nextRoomOption?.id, nextRoomOption?.name);
       state.currentRoom = nextRoomOption;
     },
     removeRoom: (state, action) => {
-      console.log("removed room");
       if (state?.roomChooises?.length === 1) return state;
       delete state.roomPicked[action.payload];
       const index = state.roomChooises.findIndex(
         (room) => room.id == action.payload,
       );
       const previousRoomIndex = index - 1;
-      console.log(index, previousRoomIndex);
       const previousRoom = state.roomChooises[previousRoomIndex];
       if (previousRoom) {
         // if previous room exists, set it as the current room
@@ -433,19 +429,15 @@ const roomPickSlice = createSlice({
       const index = state.roomChooises?.findIndex(
         (room) => room.id == action.payload.id,
       );
-      // console.log(state.roomChooises[0].id, index);
       const room = state.roomChooises[index];
       room.adults = action.payload.adults;
-      state.currentRoom = room;
     },
     updateChildren: (state, action) => {
       const index = state.roomChooises?.findIndex(
         (room) => room.id == action.payload.id,
       );
-      // console.log(state.roomChooises[0].id, index);
       const room = state.roomChooises[index];
       room.children = action.payload.children;
-      state.currentRoom = room;
     },
     selectRoom: (state, action) => {
       state.roomChooises.forEach((room) => {

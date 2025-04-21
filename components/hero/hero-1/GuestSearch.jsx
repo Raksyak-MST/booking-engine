@@ -48,6 +48,9 @@ const GuestSearch = () => {
                     onClick={() => {
                       dispatch(roomPickActions.removeRoom(room?.id));
                     }}
+                    disabled={
+                      (room?.id < roomChooises.length) | (room?.id == 1)
+                    }
                   >
                     X
                   </button>
