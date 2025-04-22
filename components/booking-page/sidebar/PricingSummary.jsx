@@ -45,8 +45,8 @@ const PricingSummary = () => {
   return (
     <div className="pt-20 border-light rounded-4 mt-30">
       <div className="text-20 fw-500 mb-20 px-20">Your price summary</div>
-      {Object.entries(roomPicked).map(([key, room]) => (
-        <div key={room?.id} className="mb-28 bg-blue-1-05 p-4">
+      {Object.entries(roomPicked).map(([key, room], index) => (
+        <div key={index} className="mb-28 bg-blue-1-05 p-4">
           <h2 className="text-18 bg-bule-2">
             {room?.selectedRoomOptions} ({room?.roomTypeName})
           </h2>

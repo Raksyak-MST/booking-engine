@@ -13,7 +13,7 @@ import {
 import { useDispatch, useSelector } from "react-redux";
 import toast from "react-hot-toast";
 import { ERROR_MESSAGES } from "@/data/error-messages";
-import { useFormik, FormikProvider, ErrorMessage } from "formik";
+import { useFormik, FormikProvider, ErrorMessage, Field } from "formik";
 import * as yup from "yup";
 import { useRouter } from "next/navigation";
 
@@ -198,98 +198,93 @@ const Index = () => {
           </div>
           {/* End register notify */}
 
-          <h2 className="text-22 fw-500 mt-40 mb-40 md:mb-24">
-            Let us know who you are
-          </h2>
-          <h3 className="text-16 fw-500 mb-24">+ Add guest names</h3>
-          <div className="p-4 border rounded">
-            {Object.entries(roomPicked).map(([key, room]) => (
-              <FormikProvider value={formik} key={room?.id}>
-                <div className="d-flex gap-2 align-items-center">
-                  <h2 className="text-16 fw-500 ">{room?.roomTypeName}</h2>
-                  <p>
-                    {room?.adults} adults, {room?.children} children
-                  </p>
-                </div>
-                <form className="row x-gap-20 y-gap-20 pt-20 mb-24">
-                  <div className="col-md-3">
-                    <select
-                      className="form-select h-full text-light-1"
-                      name="Salutation"
-                      values={formik?.values?.Salutation}
-                      onChange={formik?.handleChange}
-                      onBlur={formik?.handleBlur}
-                    >
-                      {[
-                        { id: 1, value: "Mr", label: "Mr." },
-                        { id: 2, value: "Mrs", label: "Mrs." },
-                        { id: 3, value: "Ms", label: "Ms." },
-                        { id: 4, value: "Dr", label: "Dr." },
-                        { id: 5, value: "Mast.", label: "Mast.." },
-                        { id: 6, value: "Prof", label: "Prof." },
-                        { id: 7, value: "Capt", label: "Capt." },
-                        { id: 8, value: "Wg Cdr.", label: "Wg Cdr." },
-                        { id: 9, value: "Major.", label: "Major." },
-                        { id: 10, value: "Brig", label: "Brig." },
-                        { id: 11, value: "Col.", label: "Col." },
-                        { id: 12, value: "Lt Col", label: "Lt Col" },
-                        { id: 13, value: "Lt", label: "Lt." },
-                        { id: 14, value: "Maj Gen.", label: "Maj Gen" },
-                      ].map((obj) => (
-                        <option key={obj?.id} value={obj?.value}>
-                          {obj?.label}
-                        </option>
-                      ))}
-                    </select>
-                  </div>
-                  {/* End col-12 */}
-                  <div className="col-md-5">
-                    <div className="form-input">
-                      <input
-                        type="text"
-                        name="FirstName"
-                        value={formik?.values?.FirstName}
-                        onChange={formik?.handleChange}
-                        onBlur={formik?.handleBlur}
-                        required
-                      />
-                      <label className="lh-1 text-16 text-light-1">
-                        First name
-                      </label>
-                    </div>
-                    <ErrorMessage
-                      component="span"
-                      className="text-13 text-red-1"
-                      name="FirstName"
-                    />
-                  </div>
-                  {/* End col-12 */}
-                  <div className="col-md-4">
-                    <div className="form-input input-group has-validation">
-                      <input
-                        type="text"
-                        name="LastName"
-                        value={formik?.values?.LastName}
-                        onChange={formik?.handleChange}
-                        onBlur={formik?.handleBlur}
-                        required
-                      />
-                      <label className="lh-1 text-16 text-light-1">
-                        Last name
-                      </label>
-                    </div>
-                    <ErrorMessage
-                      component="span"
-                      className="text-13 text-red-1"
-                      name="LastName"
-                    />
-                  </div>
-                </form>
-              </FormikProvider>
-            ))}
+          <div className="mt-40 mb-40 md:mb-24">
+            <h2 className="text-24 fw-500 ">Let us know who you are</h2>
+            <p className="text-14">
+              Please tell us the name of the guest staying at the hotel as it
+              appears on the ID that they’ll present at check-in.
+            </p>
           </div>
-          <h3 className="text-28 fw-500 pt-40">Your details</h3>
-          <FormikProvider value={formik}>
+          <FormikProvider value={formik} key={room?.id}>
+            <div className="p-4 border rounded">
+              {Object.entries(roomPicked).map(([key, room], index) => (
+                <div key={index}>
+                  <div className="d-flex gap-2 align-items-center">
+                    <h2 className="text-16 fw-500 ">{room?.roomTypeName}</h2>
+                    <p>
+                      {room?.adults} adults, {room?.children} children
+                    </p>
+                  </div>
+                  <form className="row x-gap-20 y-gap-20 pt-20 mb-24">
+                    <div className="col-md-3">
+                      <select
+                        className="form-select h-full text-light-1"
+                        name={`guestDetails.${index}.Salutation`}
+                        values={formik?.values?.Salutation}
+                        onChange={formik?.handleChange}
+                        onBlur={formik?.handleBlur}
+                      >
+                        {[
+                          { id: 1, value: "Mr", label: "Mr." },
+                          { id: 2, value: "Mrs", label: "Mrs." },
+                          { id: 3, value: "Ms", label: "Ms." },
+                          { id: 4, value: "Dr", label: "Dr." },
+                          { id: 5, value: "Mast.", label: "Mast.." },
+                          { id: 6, value: "Prof", label: "Prof." },
+                          { id: 7, value: "Capt", label: "Capt." },
+                          { id: 8, value: "Wg Cdr.", label: "Wg Cdr." },
+                          { id: 9, value: "Major.", label: "Major." },
+                          { id: 10, value: "Brig", label: "Brig." },
+                          { id: 11, value: "Col.", label: "Col." },
+                          { id: 12, value: "Lt Col", label: "Lt Col" },
+                          { id: 13, value: "Lt", label: "Lt." },
+                          { id: 14, value: "Maj Gen.", label: "Maj Gen" },
+                        ].map((obj) => (
+                          <option key={obj?.id} value={obj?.value}>
+                            {obj?.label}
+                          </option>
+                        ))}
+                      </select>
+                    </div>
+                    {/* End col-12 */}
+                    <div className="col-md-5">
+                      <div className="form-input">
+                        <Field
+                          name={`guestDetails.${index}.FirstName`}
+                          required
+                        />
+                        <label className="lh-1 text-16 text-light-1">
+                          First name
+                        </label>
+                      </div>
+                      <ErrorMessage
+                        component="span"
+                        className="text-13 text-red-1"
+                        name="FirstName"
+                      />
+                    </div>
+                    {/* End col-12 */}
+                    <div className="col-md-4">
+                      <div className="form-input input-group has-validation">
+                        <Field
+                          name={`guestDetails.${index}.LastName`}
+                          required
+                        />
+                        <label className="lh-1 text-16 text-light-1">
+                          Last name
+                        </label>
+                      </div>
+                      <ErrorMessage
+                        component="span"
+                        className="text-13 text-red-1"
+                        name="LastName"
+                      />
+                    </div>
+                  </form>
+                </div>
+              ))}
+            </div>
+            <h3 className="text-24 fw-500 pt-40">Your details</h3>
             <form className="row x-gap-20 y-gap-20 pt-20">
               <div className="col-md-3">
                 <select

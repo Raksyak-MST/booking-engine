@@ -22,8 +22,8 @@ const GuestSearch = () => {
         <h4 className="text-15 fw-500 ls-2 lh-16">Guest</h4>
         <div className="text-15 text-light-1 ls-2 lh-16">
           <span className="js-count-adult">{state.adults}</span> adults -{" "}
-          <span className="js-count-child">{state.children}</span> childeren -{" "}
-          <span className="js-count-room">{state.quantity}</span> room
+          <span className="js-count-child">{state.children}</span>{" "}
+          childeren{" "}
         </div>
       </div>
       {/* End guest */}
