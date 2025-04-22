@@ -57,67 +57,56 @@ const Index = () => {
 
   const formik = useFormik({
     initialValues: {
-      Salutation: "Mr",
-      FirstName: "",
-      LastName: "",
-      Email: "",
-      Mobile: "",
-      Address: "",
-      City: "",
-      State: "",
-      Zipcode: "",
-      Country: "",
-      Comment: "",
-      PromoCode: "",
-      ...reservationInfo?.guestDetails,
+      guestDetails: [],
     },
     enableReinitialize: true,
     isValid: false,
     onSubmit: async (values) => {
-      dispatch(reservationInfoActions.setGuestDetails(values));
+      console.log(values.guestDetails);
+      dispatch(reservationInfoActions.setGuestDetails(values.guestDetails));
 
-      try {
-        const response = await getReservationJsonLikeEzeeWebbooking({
-          ...reservationInfo,
-          guestDetails: { ...values },
-        }).unwrap();
-        if (response?.statusCode !== 200) {
-          toast.error("Error while getting reservation like Ezee");
-          return;
-        }
-        if (!response?.data) {
-          toast.error(
-            "Not able to get reservation details. Please try after some time.",
-          );
-          return;
-        }
-        if (!Object.hasOwn(response?.data, "Reservations")) {
-          toast.error("Not able to get the Reservations property in response");
-          return;
-        }
-        const orderDetails = {
-          order_amount: room?.TotalAmountAfterTax,
-          order_currency: "INR",
-          customer_details: {
-            customer_id: "1",
-            customer_phone: "8765432190",
-            customer_email: "testuser@gmail.com",
-            customer_name: "test user",
-          },
-        };
-        const { error } = await createOrder(orderDetails, response?.data);
+      // try {
+      //   const response = await getReservationJsonLikeEzeeWebbooking({
+      //     ...reservationInfo,
+      //     guestDetails: { ...values },
+      //   }).unwrap();
+      //   if (response?.statusCode !== 200) {
+      //     toast.error("Error while getting reservation like Ezee");
+      //     return;
+      //   }
+      //   if (!response?.data) {
+      //     toast.error(
+      //       "Not able to get reservation details. Please try after some time.",
+      //     );
+      //     return;
+      //   }
+      //   if (!Object.hasOwn(response?.data, "Reservations")) {
+      //     toast.error("Not able to get the Reservations property in response");
+      //     return;
+      //   }
+      //   const orderDetails = {
+      //     order_amount: room?.TotalAmountAfterTax,
+      //     order_currency: "INR",
+      //     customer_details: {
+      //       customer_id: "1",
+      //       customer_phone: "8765432190",
+      //       customer_email: "testuser@gmail.com",
+      //       customer_name: "test user",
+      //     },
+      //   };
+      //   const { error } = await createOrder(orderDetails, response?.data);
 
-        if (error) {
-          return;
-        }
+      //   if (error) {
+      //     return;
+      //   }
 
-        toast.success(
-          "Reservation is being processed. Please wait for confirmation.",
-        );
-      } catch (error) {
-        toast.error(error?.message);
-        console.error(error?.message, error);
-      }
+      //   toast.success(
+      //     "Reservation is being processed. Please wait for confirmation.",
+      //   );
+      // } catch (error) {
+      //   toast.error(error?.message);
+      //   console.error(error?.message, error);
+      // }
     },
     validationSchema: yup.object().shape({
       Salutation: yup.string().required("Salutation is required"),
@@ -125,11 +114,7 @@ const Index = () => {
       LastName: yup.string().required("Last Name is required"),
       Email: yup.string().email("Invalid email").required("Email is required"),
       Mobile: yup.string().required("Mobile is required"),
-      guestDetails: yup.array().of(
-        yup.object().shape({
-          FirstName: yup.string().max(3, "Invalid First Name"),
-        }),
-      ),
+      guestDetails: yup.array().of(yup.object().shape({})),
     }),
   });
 

@@ -316,8 +316,8 @@ const billingInfoSlice = createSlice({
 const reservationInfoSlice = createSlice({
   name: "reservationInfo",
   initialState: {
-    hotelID: null,
-    arrivalDate: null,
+    hotelID: 10,
+    arrivalDate: moment(new Date()),
     departureDate: null,
     selectedPackageID: null,
     selectedRoomTypeID: null,
@@ -331,6 +331,9 @@ const reservationInfoSlice = createSlice({
     ],
   },
   reducers: {
+    addPromoCode: (state, action) => {
+      state.guestDetails?.map((guest) => (guest.PromoCode = action.payload));
+    },
     setGuestDetails: (state, action) => {
       Object.assign(state?.guestDetails, action.payload);
     },

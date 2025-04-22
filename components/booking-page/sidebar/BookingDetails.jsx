@@ -1,11 +1,11 @@
 import Image from "next/image";
-import { useSelector } from "react-redux"
-import moment from "moment"
+import { useSelector } from "react-redux";
+import moment from "moment";
 import PromoCode from "./PromoCode";
 import PricingSummary from "./PricingSummary";
 
 const BookingDetails = () => {
-  const selectedRoom = useSelector(state => state.roomSelection)
+  const selectedRoom = useSelector((state) => state.roomSelection);
 
   return (
     <>
