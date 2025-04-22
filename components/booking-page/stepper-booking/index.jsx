@@ -125,6 +125,11 @@ const Index = () => {
       LastName: yup.string().required("Last Name is required"),
       Email: yup.string().email("Invalid email").required("Email is required"),
       Mobile: yup.string().required("Mobile is required"),
+      guestDetails: yup.array().of(
+        yup.object().shape({
+          FirstName: yup.string().max(3, "Invalid First Name"),
+        }),
+      ),
     }),
   });
 
@@ -218,7 +223,7 @@ const Index = () => {
                   <form className="row x-gap-20 y-gap-20 pt-20 mb-24">
                     <div className="col-md-3">
                       <select
-                        className="form-select h-full text-light-1"
+                        className="form-select dropdown__button d-flex items-center rounded-4 border-light px-15 h-100 text-14"
                         name={`guestDetails.${index}.Salutation`}
                         values={formik?.values?.Salutation}
                         onChange={formik?.handleChange}
@@ -260,7 +265,7 @@ const Index = () => {
                       <ErrorMessage
                         component="span"
                         className="text-13 text-red-1"
-                        name="FirstName"
+                        name={`guestDetails.${index}.FirstName`}
                       />
                     </div>
                     {/* End col-12 */}
@@ -277,7 +282,7 @@ const Index = () => {
                       <ErrorMessage
                         component="span"
                         className="text-13 text-red-1"
-                        name="LastName"
+                        name={`guestDetails.${index}.LastName`}
                       />
                     </div>
                   </form>
@@ -513,7 +518,7 @@ const Index = () => {
                         <span className="sr-only"></span>
                       </div>
                     ) : null}
-                    Book Now
+                    Confirm Booking
                   </button>
                 </div>
                 {/* End next btn */}

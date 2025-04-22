@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { roomPickActions } from "@/store/store";
 import { useRouter } from "next/navigation";
@@ -7,6 +8,12 @@ export const ReservationSummary = () => {
   const roomPicked = useSelector((state) => state.roomPick?.roomPicked);
   const roomsOptions = useSelector((state) => state.roomPick?.roomChooises);
   const rooms = Object.entries(roomPicked);
+  useEffect(() => {
+    const data = sessionStorage.getItem("roomPick");
+    if (data) {
+      dispatch(roomPickActions.setPickedRoom(JSON.parse(data)));
+    }
+  }, []);
   return (
     <div className="mb-3 border rounded mt-3 p-2 ">
       <h2 className="text-18 fw-500 mb-20">Reservation Summary</h2>

@@ -316,17 +316,19 @@ const billingInfoSlice = createSlice({
 const reservationInfoSlice = createSlice({
   name: "reservationInfo",
   initialState: {
-    hotelID: 10,
-    arrivalDate: moment(new Date()).format("YYYY-MM-DD"),
-    departureDate: moment(new Date()).format("YYYY-MM-DD"),
-    adults: 1,
-    children: 0,
-    quantity: 1,
-    selectedPackageID: "1",
-    selectedRoomTypeID: "",
-    guestDetails: {
-      PromoCode: "",
-    },
+    hotelID: null,
+    arrivalDate: null,
+    departureDate: null,
+    selectedPackageID: null,
+    selectedRoomTypeID: null,
+    guestDetails: [
+      {
+        PromoCode: "",
+        adults: 1,
+        children: 0,
+        quantity: 1,
+      },
+    ],
   },
   reducers: {
     setGuestDetails: (state, action) => {
@@ -340,6 +342,14 @@ const reservationInfoSlice = createSlice({
         selectedRoomTypeID: action.payload?.roomTypeID,
       });
     });
+    builder.addCase(
+      bookingQuerySlice.actions.setBookingQuery,
+      (state, action) => {
+        const { hotelID, arrivalDate, departureDate, selectedPackageID } =
+          action.payload;
+        Object.assign(state, action.payload);
+      },
+    );
   },
 });
 
@@ -402,6 +412,9 @@ const roomPickSlice = createSlice({
       const room = createRoomOption(action.payload);
       state.roomChooises.push(room);
     },
+    setPickedRoom: (state, action) => {
+      state.roomPicked = action.payload;
+    },
     pickRoom: (state, action) => {
       state.roomPicked[state.currentRoom?.id] = action.payload;
       const index = state.roomChooises.findIndex(
@@ -454,24 +467,35 @@ const roomPickSlice = createSlice({
 
 // [ Middleware ]
 
-const localStorageMiddleware = createListenerMiddleware();
+const storageMiddleware = createListenerMiddleware();
 const apiHandlerListenerMiddleware = createListenerMiddleware();
 
-localStorageMiddleware.startListening({
+storageMiddleware.startListening({
+  actionCreator: roomPickSlice.actions.pickRoom,
+  effect: (action, api) => {
+    const state = api.getState();
+    sessionStorage.setItem(
+      "roomPick",
+      JSON.stringify(state.roomPick.roomPicked),
+    );
+  },
+});
+
+storageMiddleware.startListening({
   actionCreator: roomSelection.actions.setRoomSelection,
   effect: (action, api) => {
     sessionStorage.setItem("roomSelection", JSON.stringify(action.payload));
   },
 });
 
-localStorageMiddleware.startListening({
+storageMiddleware.startListening({
   actionCreator: reservationInfoSlice.actions.setGuestDetails,
   effect: (action, api) => {
     sessionStorage.setItem("guestDetails", JSON.stringify(action.payload));
   },
 });
 
-localStorageMiddleware.startListening({
+storageMiddleware.startListening({
   matcher: api.endpoints.addReservationFromWeb.matchFulfilled,
   effect: () => {
     sessionStorage.removeItem("roomSelection");
@@ -496,7 +520,7 @@ export const store = configureStore({
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware()
-      .prepend(localStorageMiddleware.middleware)
+      .prepend(storageMiddleware.middleware)
       .concat(api.middleware)
       .concat(cashFreeApiSlice.middleware),
 });
