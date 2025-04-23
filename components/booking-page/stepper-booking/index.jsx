@@ -10,6 +10,7 @@ import { ERROR_MESSAGES } from "@/data/error-messages";
 import { useFormik, FormikProvider, ErrorMessage, Field } from "formik";
 import * as Yup from "yup";
 import { useRouter } from "next/navigation";
+
 const Index = () => {
   const router = useRouter();
   const dispatch = useDispatch();
@@ -17,6 +18,7 @@ const Index = () => {
     Actions.useAddReservationFromWebMutation();
 
   const reservationInfo = useSelector((state) => state.reservationInfo);
+  const bookingQuery = useSelector((state) => state.bookingQuery);
 
   const pickedPackageId = useSelector(
     (state) => state?.bookingQuery?.selectedPackageID,
@@ -82,6 +84,7 @@ const Index = () => {
       values.guestDetails.forEach((guestDetail) => {
         // needed to copy other details to guestDetails as required by backend to extract the details for cashFree order creation.
         Object.assign(guestDetail, {
+          Salutation: guestDetail.Salutation || "Mr",
           Email: values.paymentDetails.Email,
           Mobile: values.paymentDetails.Mobile,
           Address: values.paymentDetails.Address,
@@ -95,6 +98,7 @@ const Index = () => {
       dispatch(
         Actions.reservationInfoActions.setGuestDetails(values.guestDetails),
       );
+      console.log(values.guestDetails, bookingQuery);
     },
   });
 
@@ -123,9 +127,12 @@ const Index = () => {
                     <div className="col-md-3">
                       <Field
                         as="select"
-                        className="form-select dropdown__button d-flex items-center rounded-4 border-light px-15 h-100 text-14"
+                        className="form-select h-full"
                         name={`guestDetails.${index}.Salutation`}
                       >
+                        <option disabled selected value="">
+                          Salutation*
+                        </option>
                         {[
                           { id: 1, value: "Mr", label: "Mr." },
                           { id: 2, value: "Mrs", label: "Mrs." },
@@ -153,6 +160,7 @@ const Index = () => {
                         name={`guestDetails.${index}.Salutation`}
                       />
                     </div>
+
                     {/* End col-12 */}
                     <div className="col-md-5">
                       <div className="form-input">

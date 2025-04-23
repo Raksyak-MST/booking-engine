@@ -12,19 +12,19 @@ import moment from "moment";
 
 const MainFilterSearchBox = () => {
   const Router = useRouter();
-  const bookingQuery = useSelector((state) => state.bookingQuery);
+  const searchQuery = useSelector((state) => state.searchQuery);
   const currentRoom = useSelector((state) => state.roomPick.currentRoom);
   const [getDataForWebBooking, options] = useGetDataForWebBookingMutation();
 
   const handleSearch = async () => {
-    if (!bookingQuery.hotelID) {
+    if (!searchQuery.hotelID) {
       toast.error("Please select a hotel");
       return;
     }
 
     if (
-      bookingQuery.arrivalDate == "Invalid date" ||
-      bookingQuery.departureDate == "Invalid date"
+      searchQuery.arrivalDate == "Invalid date" ||
+      searchQuery.departureDate == "Invalid date"
     ) {
       toast.error("Please select check-in check-out date");
       return;
@@ -32,7 +32,7 @@ const MainFilterSearchBox = () => {
 
     try {
       await getDataForWebBooking({
-        ...bookingQuery,
+        ...searchQuery,
         adults: currentRoom?.adults,
         children: currentRoom?.children,
       });

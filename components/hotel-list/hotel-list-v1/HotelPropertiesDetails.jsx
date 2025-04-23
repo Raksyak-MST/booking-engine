@@ -3,8 +3,8 @@ import { useRouter } from "next/navigation";
 import { useDispatch, useSelector } from "react-redux";
 import {
   roomSelectionActions,
-  bookingQueryActions,
-  roomPickActions,
+  searchQueryActions,
+  optionsActions,
   useGetReservationJsonLikeEzeeWebBookingMutation,
 } from "@/store/store";
 import toast from "react-hot-toast";
@@ -58,9 +58,13 @@ const HotelPropertyDetails = (props) => {
   const handleMealPlanSelection = (e) => {
     const mealPlan = e.currentTarget.getAttribute("name");
     const packageId = e.currentTarget.getAttribute("id") ?? "";
-    setSelectedMealPlan({ [mealPlan]: true, type: mealPlan });
+    setSelectedMealPlan({
+      [mealPlan]: true,
+      type: mealPlan,
+      packageId: packageId,
+    });
     dispatch(
-      bookingQueryActions.setBookingQuery({
+      searchQueryActions.setBookingQuery({
         selectedPackageID: packageId,
         selectedRoomTypeID: hotel?.roomTypeID,
       }),
@@ -70,7 +74,7 @@ const HotelPropertyDetails = (props) => {
   const handleRoomSelection = async () => {
     dispatch(roomSelectionActions.setRoomSelection(hotel));
     dispatch(
-      roomPickActions.pickRoom({
+      optionsActions.pickRoom({
         adults: currentRoom?.adults,
         children: currentRoom?.children,
         selectedRoomOptions: currentRoom?.name,
@@ -78,6 +82,7 @@ const HotelPropertyDetails = (props) => {
         roomTypeName: hotel?.roomTypeName,
         perNightRate: perNight,
         roomRate: roomRate,
+        selectedPackageID: selectedMealPlan?.packageId,
       }),
     );
   };
@@ -138,7 +143,7 @@ const HotelPropertyDetails = (props) => {
             className="button -md -dark-1 bg-blue-1 text-white cursor-pointer align-self-md-end"
             onClick={handleRoomSelection}
           >
-            {"Select"}
+            Select
           </div>
         </div>
       </div>

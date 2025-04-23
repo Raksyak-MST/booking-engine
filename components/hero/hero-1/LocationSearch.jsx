@@ -1,28 +1,34 @@
-
-'use client'
+"use client";
 
 import { useState, memo, useEffect } from "react";
-import { bookingQueryActions, useGetHotelDetailsWebBookingMutation, hotelDetailsActions } from "@/store/store"
-import { useSelector, useDispatch } from "react-redux"
+import {
+  searchQueryActions,
+  useGetHotelDetailsWebBookingMutation,
+  hotelDetailsActions,
+} from "@/store/store";
+import { useSelector, useDispatch } from "react-redux";
 
 const SearchBar = () => {
   const [searchValue, setSearchValue] = useState("");
   const [selectedItem, setSelectedItem] = useState(null);
-  const [ getHotelDetailsWebBooking, options ] = useGetHotelDetailsWebBookingMutation()
+  const [getHotelDetailsWebBooking, options] =
+    useGetHotelDetailsWebBookingMutation();
 
   useEffect(() => {
-    getHotelDetailsWebBooking()
-  }, [])
+    getHotelDetailsWebBooking();
+  }, []);
 
-  const hotelLocations = useSelector(state => state.hotelDetails?.locations)
-  const selectedHotel = useSelector(state => state.hotelDetails?.selectedHotel)
-  const dispatch = useDispatch()
+  const hotelLocations = useSelector((state) => state.hotelDetails?.locations);
+  const selectedHotel = useSelector(
+    (state) => state.hotelDetails?.selectedHotel,
+  );
+  const dispatch = useDispatch();
 
   const handleOptionClick = (item) => {
     setSearchValue(item.name);
     setSelectedItem(item);
-    dispatch(bookingQueryActions.setBookingQuery({ hotelID: item.id}))
-    dispatch(hotelDetailsActions.setUserPickedHotelDetail(item))
+    dispatch(searchQueryActions.setBookingQuery({ hotelID: item.id }));
+    dispatch(hotelDetailsActions.setUserPickedHotelDetail(item));
   };
 
   return (

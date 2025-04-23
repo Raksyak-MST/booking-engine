@@ -2,11 +2,11 @@
 
 import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { bookingQueryActions, roomPickActions } from "@/store/store";
+import { searchQueryActions, optionsActions } from "@/store/store";
 import { useEffect } from "react";
 
 const GuestSearch = () => {
-  const state = useSelector((state) => state.roomPick?.currentRoom);
+  const currentRoom = useSelector((state) => state.roomPick?.currentRoom);
   const roomChooises = useSelector((state) => state.roomPick?.roomChooises);
   const roomPick = useSelector((state) => state.roomPick);
   const dispatch = useDispatch();
@@ -14,7 +14,7 @@ const GuestSearch = () => {
   useEffect(() => {
     const data = sessionStorage.getItem("roomChooises");
     if (data) {
-      dispatch(roomPickActions.setRoomOptions(JSON.parse(data)));
+      dispatch(optionsActions.setRoomOptions(JSON.parse(data)));
     }
   }, []);
 
@@ -28,8 +28,8 @@ const GuestSearch = () => {
       >
         <h4 className="text-15 fw-500 ls-2 lh-16">Guest</h4>
         <div className="text-15 text-light-1 ls-2 lh-16">
-          <span className="js-count-adult">{state.adults}</span> adults -{" "}
-          <span className="js-count-child">{state.children}</span>{" "}
+          <span className="js-count-adult">{currentRoom.adults}</span> adults -{" "}
+          <span className="js-count-child">{currentRoom.children}</span>{" "}
           childeren{" "}
         </div>
       </div>
@@ -53,7 +53,7 @@ const GuestSearch = () => {
                   <button
                     className="btn border text-12"
                     onClick={() => {
-                      dispatch(roomPickActions.removeRoom(room?.id));
+                      dispatch(optionsActions.removeRoom(room?.id));
                     }}
                     disabled={
                       (room?.id < roomChooises.length) | (room?.id == 1)
@@ -68,7 +68,7 @@ const GuestSearch = () => {
                     className="btn border text-12"
                     onClick={() =>
                       dispatch(
-                        roomPickActions.updateAdults({
+                        optionsActions.updateAdults({
                           id: room?.id,
                           adults: room?.adults - 1,
                         }),
@@ -82,7 +82,7 @@ const GuestSearch = () => {
                     className="btn border text-12"
                     onClick={() =>
                       dispatch(
-                        roomPickActions.updateAdults({
+                        optionsActions.updateAdults({
                           id: room?.id,
                           adults: room?.adults + 1,
                         }),
@@ -97,7 +97,7 @@ const GuestSearch = () => {
                     className="btn border text-12"
                     onClick={() =>
                       dispatch(
-                        roomPickActions.updateChildren({
+                        optionsActions.updateChildren({
                           id: room?.id,
                           children: room?.children - 1,
                         }),
@@ -111,7 +111,7 @@ const GuestSearch = () => {
                     className="btn border text-12"
                     onClick={() => {
                       dispatch(
-                        roomPickActions.updateChildren({
+                        optionsActions.updateChildren({
                           id: room?.id,
                           children: room?.children + 1,
                         }),
@@ -132,7 +132,7 @@ const GuestSearch = () => {
                 roomPick.roomChooises[roomPick.roomChooises?.length - 1];
               const count = lastRoom.id + 1;
               dispatch(
-                roomPickActions.insertRoomOptions({
+                optionsActions.insertRoomOptions({
                   id: count,
                   name: `Room${count}`,
                 }),

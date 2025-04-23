@@ -1,15 +1,16 @@
-
-'use client'
+"use client";
 
 import React, { useState, useCallback } from "react";
 import DatePicker from "react-multi-date-picker";
-import { useDispatch, useSelector } from 'react-redux'
-import { bookingQueryActions } from "@/store/store"
+import { useDispatch, useSelector } from "react-redux";
+import { searchQueryActions } from "@/store/store";
 import moment from "moment";
 
 const DateSearch = () => {
   const dispatch = useDispatch();
-  const {arrivalDate, departureDate } = useSelector(state => state.bookingQuery)
+  const { arrivalDate, departureDate } = useSelector(
+    (state) => state.searchQuery,
+  );
 
   const [dates, setDates] = useState(() => {
     // fetch from the store if user has picked date from previous page
@@ -19,16 +20,19 @@ const DateSearch = () => {
     return [new Date(), new Date()];
   });
 
-  const handleDatePick = useCallback((event) => {
-    if (!Array.isArray(event)) return;
-    setDates(event)
-    dispatch(
-      bookingQueryActions.setBookingQuery({
-        arrivalDate: moment(new Date(event[0])).format("YYYY-MM-DD"),
-        departureDate: moment(new Date(event[1])).format("YYYY-MM-DD"),
-      })
-    );
-  }, [dispatch])
+  const handleDatePick = useCallback(
+    (event) => {
+      if (!Array.isArray(event)) return;
+      setDates(event);
+      dispatch(
+        searchQueryActions.setBookingQuery({
+          arrivalDate: moment(new Date(event[0])).format("YYYY-MM-DD"),
+          departureDate: moment(new Date(event[1])).format("YYYY-MM-DD"),
+        }),
+      );
+    },
+    [dispatch],
+  );
 
   return (
     <div className="text-15 text-light-1 ls-2 lh-16 custom_dual_datepicker">

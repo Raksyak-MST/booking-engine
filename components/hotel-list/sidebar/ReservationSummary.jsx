@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { roomPickActions } from "@/store/store";
+import { optionsActions } from "@/store/store";
 import { useRouter } from "next/navigation";
 export const ReservationSummary = () => {
   const dispatch = useDispatch();
@@ -11,7 +11,7 @@ export const ReservationSummary = () => {
   useEffect(() => {
     const data = sessionStorage.getItem("roomPick");
     if (data) {
-      dispatch(roomPickActions.setPickedRoom(JSON.parse(data)));
+      dispatch(optionsActions.setPickedRoom(JSON.parse(data)));
     }
   }, []);
   return (
@@ -30,14 +30,14 @@ export const ReservationSummary = () => {
                 style: "currency",
                 currency: "INR",
                 currencyDisplay: "symbol",
-              }).format(room[1]?.perNightRate)}
+              }).format(room[1]?.roomRate)}
             </p>
           </div>
           <button
             href="#"
             className="text-14 -underline text-blue-1 cursor-pointer"
             onClick={() => {
-              dispatch(roomPickActions.changeRoomOption(room[0]));
+              dispatch(optionsActions.changeRoomOption(room[0]));
             }}
           >
             Change room
@@ -56,7 +56,7 @@ export const ReservationSummary = () => {
             style: "currency",
             currencyDisplay: "symbol",
           }).format(
-            rooms.reduce((acc, room) => (acc += room[1]?.perNightRate), 0.0),
+            rooms.reduce((acc, room) => (acc += room[1]?.roomRate), 0.0),
           )}
         </p>
       </div>

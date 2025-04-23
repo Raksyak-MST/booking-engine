@@ -11,13 +11,13 @@ import { useGetDataForWebBookingMutation } from "@/store/store";
 import { Loader } from "./Loader";
 
 export const HotelProperties2 = () => {
-  const availableRooms = useSelector((state) => state.availableRooms.roomTypes);
-  const bookingQuery = useSelector((state) => state.bookingQuery);
+  const roomList = useSelector((state) => state.roomList.roomTypes);
+  const searchQuery = useSelector((state) => state.searchQuery);
   const [getDataForWebBooking, options] = useGetDataForWebBookingMutation();
 
   useEffect(() => {
     // need to refetch after coming back from next step, this has to be done manually.
-    getDataForWebBooking(bookingQuery);
+    getDataForWebBooking(searchQuery);
   }, []);
 
   if (options?.isError) {
@@ -35,7 +35,7 @@ export const HotelProperties2 = () => {
     return <Loader />;
   }
 
-  if (availableRooms?.length === 0) {
+  if (roomList?.length === 0) {
     return (
       <div className="col-12 text-center">
         <h2>Sorry, No Rooms for this Search</h2>
@@ -47,7 +47,7 @@ export const HotelProperties2 = () => {
     );
   }
 
-  return availableRooms?.map((item, index) => (
+  return roomList?.map((item, index) => (
     <div className="col-12 border-light mb-3 rounded p-3" key={index}>
       <div>
         <div className="row x-gap-20 y-gap-20">

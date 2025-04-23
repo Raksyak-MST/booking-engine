@@ -2,7 +2,7 @@
 
 import { useCallback } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { roomPickActions } from "@/store/store";
+import { optionsActions } from "@/store/store";
 
 export const SelectiveRooms = () => {
   const dispatch = useDispatch();
