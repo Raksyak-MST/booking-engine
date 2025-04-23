@@ -14,33 +14,6 @@ const PricingSummary = () => {
   );
   const roomPicked = useSelector((state) => state.roomPick?.roomPicked);
   const roomSelection = useSelector((state) => state?.roomSelection);
-  const pickedPackage = roomSelection?.perNightCharges?.filter(
-    (pack) => pack?.packageID === parseInt(pickedPackageId),
-  );
-
-  const rates = !pickedPackage?.length ? {} : pickedPackage[0];
-  const room = !rates?.rooms?.length ? {} : rates.rooms[0];
-
-  const billingReservation = useSelector(
-    (state) => state?.billing?.reservationInfo,
-  );
-  let reservationInfo = billingReservation?.Reservations?.Reservation;
-
-  if (!Array.isArray(reservationInfo)) {
-    reservationInfo = [{}];
-  }
-
-  let { BookingTran } = reservationInfo[0];
-
-  if (!Array.isArray(BookingTran)) {
-    BookingTran = [{}];
-  }
-
-  let RentalInfo = BookingTran[0].RentalInfo;
-
-  if (!Array.isArray(RentalInfo)) {
-    RentalInfo = [{}];
-  }
 
   return (
     <div className="pt-20 border-light rounded-4 mt-30">
@@ -58,7 +31,7 @@ const PricingSummary = () => {
               <div className="text-15">{formateCurrency(room?.roomRate)}</div>
             </div>
           </div>
-          <div className="row y-gap-5 justify-between pt-5">
+          {/* <div className="row y-gap-5 justify-between pt-5">
             <div className="col-auto">
               <div className="text-15">Taxes and fees</div>
             </div>
@@ -75,7 +48,7 @@ const PricingSummary = () => {
                 {formateCurrency(room?.TotalAmountAfterTax)}
               </div>
             </div>
-          </div>
+          </div> */}
           {/* End .row */}
         </div>
       ))}
@@ -85,9 +58,7 @@ const PricingSummary = () => {
             <div className="text-18 lh-13 fw-500">Price</div>
           </div>
           <div className="col-auto">
-            <div className="text-18 lh-13 fw-500">
-              {formateCurrency(room?.TotalAmountAfterTax)}
-            </div>
+            <div className="text-18 lh-13 fw-500">{formateCurrency(0.0)}</div>
           </div>
         </div>
       </div>

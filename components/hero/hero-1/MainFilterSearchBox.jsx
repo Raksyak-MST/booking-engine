@@ -1,22 +1,22 @@
-
-'use client'
+"use client";
 
 import { useSelector } from "react-redux";
 import DateSearch from "../DateSearch";
 import GuestSearch from "./GuestSearch";
 import { useRouter } from "next/navigation";
-import { useGetDataForWebBookingMutation } from "@/store/store"
-import LocationSearch from "./LocationSearch"
-import toast from 'react-hot-toast'
-import { ERROR_MESSAGES } from "@/data/error-messages"
+import { useGetDataForWebBookingMutation } from "@/store/store";
+import LocationSearch from "./LocationSearch";
+import toast from "react-hot-toast";
+import { ERROR_MESSAGES } from "@/data/error-messages";
 import moment from "moment";
 
 const MainFilterSearchBox = () => {
-  const Router = useRouter()
-  const bookingQuery = useSelector(state => state.bookingQuery);
-  const [getDataForWebBooking, options] = useGetDataForWebBookingMutation()
+  const Router = useRouter();
+  const bookingQuery = useSelector((state) => state.bookingQuery);
+  const currentRoom = useSelector((state) => state.roomPick.currentRoom);
+  const [getDataForWebBooking, options] = useGetDataForWebBookingMutation();
 
-  const handleSubmit = async () => {
+  const handleSearch = async () => {
     if (!bookingQuery.hotelID) {
       toast.error("Please select a hotel");
       return;
@@ -30,12 +30,16 @@ const MainFilterSearchBox = () => {
       return;
     }
 
-    try{
-      await getDataForWebBooking(bookingQuery)
-      Router.push("/room-types")
-    }catch(error){
-      console.error(error)
-      toast.error(ERROR_MESSAGES.API_FAILED_DEFAULT_MESSAGE)
+    try {
+      await getDataForWebBooking({
+        ...bookingQuery,
+        adults: currentRoom?.adults,
+        children: currentRoom?.children,
+      });
+      Router.push("/room-types");
+    } catch (error) {
+      console.error(error);
+      toast.error(ERROR_MESSAGES.API_FAILED_DEFAULT_MESSAGE);
     }
   };
 
@@ -62,7 +66,7 @@ const MainFilterSearchBox = () => {
             <div className="button-item">
               <button
                 className="mainSearch__submit button -dark-1 h-60 px-35 col-12 rounded bg-blue-1 text-white gap-2"
-                onClick={handleSubmit}
+                onClick={handleSearch}
               >
                 {options.isLoading ? (
                   <div

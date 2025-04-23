@@ -11,6 +11,13 @@ const GuestSearch = () => {
   const roomPick = useSelector((state) => state.roomPick);
   const dispatch = useDispatch();
 
+  useEffect(() => {
+    const data = sessionStorage.getItem("roomChooises");
+    if (data) {
+      dispatch(roomPickActions.setRoomOptions(JSON.parse(data)));
+    }
+  }, []);
+
   return (
     <div className="searchMenu-guests px-30 lg:py-20 lg:px-0 js-form-dd js-form-counters position-relative">
       <div

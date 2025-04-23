@@ -317,8 +317,8 @@ const reservationInfoSlice = createSlice({
   name: "reservationInfo",
   initialState: {
     hotelID: 10,
-    arrivalDate: moment(new Date()),
-    departureDate: null,
+    arrivalDate: moment(new Date()).format("YYYY-MM-DD"),
+    departureDate: moment(new Date()).add(1, "days").format("YYYY-MM-DD"),
     selectedPackageID: null,
     selectedRoomTypeID: null,
     guestDetails: [
@@ -335,7 +335,7 @@ const reservationInfoSlice = createSlice({
       state.guestDetails?.map((guest) => (guest.PromoCode = action.payload));
     },
     setGuestDetails: (state, action) => {
-      Object.assign(state?.guestDetails, action.payload);
+      state.guestDetails = action.payload;
     },
   },
   extraReducers: (builder) => {
@@ -404,6 +404,9 @@ const roomPickSlice = createSlice({
     roomPicked: {},
   },
   reducers: {
+    setRoomOptions: (state, action) => {
+      state.roomChooises = action.payload;
+    },
     changeRoomOption: (state, action) => {
       const index = state.roomChooises.findIndex(
         (room) => room.id == parseInt(action.payload),
@@ -480,6 +483,39 @@ storageMiddleware.startListening({
     sessionStorage.setItem(
       "roomPick",
       JSON.stringify(state.roomPick.roomPicked),
+    );
+  },
+});
+
+storageMiddleware.startListening({
+  actionCreator: roomPickSlice.actions.removeRoom,
+  effect: (action, api) => {
+    const state = api.getState();
+    sessionStorage.setItem(
+      "roomPick",
+      JSON.stringify(state.roomPick.roomPicked),
+    );
+  },
+});
+
+storageMiddleware.startListening({
+  actionCreator: roomPickSlice.actions.insertRoomOptions,
+  effect: (action, api) => {
+    const state = api.getState();
+    sessionStorage.setItem(
+      "roomChooises",
+      JSON.stringify(state.roomPick.roomChooises),
+    );
+  },
+});
+
+storageMiddleware.startListening({
+  actionCreator: roomPickSlice.actions.removeRoom,
+  effect: (action, api) => {
+    const state = api.getState();
+    sessionStorage.setItem(
+      "roomChooises",
+      JSON.stringify(state.roomPick.roomChooises),
     );
   },
 });
