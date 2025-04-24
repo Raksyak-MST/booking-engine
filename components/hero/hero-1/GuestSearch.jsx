@@ -2,7 +2,7 @@
 
 import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { searchQueryActions, optionsActions } from "@/store/store";
+import { searchQueryActions, guestRoomActions } from "@/store/store";
 import { useEffect } from "react";
 
 const GuestSearch = () => {
@@ -14,7 +14,7 @@ const GuestSearch = () => {
   useEffect(() => {
     const data = sessionStorage.getItem("roomChooises");
     if (data) {
-      dispatch(optionsActions.setRoomOptions(JSON.parse(data)));
+      dispatch(guestRoomActions.setRoomOptions(JSON.parse(data)));
     }
   }, []);
 
@@ -53,7 +53,7 @@ const GuestSearch = () => {
                   <button
                     className="btn border text-12"
                     onClick={() => {
-                      dispatch(optionsActions.removeRoom(room?.id));
+                      dispatch(guestRoomActions.removeRoom(room?.id));
                     }}
                     disabled={
                       (room?.id < roomChooises.length) | (room?.id == 1)
@@ -68,7 +68,7 @@ const GuestSearch = () => {
                     className="btn border text-12"
                     onClick={() =>
                       dispatch(
-                        optionsActions.updateAdults({
+                        guestRoomActions.updateAdults({
                           id: room?.id,
                           adults: room?.adults - 1,
                         }),
@@ -82,7 +82,7 @@ const GuestSearch = () => {
                     className="btn border text-12"
                     onClick={() =>
                       dispatch(
-                        optionsActions.updateAdults({
+                        guestRoomActions.updateAdults({
                           id: room?.id,
                           adults: room?.adults + 1,
                         }),
@@ -97,7 +97,7 @@ const GuestSearch = () => {
                     className="btn border text-12"
                     onClick={() =>
                       dispatch(
-                        optionsActions.updateChildren({
+                        guestRoomActions.updateChildren({
                           id: room?.id,
                           children: room?.children - 1,
                         }),
@@ -111,7 +111,7 @@ const GuestSearch = () => {
                     className="btn border text-12"
                     onClick={() => {
                       dispatch(
-                        optionsActions.updateChildren({
+                        guestRoomActions.updateChildren({
                           id: room?.id,
                           children: room?.children + 1,
                         }),
@@ -132,7 +132,7 @@ const GuestSearch = () => {
                 roomPick.roomChooises[roomPick.roomChooises?.length - 1];
               const count = lastRoom.id + 1;
               dispatch(
-                optionsActions.insertRoomOptions({
+                guestRoomActions.insertRoomOptions({
                   id: count,
                   name: `Room${count}`,
                 }),

@@ -2,7 +2,7 @@
 
 import { useCallback } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { optionsActions } from "@/store/store";
+import { guestRoomActions } from "@/store/store";
 
 export const SelectiveRooms = () => {
   const dispatch = useDispatch();

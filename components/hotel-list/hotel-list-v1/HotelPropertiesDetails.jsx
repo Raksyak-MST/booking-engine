@@ -4,7 +4,7 @@ import { useDispatch, useSelector } from "react-redux";
 import {
   roomSelectionActions,
   searchQueryActions,
-  optionsActions,
+  guestRoomActions,
   useGetReservationJsonLikeEzeeWebBookingMutation,
 } from "@/store/store";
 import toast from "react-hot-toast";
@@ -74,7 +74,7 @@ const HotelPropertyDetails = (props) => {
   const handleRoomSelection = async () => {
     dispatch(roomSelectionActions.setRoomSelection(hotel));
     dispatch(
-      optionsActions.pickRoom({
+      guestRoomActions.pickRoom({
         adults: currentRoom?.adults,
         children: currentRoom?.children,
         selectedRoomOptions: currentRoom?.name,

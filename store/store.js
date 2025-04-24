@@ -214,8 +214,8 @@ const createRoomOption = (roomOptions) => {
   };
 };
 
-const optionsSlice = createSlice({
-  name: "options",
+const guestRoom = createSlice({
+  name: "guestRoom",
   initialState: {
     currentRoom: { id: 1, name: "Room1", adults: 1, children: 0 },
     roomChooises: [
@@ -265,19 +265,21 @@ const optionsSlice = createSlice({
       state.roomChooises.splice(index, 1);
     },
     updateAdults: (state, action) => {
+      if (action.payload.adults > 3) return state;
       const index = state.roomChooises?.findIndex(
         (room) => room.id == action.payload.id,
       );
       const room = state.roomChooises[index];
-      room.adults = action.payload.adults;
+      room.adults = Math.max(1, action.payload.adults);
       state.currentRoom = room;
     },
     updateChildren: (state, action) => {
+      if (action.payload.children > 3) return state;
       const index = state.roomChooises?.findIndex(
         (room) => room.id == action.payload.id,
       );
       const room = state.roomChooises[index];
-      room.children = action.payload.children;
+      room.children = Math.max(0, action.payload.children);
       state.currentRoom = room;
     },
     selectRoom: (state, action) => {
@@ -312,8 +314,15 @@ const searchQuerySlice = createSlice({
     },
   },
   extraReducers: (builder) => {
-    builder.addCase(optionsSlice.actions.changeRoomOption, (state, action) => {
-      console.log(action.payload);
+    builder.addCase(guestRoom.actions.updateAdults, (state, action) => {
+      state.adults = action.payload.adults;
+    });
+    builder.addCase(guestRoom.actions.updateChildren, (state, action) => {
+      state.children = action.payload.children;
+    });
+    builder.addCase(guestRoom.actions.pickRoom, (state, action) => {
+      state.adults = action.payload.adults;
+      state.children = action.payload.children;
     });
   },
 });
@@ -324,7 +333,7 @@ const storageMiddleware = createListenerMiddleware();
 const apiHandlerListenerMiddleware = createListenerMiddleware();
 
 storageMiddleware.startListening({
-  actionCreator: optionsSlice.actions.pickRoom,
+  actionCreator: guestRoom.actions.pickRoom,
   effect: (_action, api) => {
     const state = api.getState();
     sessionStorage.setItem(
@@ -335,7 +344,7 @@ storageMiddleware.startListening({
 });
 
 storageMiddleware.startListening({
-  actionCreator: optionsSlice.actions.removeRoom,
+  actionCreator: guestRoom.actions.removeRoom,
   effect: (_action, api) => {
     const state = api.getState();
     sessionStorage.setItem(
@@ -350,7 +359,7 @@ storageMiddleware.startListening({
 });
 
 storageMiddleware.startListening({
-  actionCreator: optionsSlice.actions.insertRoomOptions,
+  actionCreator: guestRoom.actions.insertRoomOptions,
   effect: (_action, api) => {
     const state = api.getState();
     sessionStorage.setItem(
@@ -391,7 +400,7 @@ export const store = configureStore({
     roomSelection: roomSelection.reducer,
     reservationInfo: reservationInfoSlice.reducer,
     hotelDetails: hotelDetailsSlice.reducer,
-    roomPick: optionsSlice.reducer,
+    roomPick: guestRoom.reducer,
     [api.reducerPath]: api.reducer,
     [cashFreeApiSlice.reducerPath]: cashFreeApiSlice.reducer,
   },
@@ -417,4 +426,4 @@ export const roomListActions = roomList.actions;
 export const roomSelectionActions = roomSelection.actions;
 export const hotelDetailsActions = hotelDetailsSlice.actions;
 export const reservationInfoActions = reservationInfoSlice.actions;
-export const optionsActions = optionsSlice.actions;
+export const guestRoomActions = guestRoom.actions;

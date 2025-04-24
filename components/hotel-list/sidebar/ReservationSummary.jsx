@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { optionsActions } from "@/store/store";
+import { guestRoomActions } from "@/store/store";
 import { useRouter } from "next/navigation";
 export const ReservationSummary = () => {
   const dispatch = useDispatch();
@@ -11,7 +11,7 @@ export const ReservationSummary = () => {
   useEffect(() => {
     const data = sessionStorage.getItem("roomPick");
     if (data) {
-      dispatch(optionsActions.setPickedRoom(JSON.parse(data)));
+      dispatch(guestRoomActions.setPickedRoom(JSON.parse(data)));
     }
   }, []);
   return (
@@ -37,7 +37,7 @@ export const ReservationSummary = () => {
             href="#"
             className="text-14 -underline text-blue-1 cursor-pointer"
             onClick={() => {
-              dispatch(optionsActions.changeRoomOption(room[0]));
+              dispatch(guestRoomActions.changeRoomOption(room[0]));
             }}
           >
             Change room
