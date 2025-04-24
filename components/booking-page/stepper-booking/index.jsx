@@ -9,6 +9,7 @@ import toast from "react-hot-toast";
 import { useFormik, FormikProvider, ErrorMessage, Field } from "formik";
 import * as Yup from "yup";
 import { useRouter } from "next/navigation";
+import { getURL } from "next/dist/shared/lib/utils";
 
 const Index = () => {
   const router = useRouter();
@@ -95,14 +96,36 @@ const Index = () => {
     }),
     onSubmit: async (values) => {
       try {
-        await cashFreePaymentCreateOrder(reservationInfo);
+        const response = await cashFreePaymentCreateOrder(reservationInfo);
         if (options.isError) {
           toast.error(options.endpointName);
           return;
         }
+
+        const { data } = response;
+        console.info("Cashfree created order response : ", data);
+        if (!data) {
+          toast.error("Not able to get Cashfree payment details");
+          return;
+        }
+        const cashFree = Cashfree({ mode: "sendbox" });
+
+        const checkoutResponse = await cashFree.checkout({
+          mode: "sandbox",
+          paymentSessionId: data?.payment_session_id,
+          redirectTarget: "_modal",
+        });
+
+        console.info(checkoutResponse);
+
+        if (checkoutResponse.error) {
+          toast.error(checkoutResponse.error.message);
+          return;
+        }
+
         toast.success("Booking successful");
       } catch (error) {
-        toast.error(error.message);
+        toast.error("Cashfree payment failed");
       }
     },
   });
@@ -112,26 +135,29 @@ const Index = () => {
     formik.validateForm().then((errors) => {
       if (Object.keys(errors).length > 0) {
         toast.error("Please fill all the requred fields marked *");
+        return;
       }
     });
     // don't remove this it is used to call the formik submit function
     formik.handleSubmit(e);
   };
 
-  const handleSaveGuestDetails = (e) => {
+  const handleSaveGuestDetails = async (e) => {
     e.preventDefault();
 
-    formik.validateForm().then((errors) => {
-      if (Object.keys(errors).length > 0) {
-        toast.error("Please fill all the requred fields marked *");
-      }
-    });
+    const errors = await formik.validateForm();
+
+    if (Object.keys(errors).length > 0) {
+      toast.error("Please fill all the requred fields marked *");
+      return;
+    }
 
     const { values } = formik;
     sessionStorage.setItem("tempGuestDetails", JSON.stringify(values));
-    values.guestDetails.forEach((guestDetail, index) => {
-      // needed to copy other details to guestDetails as required by backend to extract the details for cashFree order creation.
-      Object.assign(guestDetail, {
+    const updatedGuestDetails = values.guestDetails.map(
+      (guestDetail, index) => ({
+        ...guestDetail,
+        // needed to copy other details to guestDetails as required by backend to extract the details for cashFree order creation.
         Salutation: guestDetail.Salutation || "Mr",
         Email: values.paymentDetails.Email,
         Mobile: values.paymentDetails.Mobile,
@@ -145,10 +171,10 @@ const Index = () => {
         adults: roomPicked[index + 1]?.adults,
         children: roomPicked[index + 1]?.children,
         PromoCode: "",
-      });
-    });
+      }),
+    );
     dispatch(
-      Actions.reservationInfoActions.setGuestDetails(values.guestDetails),
+      Actions.reservationInfoActions.setGuestDetails(updatedGuestDetails),
     );
     toast.success("Guest details saved successfully");
   };
