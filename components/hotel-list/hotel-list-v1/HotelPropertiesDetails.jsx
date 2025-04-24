@@ -85,6 +85,7 @@ const HotelPropertyDetails = (props) => {
         selectedPackageID: selectedMealPlan?.packageId,
       }),
     );
+    toast.success(`You have selected ${currentRoom?.name}`);
   };
 
   return (
