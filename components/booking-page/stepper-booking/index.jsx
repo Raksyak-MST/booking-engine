@@ -56,22 +56,27 @@ const Index = () => {
     }
   }, []);
 
+  useEffect(() => {
+    const data = sessionStorage.getItem("tempGuestDetails");
+    if (data) {
+      formik.setValues(JSON.parse(data));
+    }
+  }, []);
+
   const formik = useFormik({
     enableReinitialize: true,
-    initialValues: sessionStorage?.getItem("tempGuestDetails")
-      ? JSON.parse(sessionStorage.getItem("tempGuestDetails"))
-      : {
-          guestDetails: [],
-          paymentDetails: {
-            Email: "",
-            Mobile: "",
-            Address: "",
-            Country: "",
-            State: "",
-            Zipcode: "",
-            Comment: "",
-          },
-        },
+    initialValues: {
+      guestDetails: [],
+      paymentDetails: {
+        Email: "",
+        Mobile: "",
+        Address: "",
+        Country: "",
+        State: "",
+        Zipcode: "",
+        Comment: "",
+      },
+    },
 
     validationSchema: Yup.object().shape({
       guestDetails: Yup.array().of(
