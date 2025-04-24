@@ -6,9 +6,9 @@ import { searchQueryActions, guestRoomActions } from "@/store/store";
 import { useEffect } from "react";
 
 const GuestSearch = () => {
-  const currentRoom = useSelector((state) => state.roomPick?.currentRoom);
-  const roomChooises = useSelector((state) => state.roomPick?.roomChooises);
-  const roomPick = useSelector((state) => state.roomPick);
+  const currentRoom = useSelector((state) => state.guestRoom?.currentRoom);
+  const roomChooises = useSelector((state) => state.guestRoom?.roomChooises);
+  const roomPick = useSelector((state) => state.guestRoom);
   const dispatch = useDispatch();
 
   useEffect(() => {

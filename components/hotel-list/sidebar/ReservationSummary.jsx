@@ -5,8 +5,8 @@ import { useRouter } from "next/navigation";
 export const ReservationSummary = () => {
   const dispatch = useDispatch();
   const router = useRouter();
-  const roomPicked = useSelector((state) => state.roomPick?.roomPicked);
-  const roomsOptions = useSelector((state) => state.roomPick?.roomChooises);
+  const roomPicked = useSelector((state) => state.guestRoom?.roomPicked);
+  const roomsOptions = useSelector((state) => state.guestRoom?.roomChooises);
   const rooms = Object.entries(roomPicked);
   useEffect(() => {
     const data = sessionStorage.getItem("roomPick");

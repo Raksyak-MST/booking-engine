@@ -13,7 +13,7 @@ import moment from "moment";
 const MainFilterSearchBox = () => {
   const Router = useRouter();
   const searchQuery = useSelector((state) => state.searchQuery);
-  const currentRoom = useSelector((state) => state.roomPick.currentRoom);
+  const currentRoom = useSelector((state) => state.guestRoom.currentRoom);
   const [getDataForWebBooking, options] = useGetDataForWebBookingMutation();
 
   const handleSearch = async () => {

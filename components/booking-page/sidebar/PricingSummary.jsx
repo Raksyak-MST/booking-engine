@@ -12,7 +12,7 @@ const PricingSummary = () => {
   const pickedPackageId = useSelector(
     (state) => state?.bookingQuery?.selectedPackageID,
   );
-  const roomPicked = useSelector((state) => state.roomPick?.roomPicked);
+  const roomPicked = useSelector((state) => state.guestRoom?.roomPicked);
   const roomSelection = useSelector((state) => state?.roomSelection);
 
   return (
@@ -29,6 +29,14 @@ const PricingSummary = () => {
             </div>
             <div className="col-auto">
               <div className="text-15">{formateCurrency(room?.roomRate)}</div>
+            </div>
+          </div>
+          <div className="row y-gap-5 justify-between">
+            <div className="col-auto">
+              <div className="text-15">Package name</div>
+            </div>
+            <div className="col-auto">
+              <div className="text-15">{room?.selectedPackageName}</div>
             </div>
           </div>
           {/* <div className="row y-gap-5 justify-between pt-5">

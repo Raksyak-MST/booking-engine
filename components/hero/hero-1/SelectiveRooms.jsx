@@ -6,8 +6,8 @@ import { guestRoomActions } from "@/store/store";
 
 export const SelectiveRooms = () => {
   const dispatch = useDispatch();
-  const rooms = useSelector((state) => state.roomPick.roomChooises);
-  const roomPick = useSelector((state) => state.roomPick.currentRoom);
+  const rooms = useSelector((state) => state.guestRoom.roomChooises);
+  const roomPick = useSelector((state) => state.guestRoom.currentRoom);
 
   return (
     <div>

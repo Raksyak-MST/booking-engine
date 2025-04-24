@@ -9,7 +9,7 @@ import moment from "moment";
 import findPlaceSlice from "../features/hero/findPlaceSlice";
 
 // [ API slice ]
-const api = createApi({
+export const api = createApi({
   reducerPath: "api",
   baseQuery: async (args, api, extraOptions) => {
     const baseQuery = fetchBaseQuery({
@@ -57,13 +57,35 @@ const api = createApi({
       query: (data) => ({
         url: "/addReservationFromWeb",
         method: "POST",
-        body: data,
+        body: {
+          hotelID: data.hotelID,
+          arrivalDate: data.arrivalDate,
+          departureDate: data.departureDate,
+          sameName: data.saveName,
+          quantity: data.quantity,
+          guestDetails: data.guestDetails,
+        },
       }),
     }),
     getHotelDetailsWebBooking: builder.mutation({
       query: () => ({
         url: "/getHotelDetailsWebBooking",
         method: "POST",
+      }),
+    }),
+    cashFreePaymentCreateOrder: builder.mutation({
+      query: (data) => ({
+        url: "/cashFreePaymentCreateOrder",
+        method: "POST",
+        body: {
+          hotelID: data.hotelID,
+          arrivalDate: data.arrivalDate,
+          departureDate: data.departureDate,
+          sameName: data.saveName,
+          reservationID: [], // FIXME: used for temp data send, until addReservationFromWeb api doesn't work
+          quantity: data.quantity,
+          guestDetails: data.guestDetails,
+        },
       }),
     }),
   }),
@@ -132,47 +154,6 @@ const roomSelection = createSlice({
     setRoomSelection: (state, action) => {
       Object.assign(state, action.payload);
     },
-  },
-});
-
-const reservationInfoSlice = createSlice({
-  name: "reservationInfo",
-  initialState: {
-    hotelID: 10,
-    arrivalDate: moment(new Date()).format("YYYY-MM-DD"),
-    departureDate: moment(new Date()).add(1, "days").format("YYYY-MM-DD"),
-    guestDetails: [
-      {
-        PromoCode: "",
-        adults: 1,
-        children: 0,
-        quantity: 1,
-      },
-    ],
-  },
-  reducers: {
-    addPromoCode: (state, action) => {
-      state.guestDetails?.map((guest) => (guest.PromoCode = action.payload));
-    },
-    setGuestDetails: (state, action) => {
-      state.guestDetails = action.payload;
-    },
-  },
-  extraReducers: (builder) => {
-    builder.addCase(roomSelection.actions.setRoomSelection, (state, action) => {
-      // NOTE: roomTypeID is the key from the api response so it is not the same as the key in the state
-      Object.assign(state, {
-        selectedRoomTypeID: action.payload?.roomTypeID,
-      });
-    });
-    builder.addCase(
-      searchQuerySlice.actions.setBookingQuery,
-      (state, action) => {
-        const { hotelID, arrivalDate, departureDate, selectedPackageID } =
-          action.payload;
-        Object.assign(state, action.payload);
-      },
-    );
   },
 });
 
@@ -295,6 +276,45 @@ const guestRoom = createSlice({
   },
 });
 
+const reservationInfoSlice = createSlice({
+  name: "reservationInfo",
+  initialState: {
+    hotelID: 10,
+    arrivalDate: moment(new Date()).format("YYYY-MM-DD"),
+    departureDate: moment(new Date()).add(1, "days").format("YYYY-MM-DD"),
+    quantity: null,
+    sameName: false,
+    guestDetails: [
+      {
+        PromoCode: "",
+        adults: 1,
+        children: 0,
+      },
+    ],
+  },
+  reducers: {
+    addPromoCode: (state, action) => {
+      state.guestDetails?.map((guest) => (guest.PromoCode = action.payload));
+    },
+    setGuestDetails: (state, action) => {
+      state.guestDetails = action.payload;
+    },
+    setQuantity: (state, action) => {
+      state.quantity = action.payload;
+    },
+  },
+  extraReducers: (builder) => {
+    builder.addCase(
+      searchQuerySlice.actions.setBookingQuery,
+      (state, action) => {
+        const { hotelID, arrivalDate, departureDate, selectedPackageID } =
+          action.payload;
+        Object.assign(state, action.payload);
+      },
+    );
+  },
+});
+
 const searchQuerySlice = createSlice({
   name: "mainSearchBar",
   initialState: {
@@ -305,8 +325,6 @@ const searchQuerySlice = createSlice({
     children: 0,
     quantity: 1,
     companyCode: "",
-    selectedPackageID: "1",
-    selectedRoomTypeID: "",
   },
   reducers: {
     setBookingQuery: (state, action) => {
@@ -331,6 +349,7 @@ const searchQuerySlice = createSlice({
 
 const storageMiddleware = createListenerMiddleware();
 const apiHandlerListenerMiddleware = createListenerMiddleware();
+const stateActionListenerMiddleware = createListenerMiddleware();
 
 storageMiddleware.startListening({
   actionCreator: guestRoom.actions.pickRoom,
@@ -338,7 +357,7 @@ storageMiddleware.startListening({
     const state = api.getState();
     sessionStorage.setItem(
       "roomPick",
-      JSON.stringify(state.roomPick.roomPicked),
+      JSON.stringify(state.guestRoom.roomPicked),
     );
   },
 });
@@ -349,11 +368,11 @@ storageMiddleware.startListening({
     const state = api.getState();
     sessionStorage.setItem(
       "roomPick",
-      JSON.stringify(state.roomPick.roomPicked),
+      JSON.stringify(state.guestRoom.roomPicked),
     );
     sessionStorage.setItem(
       "roomChooises",
-      JSON.stringify(state.roomPick.roomChooises),
+      JSON.stringify(state.guestRoom.roomChooises),
     );
   },
 });
@@ -364,7 +383,7 @@ storageMiddleware.startListening({
     const state = api.getState();
     sessionStorage.setItem(
       "roomChooises",
-      JSON.stringify(state.roomPick.roomChooises),
+      JSON.stringify(state.guestRoom.roomChooises),
     );
   },
 });
@@ -390,6 +409,30 @@ storageMiddleware.startListening({
   },
 });
 
+stateActionListenerMiddleware.startListening({
+  actionCreator: guestRoom.actions.insertRoomOptions,
+  effect: (action, api) => {
+    const state = api.getState();
+    api.dispatch(
+      reservationInfoSlice.actions.setQuantity(
+        state.guestRoom.roomChooises?.length,
+      ),
+    );
+  },
+});
+
+stateActionListenerMiddleware.startListening({
+  actionCreator: guestRoom.actions.removeRoom,
+  effect: (action, api) => {
+    const state = api.getState();
+    api.dispatch(
+      reservationInfoSlice.actions.setQuantity(
+        state.guestRoom.roomChooises?.length,
+      ),
+    );
+  },
+});
+
 // [ Root Store ]
 export const store = configureStore({
   reducer: {
@@ -400,12 +443,13 @@ export const store = configureStore({
     roomSelection: roomSelection.reducer,
     reservationInfo: reservationInfoSlice.reducer,
     hotelDetails: hotelDetailsSlice.reducer,
-    roomPick: guestRoom.reducer,
+    guestRoom: guestRoom.reducer,
     [api.reducerPath]: api.reducer,
     [cashFreeApiSlice.reducerPath]: cashFreeApiSlice.reducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware()
+      .prepend(stateActionListenerMiddleware.middleware)
       .prepend(storageMiddleware.middleware)
       .concat(api.middleware)
       .concat(cashFreeApiSlice.middleware),
@@ -419,6 +463,7 @@ export const {
   useAddReservationFromWebMutation,
   useGetHotelDetailsWebBookingMutation,
 } = api;
+
 export const cashFreeApiActions = cashFreeApiSlice;
 export const { setIsUserLogin } = authSlice.actions;
 export const searchQueryActions = searchQuerySlice.actions;

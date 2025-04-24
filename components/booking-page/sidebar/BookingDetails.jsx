@@ -6,7 +6,7 @@ import PricingSummary from "./PricingSummary";
 
 const BookingDetails = () => {
   const selectedRoom = useSelector((state) => state.roomSelection);
-  const bookingQuery = useSelector((state) => state.bookingQuery);
+  const bookingQuery = useSelector((state) => state.reservationInfo);
 
   return (
     <>
@@ -33,13 +33,6 @@ const BookingDetails = () => {
                 : null}
             </div>
           </div>
-        </div>
-        {/* End row */}
-
-        <div className="border-top-light mt-30 mb-20" />
-        <div>
-          <div className="text-15">Total length of stay:</div>
-          <div className="fw-500">{} nights</div>
         </div>
         {/* End row */}
       </div>

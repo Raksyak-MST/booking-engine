@@ -1,12 +1,11 @@
 "use client";
 
-import Link from "next/link";
 import React, { useEffect } from "react";
 import BookingDetails from "../sidebar/BookingDetails";
 import * as Actions from "@/store/store";
+import { api } from "@/store/store";
 import { useDispatch, useSelector } from "react-redux";
 import toast from "react-hot-toast";
-import { ERROR_MESSAGES } from "@/data/error-messages";
 import { useFormik, FormikProvider, ErrorMessage, Field } from "formik";
 import * as Yup from "yup";
 import { useRouter } from "next/navigation";
@@ -14,11 +13,8 @@ import { useRouter } from "next/navigation";
 const Index = () => {
   const router = useRouter();
   const dispatch = useDispatch();
-  const [addReservationFromWebMutation, options] =
-    Actions.useAddReservationFromWebMutation();
-
-  const reservationInfo = useSelector((state) => state.reservationInfo);
-  const bookingQuery = useSelector((state) => state.bookingQuery);
+  const [cashFreePaymentCreateOrder, options] =
+    Actions.api.useCashFreePaymentCreateOrderMutation();
 
   const pickedPackageId = useSelector(
     (state) => state?.bookingQuery?.selectedPackageID,
@@ -28,7 +24,8 @@ const Index = () => {
     (pack) => pack?.packageID === parseInt(pickedPackageId),
   );
 
-  const roomPicked = useSelector((state) => state.roomPick?.roomPicked);
+  const roomPicked = useSelector((state) => state.guestRoom.roomPicked);
+  const reservationInfo = useSelector((state) => state.reservationInfo);
 
   const rates = !pickedPackage?.length ? {} : pickedPackage[0];
   const room = !rates?.rooms?.length ? {} : rates.rooms[0];
@@ -44,26 +41,38 @@ const Index = () => {
 
   useEffect(() => {
     const data = sessionStorage.getItem("guestDetails");
+    const roomQuantity = sessionStorage.getItem("roomPick");
     if (data) {
       dispatch(
         Actions.reservationInfoActions.setGuestDetails(JSON.parse(data)),
       );
+      if (roomQuantity) {
+        dispatch(
+          Actions.reservationInfoActions.setQuantity(
+            Object.keys(JSON.parse(roomQuantity)).length,
+          ),
+        );
+      }
     }
   }, []);
 
   const formik = useFormik({
-    initialValues: {
-      guestDetails: [],
-      paymentDetails: {
-        Email: "",
-        Mobile: "",
-        Address: "",
-        Country: "",
-        State: "",
-        Zipcode: "",
-        Comment: "",
-      },
-    },
+    enableReinitialize: true,
+    initialValues: sessionStorage?.getItem("tempGuestDetails")
+      ? JSON.parse(sessionStorage.getItem("tempGuestDetails"))
+      : {
+          guestDetails: [],
+          paymentDetails: {
+            Email: "",
+            Mobile: "",
+            Address: "",
+            Country: "",
+            State: "",
+            Zipcode: "",
+            Comment: "",
+          },
+        },
+
     validationSchema: Yup.object().shape({
       guestDetails: Yup.array().of(
         Yup.object().shape({
@@ -79,28 +88,64 @@ const Index = () => {
         Mobile: Yup.string().required("Mobile is required"),
       }),
     }),
-    enableReinitialize: true,
     onSubmit: async (values) => {
-      values.guestDetails.forEach((guestDetail) => {
-        // needed to copy other details to guestDetails as required by backend to extract the details for cashFree order creation.
-        Object.assign(guestDetail, {
-          Salutation: guestDetail.Salutation || "Mr",
-          Email: values.paymentDetails.Email,
-          Mobile: values.paymentDetails.Mobile,
-          Address: values.paymentDetails.Address,
-          Country: values.paymentDetails.Country,
-          State: values.paymentDetails.State,
-          Zipcode: values.paymentDetails.Zipcode,
-          Comment: values.paymentDetails.Comment,
-          PromoCode: "",
-        });
-      });
-      dispatch(
-        Actions.reservationInfoActions.setGuestDetails(values.guestDetails),
-      );
-      console.log(values.guestDetails, bookingQuery);
+      try {
+        await cashFreePaymentCreateOrder(reservationInfo);
+        if (options.isError) {
+          toast.error(options.endpointName);
+          return;
+        }
+        toast.success("Booking successful");
+      } catch (error) {
+        toast.error(error.message);
+      }
     },
   });
+
+  const handleConfirmBooking = (e) => {
+    formik.validateForm().then((errors) => {
+      if (Object.keys(errors).length > 0) {
+        toast.error("Please fill all the requred fields marked *");
+      }
+    });
+    // don't remove this it is used to call the formik submit function
+    formik.handleSubmit(e);
+  };
+
+  const handleSaveGuestDetails = (e) => {
+    e.preventDefault();
+
+    formik.validateForm().then((errors) => {
+      if (Object.keys(errors).length > 0) {
+        toast.error("Please fill all the requred fields marked *");
+      }
+    });
+
+    const { values } = formik;
+    sessionStorage.setItem("tempGuestDetails", JSON.stringify(values));
+    values.guestDetails.forEach((guestDetail, index) => {
+      // needed to copy other details to guestDetails as required by backend to extract the details for cashFree order creation.
+      Object.assign(guestDetail, {
+        Salutation: guestDetail.Salutation || "Mr",
+        Email: values.paymentDetails.Email,
+        Mobile: values.paymentDetails.Mobile,
+        Address: values.paymentDetails.Address,
+        Country: values.paymentDetails.Country,
+        State: values.paymentDetails.State,
+        Zipcode: values.paymentDetails.Zipcode,
+        Comment: values.paymentDetails.Comment,
+        selectedPackageID: roomPicked[index + 1]?.selectedPackageID,
+        selectedRoomTypeID: roomPicked[index + 1]?.roomTypeID,
+        adults: roomPicked[index + 1]?.adults,
+        children: roomPicked[index + 1]?.children,
+        PromoCode: "",
+      });
+    });
+    dispatch(
+      Actions.reservationInfoActions.setGuestDetails(values.guestDetails),
+    );
+    toast.success("Guest details saved successfully");
+  };
 
   return (
     <>
@@ -129,8 +174,9 @@ const Index = () => {
                         as="select"
                         className="form-select h-full"
                         name={`guestDetails.${index}.Salutation`}
+                        defaultValue="default"
                       >
-                        <option disabled selected value="">
+                        <option disabled value="default">
                           Salutation*
                         </option>
                         {[
@@ -167,6 +213,9 @@ const Index = () => {
                         <Field
                           name={`guestDetails.${index}.FirstName`}
                           required
+                          value={
+                            formik.values.guestDetails[index]?.FirstName ?? ""
+                          }
                         />
                         <label className="lh-1 text-16 text-light-1">
                           First name*
@@ -184,6 +233,9 @@ const Index = () => {
                         <Field
                           name={`guestDetails.${index}.LastName`}
                           required
+                          value={
+                            formik.values.guestDetails[index]?.LastName ?? ""
+                          }
                         />
                         <label className="lh-1 text-16 text-light-1">
                           Last name*
@@ -293,30 +345,34 @@ const Index = () => {
               </div>
               <div className="row x-gap-20 y-gap-20 pt-20">
                 <div className="col-auto">
-                  <button
-                    className="button h-60 px-24 -dark-1 bg-blue-1 text-white gap-2"
-                    onClick={(e) => {
-                      formik.validateForm().then((errors) => {
-                        if (Object.keys(errors).length > 0) {
-                          toast.error(
-                            "Please fill all the requred fields marked *",
-                          );
-                        }
-                      });
-                      formik.handleSubmit(e);
-                    }}
-                    type="submit"
-                  >
-                    {options.isLoading ? (
-                      <div
-                        className="spinner-border spinner-border-sm"
-                        role="status"
-                      >
-                        <span className="sr-only"></span>
-                      </div>
-                    ) : null}
-                    Confirm Booking
-                  </button>
+                  <div className="d-flex gap-2">
+                    {/*
+                     * Made two separate buttons because of the need for different actions,
+                     * otherwise all actions will be handled by singe handler which was causing data sync issue
+                     */}
+                    <button
+                      className="button h-60 px-24 -dark-1 bg-blue-1 text-white gap-2"
+                      onClick={handleSaveGuestDetails}
+                      type="button"
+                    >
+                      Save details
+                    </button>
+                    <button
+                      className="button -outline-blue-1 px-24 gap-2 text-blue-1"
+                      onClick={handleConfirmBooking}
+                      type="submit"
+                    >
+                      {options.isLoading ? (
+                        <div
+                          className="spinner-border spinner-border-sm"
+                          role="status"
+                        >
+                          <span className="sr-only"></span>
+                        </div>
+                      ) : null}
+                      Confirm Booking
+                    </button>
+                  </div>
                 </div>
                 {/* End next btn */}
               </div>

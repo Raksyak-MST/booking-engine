@@ -20,10 +20,11 @@ const HotelPropertyDetails = (props) => {
   }); // default selected package name
   const [roomRate, setRoomRate] = useState(DEFAULT_ROOM_RATE);
   const [perNight, setPerNight] = useState(DEFAULT_ROOM_RATE);
+  const [packageName, setPackageName] = useState("");
   const [getReservationJsonLikeEzee, options] =
     useGetReservationJsonLikeEzeeWebBookingMutation();
   const reservationInfo = useSelector((state) => state.reservationInfo);
-  const currentRoom = useSelector((state) => state.roomPick?.currentRoom);
+  const currentRoom = useSelector((state) => state.guestRoom.currentRoom);
 
   const dispatch = useDispatch();
   const Router = useRouter();
@@ -53,6 +54,7 @@ const HotelPropertyDetails = (props) => {
 
     setRoomRate(roomAndPackageRate ?? DefaultESPackageRate);
     setPerNight(perNightRate);
+    setPackageName(pkg?.packageDescription);
   }, [selectedMealPlan]);
 
   const handleMealPlanSelection = (e) => {
@@ -82,7 +84,8 @@ const HotelPropertyDetails = (props) => {
         roomTypeName: hotel?.roomTypeName,
         perNightRate: perNight,
         roomRate: roomRate,
-        selectedPackageID: selectedMealPlan?.packageId,
+        selectedPackageID: selectedMealPlan?.packageId ?? "1",
+        selectedPackageName: packageName,
       }),
     );
     toast.success(`You have selected ${currentRoom?.name}`);
