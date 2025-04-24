@@ -103,6 +103,7 @@ const Index = () => {
   });
 
   const handleConfirmBooking = (e) => {
+    e.preventDefault();
     formik.validateForm().then((errors) => {
       if (Object.keys(errors).length > 0) {
         toast.error("Please fill all the requred fields marked *");

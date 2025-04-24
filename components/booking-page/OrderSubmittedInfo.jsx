@@ -1,23 +1,25 @@
-'use client'
+"use client";
 
-import { useSelector, useDispatch } from "react-redux"
-import toast from "react-hot-toast"
-import moment from "moment"
+import { useSelector, useDispatch } from "react-redux";
+import toast from "react-hot-toast";
+import moment from "moment";
 import { useEffect } from "react";
-import { reservationInfoActions } from "@/store/store"
+import { reservationInfoActions } from "@/store/store";
 
 const OrderSubmittedInfo = () => {
   let rendered; // FIXME: used it to show the toast message only once
-  const dispatch = useDispatch()
-  const personalInfo = useSelector((state) => state.reservationInfo.guestDetails) 
-  const reservationCompetitionDetails = useSelector((state) => state.billing.reservationCompetitionDetails)
+  const dispatch = useDispatch();
+  const personalInfo = useSelector(
+    (state) => state.reservationInfo.guestDetails,
+  );
+  const reservationCompetitionDetails = {};
 
   const pickedPackageId = useSelector(
-    (state) => state?.bookingQuery?.selectedPackageID
+    (state) => state?.bookingQuery?.selectedPackageID,
   );
   const roomSelection = useSelector((state) => state?.roomSelection);
   const pickedPackage = roomSelection?.perNightCharges?.filter(
-    (pack) => pack?.packageID === parseInt(pickedPackageId)
+    (pack) => pack?.packageID === parseInt(pickedPackageId),
   );
 
   const rates = !pickedPackage?.length ? {} : pickedPackage[0];
@@ -29,18 +31,17 @@ const OrderSubmittedInfo = () => {
     reservationTotalAmount,
     reservationPaymentMethod;
 
-    useEffect(() => {
-      if(!rendered){
-        if (!Array.isArray(reservationCompetitionDetails?.reservationResults)) {
-          toast.error("Reservation details not found");
-          reservationResults = [{}];
-        }
+  useEffect(() => {
+    if (!rendered) {
+      if (!Array.isArray(reservationCompetitionDetails?.reservationResults)) {
+        toast.error("Reservation details not found");
+        reservationResults = [{}];
       }
-      return () => {
-        rendered = true;
-      }
-    }, [reservationCompetitionDetails?.reservationResults]);
-
+    }
+    return () => {
+      rendered = true;
+    };
+  }, [reservationCompetitionDetails?.reservationResults]);
 
   if (reservationCompetitionDetails?.reservationResults?.length > 0) {
     reservationNumber =
@@ -51,8 +52,8 @@ const OrderSubmittedInfo = () => {
     if (sessionStorage.getItem("guestDetails")) {
       dispatch(
         reservationInfoActions.setGuestDetails(
-          JSON.parse(sessionStorage.getItem("guestDetails"))
-        )
+          JSON.parse(sessionStorage.getItem("guestDetails")),
+        ),
       );
     }
   }, []);
@@ -92,18 +93,22 @@ const OrderSubmittedInfo = () => {
               <div className="col-lg-3 col-md-6">
                 <div className="text-15 lh-12">Date</div>
                 <div className="text-15 lh-12 fw-500 text-blue-1 mt-10">
-                  {reservationNumber ? moment(reservationDate).format("ddd DD MMM YYYY") : "N/A"}
+                  {reservationNumber
+                    ? moment(reservationDate).format("ddd DD MMM YYYY")
+                    : "N/A"}
                 </div>
               </div>
               {/* End .col */}
               <div className="col-lg-3 col-md-6">
                 <div className="text-15 lh-12">Total</div>
                 <div className="text-15 lh-12 fw-500 text-blue-1 mt-10">
-                  {reservationNumber ? new Intl.NumberFormat("en-IN", {
-                    currency: "INR",
-                    style: "currency",
-                    currencyDisplay: "symbol",
-                  }).format(room?.TotalAmountAfterTax) : "N/A"}
+                  {reservationNumber
+                    ? new Intl.NumberFormat("en-IN", {
+                        currency: "INR",
+                        style: "currency",
+                        currencyDisplay: "symbol",
+                      }).format(room?.TotalAmountAfterTax)
+                    : "N/A"}
                 </div>
               </div>
               {/* End .col */}
