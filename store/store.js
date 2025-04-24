@@ -405,7 +405,7 @@ storageMiddleware.startListening({
 storageMiddleware.startListening({
   matcher: api.endpoints.addReservationFromWeb.matchFulfilled,
   effect: () => {
-    sessionStorage.removeItem("roomSelection");
+    sessionStorage.clear();
   },
 });
 

@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import BookingDetails from "../sidebar/BookingDetails";
 import * as Actions from "@/store/store";
 import { api } from "@/store/store";
@@ -12,10 +12,14 @@ import { useRouter } from "next/navigation";
 import { getURL } from "next/dist/shared/lib/utils";
 
 const Index = () => {
+  const [paymentInitiated, setPaymentInitiated] = useState(false);
   const router = useRouter();
   const dispatch = useDispatch();
   const [cashFreePaymentCreateOrder, options] =
     Actions.api.useCashFreePaymentCreateOrderMutation();
+
+  const [addReservationFromWeb, addReservationOptions] =
+    Actions.api.useAddReservationFromWebMutation();
 
   const pickedPackageId = useSelector(
     (state) => state?.bookingQuery?.selectedPackageID,
@@ -123,9 +127,21 @@ const Index = () => {
           return;
         }
 
+        setPaymentInitiated(true);
+
+        await addReservationFromWeb(reservationInfo);
+
+        if (addReservationOptions.isError) {
+          toast.error("Reservation failed");
+          return;
+        }
+
+        router.replace("/order-submitted");
+
         toast.success("Booking successful");
       } catch (error) {
         toast.error("Cashfree payment failed");
+        setPaymentInitiated(false);
       }
     },
   });
@@ -393,6 +409,9 @@ const Index = () => {
                       className="button -outline-blue-1 px-24 gap-2 text-blue-1"
                       onClick={handleConfirmBooking}
                       type="submit"
+                      disabled={
+                        addReservationOptions.isLoading || paymentInitiated
+                      }
                     >
                       {options.isLoading ? (
                         <div
