@@ -107,7 +107,6 @@ const Index = () => {
         }
 
         const { data } = response;
-        console.info("Cashfree created order response : ", data);
         if (!data) {
           toast.error("Not able to get Cashfree payment details");
           return;
@@ -119,8 +118,6 @@ const Index = () => {
           paymentSessionId: data?.payment_session_id,
           redirectTarget: "_modal",
         });
-
-        console.info(checkoutResponse);
 
         if (checkoutResponse.error) {
           toast.error(checkoutResponse.error.message);

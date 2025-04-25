@@ -12,7 +12,7 @@ import "aos/dist/aos.css";
 import "../styles/index.scss";
 import { Provider } from "react-redux";
 import { store } from "../store/store";
-import { Toaster } from 'react-hot-toast'
+import { Toaster } from "react-hot-toast";
 import Script from "next/script";
 
 if (typeof window !== "undefined") {
@@ -40,6 +40,10 @@ export default function RootLayout({ children }) {
           rel="stylesheet"
         />
         <link rel="icon" href="./favicon.ico" />
+        <link
+          rel="stylesheet"
+          href="https://i.icomoon.io/public/temp/fd54f5c306/UntitledProject/style.css"
+        />
         <Script src="https://sdk.cashfree.com/js/v3/cashfree.js"></Script>
       </head>
       <body>

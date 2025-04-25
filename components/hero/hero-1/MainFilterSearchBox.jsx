@@ -38,7 +38,6 @@ const MainFilterSearchBox = () => {
       });
       Router.push("/room-types");
     } catch (error) {
-      console.error(error);
       toast.error(ERROR_MESSAGES.API_FAILED_DEFAULT_MESSAGE);
     }
   };

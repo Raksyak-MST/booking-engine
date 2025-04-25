@@ -43,13 +43,13 @@ const OrderSubmittedInfo = () => {
     if (options.isLoading || !options.data) {
       return null;
     }
-    const [paymentDetails] = options.data;
+    const [paymentDetails] = options.data || [];
     const {
       cf_payment_id,
       order_amount,
       payment_group,
       payment_completion_time,
-    } = paymentDetails;
+    } = paymentDetails || {};
     return (
       <div className="border-type-1 rounded-8 px-50 py-35 mt-40">
         <div className="row">
@@ -94,20 +94,19 @@ const OrderSubmittedInfo = () => {
     );
   }
 
-  const STATUS_COLOR_OPTIONS = {
-    SUCCESS: "bg-success-1",
-    PENDING: "bg-warning-1",
-    FAILED: "bg-error-1",
-  };
+  function renderHeader() {
+    if (options.isLoading || !options.data) {
+      return null;
+    }
+    const [paymentDetails] = options.data || [];
 
-  return (
-    <>
-      <div className="col-xl-12 col-lg-8">
-        <div className="order-completed-wrapper">
+    const { payment_status = "PENDING" } = paymentDetails || {};
+
+    switch (payment_status) {
+      case "SUCCESS":
+        return (
           <div className="d-flex flex-column items-center mt-40 lg:md-40 sm:mt-24">
-            <div
-              className={` size-80 flex-center rounded-full ${STATUS_COLOR_OPTIONS["SUCCESS"]} `}
-            >
+            <div className="size-80 flex-center rounded-full bg-success-1">
               <i className="icon-check text-30 text-white" />
             </div>
             <div className="text-26 lh-1 fw-600 mt-20">
@@ -118,10 +117,50 @@ const OrderSubmittedInfo = () => {
               {customer_details?.customer_email}
             </div>
           </div>
+        );
+      case "PENDING":
+        return (
+          <div className="d-flex flex-column items-center mt-40 lg:md-40 sm:mt-24">
+            <div className="size-80 flex-center rounded-full bg-warning-1">
+              <i className="icon-warning text-30 text-white" />
+            </div>
+            <div className="text-20 lh-1 fw-600 mt-20">
+              Your reservation has been initiated. Please proceed with payment
+              to confirm.
+            </div>
+            <div className="text-15 text-light-1 mt-10">
+              Booking details has been sent to:{" "}
+              {customer_details?.customer_email}
+            </div>
+          </div>
+        );
+      case "FAILED":
+        return (
+          <div className="d-flex flex-column items-center mt-40 lg:md-40 sm:mt-24">
+            <div className="size-80 flex-center rounded-full bg-error-1">
+              <i className="icon-cross text-30 text-white" />
+            </div>
+            <div className="text-26 lh-1 fw-600 mt-20">
+              Transaction could not be completed. Use a different method or
+              retry.
+            </div>
+            <div className="text-15 text-light-1 mt-10">
+              Booking details has been sent to:{" "}
+              {customer_details?.customer_email}
+            </div>
+          </div>
+        );
+    }
+  }
+
+  return (
+    <>
+      <div className="col-xl-12 col-lg-8">
+        <div className="order-completed-wrapper">
+          {/* Start header */}
+          {renderHeader()}
           {/* End header */}
-
           {options.isLoading ? null : renderPaymentSummary()}
-
           <div className="border-light rounded-8 px-50 py-40 mt-40">
             <h4 className="text-20 fw-500 mb-30">Your Information</h4>
             <div className="row y-gap-10">
