@@ -6,7 +6,7 @@ import PricingSummary from "./PricingSummary";
 
 const BookingDetails = () => {
   const selectedRoom = useSelector((state) => state.roomSelection);
-  const bookingQuery = useSelector((state) => state.reservationInfo);
+  const reservationInfo = useSelector((state) => state.reservationInfo);
 
   return (
     <>
@@ -17,8 +17,8 @@ const BookingDetails = () => {
           <div className="col-auto">
             <div className="text-15">Check-in</div>
             <div className="fw-500">
-              {bookingQuery?.arrivalDate
-                ? moment(bookingQuery?.arrivalDate).format("ddd DD MMM YYYY")
+              {reservationInfo?.arrivalDate
+                ? moment(reservationInfo?.arrivalDate).format("ddd DD MMM YYYY")
                 : null}
             </div>
           </div>
@@ -28,8 +28,10 @@ const BookingDetails = () => {
           <div className="col-auto text-right md:text-left">
             <div className="text-15">Check-out</div>
             <div className="fw-500">
-              {bookingQuery?.departureDate
-                ? moment(bookingQuery?.departureDate).format("ddd DD MMM YYYY")
+              {reservationInfo?.departureDate
+                ? moment(reservationInfo?.departureDate).format(
+                    "ddd DD MMM YYYY",
+                  )
                 : null}
             </div>
           </div>

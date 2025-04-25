@@ -9,11 +9,7 @@ function formateCurrency(num) {
 }
 
 const PricingSummary = () => {
-  const pickedPackageId = useSelector(
-    (state) => state?.bookingQuery?.selectedPackageID,
-  );
   const roomPicked = useSelector((state) => state.guestRoom?.roomPicked);
-  const roomSelection = useSelector((state) => state?.roomSelection);
 
   return (
     <div className="pt-20 border-light rounded-4 mt-30">

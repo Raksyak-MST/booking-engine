@@ -278,6 +278,15 @@ const guestRoom = createSlice({
         }
       });
     },
+    reset: (state, action) => {
+      state = {
+        currentRoom: { id: 1, name: "Room1", adults: 1, children: 0 },
+        roomChooises: [
+          { id: 1, name: "Room1", isSelected: true, adults: 1, children: 0 },
+        ],
+        roomPicked: {},
+      };
+    },
   },
 });
 
@@ -306,6 +315,22 @@ const reservationInfoSlice = createSlice({
     },
     setQuantity: (state, action) => {
       state.quantity = action.payload;
+    },
+    reset: (state, action) => {
+      state = {
+        hotelID: 10,
+        arrivalDate: moment(new Date()).format("YYYY-MM-DD"),
+        departureDate: moment(new Date()).add(1, "days").format("YYYY-MM-DD"),
+        quantity: 1,
+        sameName: true,
+        guestDetails: [
+          {
+            PromoCode: "",
+            adults: 1,
+            children: 0,
+          },
+        ],
+      };
     },
   },
   extraReducers: (builder) => {
@@ -425,8 +450,10 @@ storageMiddleware.startListening({
 
 storageMiddleware.startListening({
   matcher: api.endpoints.addReservationFromWeb.matchFulfilled,
-  effect: () => {
+  effect: (_, api) => {
     sessionStorage.clear();
+    api.dispatch(reservationInfoSlice.actions.reset());
+    api.dispatch(guestRoom.actions.reset());
   },
 });
 

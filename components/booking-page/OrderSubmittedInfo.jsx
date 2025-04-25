@@ -156,7 +156,14 @@ const OrderSubmittedInfo = () => {
             </div>
             {/* End .row */}
           </div>
-          {/* End order information */}
+          <div className="mt-20">
+            <button
+              className="button -dark-1 bg-blue-1 px-20 h-40 text-white mx-auto"
+              type="button"
+            >
+              Print
+            </button>
+          </div>
         </div>
       </div>
     </>
