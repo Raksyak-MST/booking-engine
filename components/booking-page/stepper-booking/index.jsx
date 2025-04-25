@@ -102,7 +102,7 @@ const Index = () => {
       try {
         const response = await cashFreePaymentCreateOrder(reservationInfo);
         if (options.isError) {
-          toast.error(options.endpointName);
+          toast.error("Cashfree payment creation failed");
           return;
         }
 

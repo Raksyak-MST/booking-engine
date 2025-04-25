@@ -88,6 +88,11 @@ export const api = createApi({
         },
       }),
     }),
+    cashFreePaymentVerify: builder.query({
+      query: (orderID) => ({
+        url: `/cashFreePaymentVerify?orderID=${orderID}`,
+      }),
+    }),
   }),
 });
 
@@ -282,8 +287,8 @@ const reservationInfoSlice = createSlice({
     hotelID: 10,
     arrivalDate: moment(new Date()).format("YYYY-MM-DD"),
     departureDate: moment(new Date()).add(1, "days").format("YYYY-MM-DD"),
-    quantity: null,
-    sameName: false,
+    quantity: 1,
+    sameName: true,
     guestDetails: [
       {
         PromoCode: "",
@@ -342,6 +347,22 @@ const searchQuerySlice = createSlice({
       state.adults = action.payload.adults;
       state.children = action.payload.children;
     });
+  },
+});
+
+const orderDetailsSlice = createSlice({
+  name: "orderDetails",
+  initialState: {
+    order: {},
+    reservation: {},
+  },
+  reducers: {
+    setOrderDetails: (state, action) => {
+      state.order = action.payload;
+    },
+    setReservation: (state, action) => {
+      state.reservation = action.payload;
+    },
   },
 });
 
@@ -433,6 +454,27 @@ stateActionListenerMiddleware.startListening({
   },
 });
 
+apiHandlerListenerMiddleware.startListening({
+  matcher: api.endpoints.cashFreePaymentCreateOrder.matchFulfilled,
+  effect: (action, api) => {
+    const state = api.getState();
+    const { order_id } = action.payload;
+    localStorage.setItem("orderID", order_id);
+    localStorage.setItem("orderDetails", JSON.stringify(action.payload));
+  },
+});
+
+apiHandlerListenerMiddleware.startListening({
+  matcher: api.endpoints.addReservationFromWeb.matchFulfilled,
+  effect: (action, api) => {
+    const state = api.getState();
+    localStorage.setItem(
+      "reservationConfirmation",
+      JSON.stringify(action.payload),
+    );
+  },
+});
+
 // [ Root Store ]
 export const store = configureStore({
   reducer: {
@@ -444,11 +486,13 @@ export const store = configureStore({
     reservationInfo: reservationInfoSlice.reducer,
     hotelDetails: hotelDetailsSlice.reducer,
     guestRoom: guestRoom.reducer,
+    orderDetails: orderDetailsSlice.reducer,
     [api.reducerPath]: api.reducer,
     [cashFreeApiSlice.reducerPath]: cashFreeApiSlice.reducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware()
+      .prepend(apiHandlerListenerMiddleware.middleware)
       .prepend(stateActionListenerMiddleware.middleware)
       .prepend(storageMiddleware.middleware)
       .concat(api.middleware)
@@ -472,3 +516,4 @@ export const roomSelectionActions = roomSelection.actions;
 export const hotelDetailsActions = hotelDetailsSlice.actions;
 export const reservationInfoActions = reservationInfoSlice.actions;
 export const guestRoomActions = guestRoom.actions;
+export const orderDetailsActions = orderDetailsSlice.actions;
