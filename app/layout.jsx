@@ -42,7 +42,7 @@ export default function RootLayout({ children }) {
         <link rel="icon" href="./favicon.ico" />
         <link
           rel="stylesheet"
-          href="https://i.icomoon.io/public/temp/fd54f5c306/UntitledProject/style.css"
+          href="https://i.icomoon.io/public/temp/c6cf462891/UntitledProject/style.css"
         />
         <Script src="https://sdk.cashfree.com/js/v3/cashfree.js"></Script>
       </head>

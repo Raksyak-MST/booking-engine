@@ -16,7 +16,7 @@ export const HotelProperties2 = () => {
   const [getDataForWebBooking, options] = useGetDataForWebBookingMutation();
 
   useEffect(() => {
-    // need to refetch after coming back from next step, this has to be done manually.
+    // need to refetch after coming back from next step, this has to be done manually
     getDataForWebBooking(searchQuery);
   }, []);
 

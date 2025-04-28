@@ -6,6 +6,7 @@ import moment from "moment";
 import { useEffect } from "react";
 import { reservationInfoActions } from "@/store/store";
 import * as Actions from "@/store/store";
+import Link from "next/link";
 
 const OrderSubmittedInfo = () => {
   const dispatch = useDispatch();
@@ -18,26 +19,21 @@ const OrderSubmittedInfo = () => {
   const { reservationResults } = orderDetails?.reservation || {};
 
   useEffect(() => {
-    const data = localStorage.getItem("reservationConfirmation");
+    const data = sessionStorage.getItem("reservationConfirmation");
     if (data) {
       dispatch(Actions.orderDetailsActions.setReservation(JSON.parse(data)));
     }
   }, []);
 
   useEffect(() => {
-    const data = localStorage.getItem("orderDetails");
+    const data = sessionStorage.getItem("orderDetails");
     if (data) {
+      console.log(data);
       const parsedData = JSON.parse(data);
       dispatch(Actions.orderDetailsActions.setOrderDetails(parsedData));
       cashFreePaymentVerifyQuery(parsedData?.order_id);
     }
   }, []);
-
-  function renderMessage() {
-    return false
-      ? `, your reservation was submitted successfully!`
-      : "Reservation details not found";
-  }
 
   function renderPaymentSummary() {
     if (options.isLoading || !options.data) {
@@ -52,7 +48,7 @@ const OrderSubmittedInfo = () => {
     } = paymentDetails || {};
     return (
       <div className="border-type-1 rounded-8 px-50 py-35 mt-40">
-        <div className="row">
+        <div className="d-flex gap-5 flex-column flex-md-row justify-content-between">
           <div className="col-lg-3 col-md-6">
             <div className="text-15 lh-2812">Payment ID</div>
             <div className="text-15 lh-12 fw-500 text-blue-1 mt-10">
@@ -109,8 +105,8 @@ const OrderSubmittedInfo = () => {
             <div className="size-80 flex-center rounded-full bg-success-1">
               <i className="icon-check text-30 text-white" />
             </div>
-            <div className="text-26 lh-1 fw-600 mt-20">
-              your reservation was submitted successfully!
+            <div className="text-26 lh-1 fw-600 mt-20 text-center">
+              Your reservation was submitted successfully!
             </div>
             <div className="text-15 text-light-1 mt-10">
               Booking details has been sent to:{" "}
@@ -122,7 +118,7 @@ const OrderSubmittedInfo = () => {
         return (
           <div className="d-flex flex-column items-center mt-40 lg:md-40 sm:mt-24">
             <div className="size-80 flex-center rounded-full bg-warning-1">
-              <i className="icon-warning text-30 text-white" />
+              <span className="text-white text-30">!</span>
             </div>
             <div className="text-20 lh-1 fw-600 mt-20">
               Your reservation has been initiated. Please proceed with payment
@@ -138,7 +134,7 @@ const OrderSubmittedInfo = () => {
         return (
           <div className="d-flex flex-column items-center mt-40 lg:md-40 sm:mt-24">
             <div className="size-80 flex-center rounded-full bg-error-1">
-              <i className="icon-cross text-30 text-white" />
+              <span className="text-30 text-white fw-500">X</span>
             </div>
             <div className="text-26 lh-1 fw-600 mt-20">
               Transaction could not be completed. Use a different method or
@@ -195,13 +191,19 @@ const OrderSubmittedInfo = () => {
             </div>
             {/* End .row */}
           </div>
-          <div className="mt-20">
+          <div className="mt-20 d-flex justify-content-center gap-2">
             <button
-              className="button -dark-1 bg-blue-1 px-20 h-40 text-white mx-auto"
+              className="button -md -dark-1 bg-blue-1 px-20 text-white"
               type="button"
             >
               Print
             </button>
+            <Link
+              href="/"
+              className="button -md -blue-1 bg-blue-1-05 text-blue-1 me-3"
+            >
+              Back Home
+            </Link>
           </div>
         </div>
       </div>
