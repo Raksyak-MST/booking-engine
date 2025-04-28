@@ -14,7 +14,7 @@ export const api = createApi({
   baseQuery: async (args, api, extraOptions) => {
     const baseQuery = fetchBaseQuery({
       baseUrl: process.env.NEXT_PUBLIC_API_BASE_URL,
-      timeout: 10000,
+      // timeout: 10000,
     });
     const result = await baseQuery(args, api, extraOptions);
 
