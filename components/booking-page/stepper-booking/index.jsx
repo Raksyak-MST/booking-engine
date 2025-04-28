@@ -31,6 +31,7 @@ const Index = () => {
 
   const roomPicked = useSelector((state) => state.guestRoom.roomPicked);
   const reservationInfo = useSelector((state) => state.reservationInfo);
+  const searchQuery = useSelector((state) => state.searchQuery);
 
   const rates = !pickedPackage?.length ? {} : pickedPackage[0];
   const room = !rates?.rooms?.length ? {} : rates.rooms[0];
@@ -100,7 +101,48 @@ const Index = () => {
     }),
     onSubmit: async (values) => {
       try {
-        const response = await cashFreePaymentCreateOrder(reservationInfo);
+        const errors = await formik.validateForm();
+
+        if (Object.keys(errors).length > 0) {
+          toast.error("Please fill all the requred fields marked *");
+          return;
+        }
+
+        sessionStorage.setItem("tempGuestDetails", JSON.stringify(values));
+        const updatedGuestDetails = values.guestDetails.map(
+          (guestDetail, index) => ({
+            ...guestDetail,
+            // needed to copy other details to guestDetails all guest as common data for seprate reservation.
+            Salutation: guestDetail.Salutation || "Mr",
+            Email: values.paymentDetails.Email,
+            Mobile: values.paymentDetails.Mobile,
+            Address: values.paymentDetails.Address,
+            Country: values.paymentDetails.Country,
+            State: values.paymentDetails.State,
+            Zipcode: values.paymentDetails.Zipcode,
+            Comment: values.paymentDetails.Comment,
+            selectedPackageID: roomPicked[index + 1]?.selectedPackageID,
+            selectedRoomTypeID: roomPicked[index + 1]?.roomTypeID,
+            adults: roomPicked[index + 1]?.adults,
+            children: roomPicked[index + 1]?.children,
+            PromoCode: "",
+          }),
+        );
+        dispatch(
+          Actions.reservationInfoActions.setGuestDetails(updatedGuestDetails),
+        );
+
+        toast.success("Guest details saved successfully");
+
+        const response = await cashFreePaymentCreateOrder({
+          guestDetails: updatedGuestDetails,
+          arrivalDate: searchQuery.arrivalDate,
+          departureDate: searchQuery.departureDate,
+          quantity: searchQuery.quantity,
+          hotelID: searchQuery.hotelID,
+          sameName: false,
+        });
+
         if (options.isError) {
           toast.error("Cashfree payment creation failed");
           return;
@@ -123,19 +165,9 @@ const Index = () => {
           toast.error(checkoutResponse.error.message);
           return;
         }
-
-        setPaymentInitiated(true);
-
-        await addReservationFromWeb(reservationInfo);
-
-        if (addReservationOptions.isError) {
-          toast.error("Reservation failed");
-          return;
-        }
-
+        setPaymentInitiated(true); // used to diable the confirm booking button.
+        await addReservationFromWeb(reservationInfo).unwrap();
         router.replace("/order-submitted");
-
-        toast.success("Booking successful");
       } catch (error) {
         toast.error("Cashfree payment failed");
         setPaymentInitiated(false);
@@ -143,7 +175,7 @@ const Index = () => {
     },
   });
 
-  const handleConfirmBooking = (e) => {
+  const handleFieldValidation = (e) => {
     e.preventDefault();
     formik.validateForm().then((errors) => {
       if (Object.keys(errors).length > 0) {
@@ -153,43 +185,6 @@ const Index = () => {
     });
     // don't remove this it is used to call the formik submit function
     formik.handleSubmit(e);
-  };
-
-  const handleSaveGuestDetails = async (e) => {
-    e.preventDefault();
-
-    const errors = await formik.validateForm();
-
-    if (Object.keys(errors).length > 0) {
-      toast.error("Please fill all the requred fields marked *");
-      return;
-    }
-
-    const { values } = formik;
-    sessionStorage.setItem("tempGuestDetails", JSON.stringify(values));
-    const updatedGuestDetails = values.guestDetails.map(
-      (guestDetail, index) => ({
-        ...guestDetail,
-        // needed to copy other details to guestDetails as required by backend to extract the details for cashFree order creation.
-        Salutation: guestDetail.Salutation || "Mr",
-        Email: values.paymentDetails.Email,
-        Mobile: values.paymentDetails.Mobile,
-        Address: values.paymentDetails.Address,
-        Country: values.paymentDetails.Country,
-        State: values.paymentDetails.State,
-        Zipcode: values.paymentDetails.Zipcode,
-        Comment: values.paymentDetails.Comment,
-        selectedPackageID: roomPicked[index + 1]?.selectedPackageID,
-        selectedRoomTypeID: roomPicked[index + 1]?.roomTypeID,
-        adults: roomPicked[index + 1]?.adults,
-        children: roomPicked[index + 1]?.children,
-        PromoCode: "",
-      }),
-    );
-    dispatch(
-      Actions.reservationInfoActions.setGuestDetails(updatedGuestDetails),
-    );
-    toast.success("Guest details saved successfully");
   };
 
   return (
@@ -396,15 +391,8 @@ const Index = () => {
                      * otherwise all actions will be handled by singe handler which was causing data sync issue
                      */}
                     <button
-                      className="button h-60 px-24 -dark-1 bg-blue-1 text-white gap-2"
-                      onClick={handleSaveGuestDetails}
-                      type="button"
-                    >
-                      Save details
-                    </button>
-                    <button
-                      className="button -outline-blue-1 px-24 gap-2 text-blue-1"
-                      onClick={handleConfirmBooking}
+                      className="button -md -outline-blue-1 px-24 gap-2 text-blue-1"
+                      onClick={handleFieldValidation}
                       type="submit"
                       disabled={
                         addReservationOptions.isLoading || paymentInitiated
