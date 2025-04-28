@@ -1,13 +1,19 @@
 "use client";
 
-import { useCallback } from "react";
+import { useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { guestRoomActions } from "@/store/store";
+import * as Actions from "@/store/store";
 
 export const SelectiveRooms = () => {
-  const dispatch = useDispatch();
   const rooms = useSelector((state) => state.guestRoom.roomChooises);
   const roomPick = useSelector((state) => state.guestRoom.currentRoom);
+  const searchQuery = useSelector((state) => {
+    return state.searchQuery;
+  });
+  const [getDataForWebBooking] = Actions.useGetDataForWebBookingMutation();
+  useEffect(() => {
+    getDataForWebBooking({ ...searchQuery });
+  }, [roomPick]);
 
   return (
     <div>

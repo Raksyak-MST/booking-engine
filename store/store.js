@@ -81,8 +81,8 @@ export const api = createApi({
           hotelID: data.hotelID,
           arrivalDate: data.arrivalDate,
           departureDate: data.departureDate,
-          sameName: data.saveName,
-          reservationID: [], // FIXME: used for temp data send, until addReservationFromWeb api doesn't work
+          sameName: data.sameName,
+          // reservationID: [], // FIXME: used for temp data send, until addReservationFromWeb api doesn't work
           quantity: data.quantity,
           guestDetails: data.guestDetails,
         },
@@ -96,21 +96,6 @@ export const api = createApi({
   }),
 });
 
-const cashFreeApiSlice = createApi({
-  reducerPath: "cashFreeApi",
-  baseQuery: fetchBaseQuery({ baseUrl: "api", timeout: 10000 }),
-  endpoints: (builder) => ({
-    createOrder: builder.mutation({
-      query: (data) => ({
-        url: "/create-order",
-        method: "POST",
-        body: data,
-      }),
-    }),
-  }),
-});
-
-// [ Store slice]
 const authSlice = createSlice({
   name: "auth",
   initialState: {
@@ -286,6 +271,7 @@ const guestRoom = createSlice({
         ],
         roomPicked: {},
       };
+      return state;
     },
   },
 });
@@ -316,7 +302,7 @@ const reservationInfoSlice = createSlice({
     setQuantity: (state, action) => {
       state.quantity = action.payload;
     },
-    reset: (state, action) => {
+    reset: (state) => {
       state = {
         hotelID: 10,
         arrivalDate: moment(new Date()).format("YYYY-MM-DD"),
@@ -331,6 +317,7 @@ const reservationInfoSlice = createSlice({
           },
         ],
       };
+      return state;
     },
   },
   extraReducers: (builder) => {
@@ -346,7 +333,7 @@ const reservationInfoSlice = createSlice({
 });
 
 const searchQuerySlice = createSlice({
-  name: "mainSearchBar",
+  name: "searchQuery",
   initialState: {
     hotelID: 10,
     arrivalDate: moment(new Date()).format("YYYY-MM-DD"),
@@ -452,8 +439,6 @@ storageMiddleware.startListening({
   matcher: api.endpoints.addReservationFromWeb.matchFulfilled,
   effect: (_, api) => {
     sessionStorage.clear();
-    api.dispatch(reservationInfoSlice.actions.reset());
-    api.dispatch(guestRoom.actions.reset());
   },
 });
 
@@ -486,8 +471,8 @@ apiHandlerListenerMiddleware.startListening({
   effect: (action, api) => {
     const state = api.getState();
     const { order_id } = action.payload;
-    localStorage.setItem("orderID", order_id);
-    localStorage.setItem("orderDetails", JSON.stringify(action.payload));
+    sessionStorage.setItem("orderID", order_id);
+    sessionStorage.setItem("orderDetails", JSON.stringify(action.payload));
   },
 });
 
@@ -495,7 +480,7 @@ apiHandlerListenerMiddleware.startListening({
   matcher: api.endpoints.addReservationFromWeb.matchFulfilled,
   effect: (action, api) => {
     const state = api.getState();
-    localStorage.setItem(
+    sessionStorage.setItem(
       "reservationConfirmation",
       JSON.stringify(action.payload),
     );
@@ -515,15 +500,13 @@ export const store = configureStore({
     guestRoom: guestRoom.reducer,
     orderDetails: orderDetailsSlice.reducer,
     [api.reducerPath]: api.reducer,
-    [cashFreeApiSlice.reducerPath]: cashFreeApiSlice.reducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware()
       .prepend(apiHandlerListenerMiddleware.middleware)
       .prepend(stateActionListenerMiddleware.middleware)
       .prepend(storageMiddleware.middleware)
-      .concat(api.middleware)
-      .concat(cashFreeApiSlice.middleware),
+      .concat(api.middleware),
 });
 
 // [ Actions exports ]
@@ -535,7 +518,6 @@ export const {
   useGetHotelDetailsWebBookingMutation,
 } = api;
 
-export const cashFreeApiActions = cashFreeApiSlice;
 export const { setIsUserLogin } = authSlice.actions;
 export const searchQueryActions = searchQuerySlice.actions;
 export const roomListActions = roomList.actions;
