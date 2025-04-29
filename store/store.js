@@ -50,8 +50,18 @@ export const api = createApi({
       query: (data) => ({
         url: "/getReservationJsonLikeEzeeWebBooking",
         method: "POST",
-        body: data,
+        body: {
+          hotelID: data.hotelID,
+          arrivalDate: data.arrivalDate,
+          departureDate: data.departureDate,
+          quantity: data.quantity,
+          sameName: data.sameName,
+          guestDetails: data.guestDetails,
+        },
       }),
+      transformResponse: (response) => {
+        return response.data;
+      },
     }),
     addReservationFromWeb: builder.mutation({
       query: (data) => ({
@@ -299,6 +309,9 @@ const reservationInfoSlice = createSlice({
     setGuestDetails: (state, action) => {
       state.guestDetails = action.payload;
     },
+    removeGuestDetails: (state) => {
+      state.guestDetails.pop();
+    },
     setQuantity: (state, action) => {
       state.quantity = action.payload;
     },
@@ -375,6 +388,74 @@ const orderDetailsSlice = createSlice({
     setReservation: (state, action) => {
       state.reservation = action.payload;
     },
+  },
+});
+
+const pricingSlice = createSlice({
+  name: "pricings",
+  initialState: {
+    priceSummary: {},
+    OverallTotal: {},
+    BookingTran: [],
+  },
+  reducers: {
+    setPriceSummary: (state, action) => {
+      state.priceSummary = action.payload;
+    },
+  },
+  extraReducers: (builder) => {
+    builder.addMatcher(
+      api.endpoints.getReservationJsonLikeEzeeWebBooking.matchFulfilled,
+      (state, action) => {
+        console.log(action.payload);
+        const overallTotals = action.payload.map(
+          (reservation) => reservation?.Reservations?.Reservation?.OverallTotal,
+        );
+        const BookingTran = action.payload.map((reservation) => {
+          const bookingTran =
+            reservation?.Reservations?.Reservation?.BookingTran[0];
+          return {
+            Start: bookingTran?.Start,
+            End: bookingTran?.End,
+            TotalAmountAfterTax: bookingTran?.TotalAmountAfterTax,
+            TotalAmountBeforeTax: bookingTran?.TotalAmountBeforeTax,
+            TotalTax: bookingTran?.TotalTax,
+            TotalDiscount: bookingTran?.TotalDiscount,
+            TotalExtraCharge: bookingTran?.TotalExtraCharge,
+            RentalInfo: {
+              roomTypeID: bookingTran?.RentalInfo[0]?.roomTypeID,
+              baseprice: bookingTran?.RentalInfo[0]?.baseprice,
+              extraadultprice: bookingTran?.RentalInfo[0]?.extraadultprice,
+              childrenprice: bookingTran?.RentalInfo[0]?.childrenprice,
+              total: bookingTran?.RentalInfo[0]?.total,
+              fulltotal: bookingTran?.RentalInfo[0]?.fulltotal,
+              minNumAvlRooms: bookingTran?.RentalInfo[0]?.minNumAvlRooms,
+              soldOut: bookingTran?.RentalInfo[0]?.soldOut,
+              roomType: bookingTran?.RentalInfo[0]?.roomType,
+              packageCode: bookingTran?.RentalInfo[0]?.packageCode,
+              webDescription: bookingTran?.RentalInfo[0]?.webDescription,
+              packageRate: bookingTran?.RentalInfo[0]?.packageRate,
+              packageID: bookingTran?.RentalInfo[0]?.packageID,
+              rateCodeID: bookingTran?.RentalInfo[0]?.rateCodeID,
+              Adult: bookingTran?.RentalInfo[0]?.Adult,
+              Child: bookingTran?.RentalInfo[0]?.Child,
+              RentPreTax: bookingTran?.RentalInfo[0]?.RentPreTax,
+              Rent: bookingTran?.RentalInfo[0]?.Rent,
+              PackageName: bookingTran?.RentalInfo[0]?.PackageName,
+              Discount: bookingTran?.RentalInfo[0]?.Discount,
+              TotalAmountBeforeTax:
+                bookingTran?.RentalInfo[0]?.TotalAmountBeforeTax,
+              TotalAmountAfterTax:
+                bookingTran?.RentalInfo[0]?.TotalAmountAfterTax,
+              TotalTax: bookingTran?.RentalInfo[0]?.TotalTax,
+            },
+          };
+        });
+        state.priceSummary = action.payload.map((resrevation) => ({}));
+        state.OverallTotal = overallTotals[0];
+        state.BookingTran = BookingTran;
+      },
+    );
   },
 });
 
@@ -458,11 +539,34 @@ stateActionListenerMiddleware.startListening({
   actionCreator: guestRoom.actions.removeRoom,
   effect: (action, api) => {
     const state = api.getState();
+    api.dispatch(reservationInfoSlice.actions.removeGuestDetails());
     api.dispatch(
       reservationInfoSlice.actions.setQuantity(
         state.guestRoom.roomChooises?.length,
       ),
     );
+  },
+});
+
+stateActionListenerMiddleware.startListening({
+  actionCreator: guestRoom.actions.pickRoom,
+  effect: (action, api) => {
+    const state = api.getState();
+    const {
+      guestRoom: { roomPicked },
+    } = state;
+    console.log("dispatching add guest to reservationinfo");
+    let guestDetails = [];
+    Object.entries(roomPicked).map(([key, room]) => {
+      console.log(room);
+      guestDetails.push({
+        selectedPackageID: room.selectedPackageID,
+        selectedRoomTypeID: room.roomTypeID,
+        adults: room.adults,
+        children: room.children,
+      });
+    });
+    api.dispatch(reservationInfoSlice.actions.setGuestDetails(guestDetails));
   },
 });
 
@@ -499,6 +603,7 @@ export const store = configureStore({
     hotelDetails: hotelDetailsSlice.reducer,
     guestRoom: guestRoom.reducer,
     orderDetails: orderDetailsSlice.reducer,
+    pricing: pricingSlice.reducer,
     [api.reducerPath]: api.reducer,
   },
   middleware: (getDefaultMiddleware) =>
@@ -526,3 +631,4 @@ export const hotelDetailsActions = hotelDetailsSlice.actions;
 export const reservationInfoActions = reservationInfoSlice.actions;
 export const guestRoomActions = guestRoom.actions;
 export const orderDetailsActions = orderDetailsSlice.actions;
+export const pricingActions = pricingSlice.actions;

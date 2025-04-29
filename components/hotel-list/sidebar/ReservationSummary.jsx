@@ -2,18 +2,35 @@ import { useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { guestRoomActions } from "@/store/store";
 import { useRouter } from "next/navigation";
+import { toast } from "react-hot-toast";
+import { api } from "@/store/store";
+
 export const ReservationSummary = () => {
   const dispatch = useDispatch();
   const router = useRouter();
   const roomPicked = useSelector((state) => state.guestRoom?.roomPicked);
   const roomsOptions = useSelector((state) => state.guestRoom?.roomChooises);
   const rooms = Object.entries(roomPicked);
+  const reservationInfo = useSelector((state) => state.reservationInfo);
+
+  const [getReservationJsonLikeEzeeWebBooking] =
+    api.useGetReservationJsonLikeEzeeWebBookingMutation();
+
   useEffect(() => {
     const data = sessionStorage.getItem("roomPick");
     if (data) {
       dispatch(guestRoomActions.setPickedRoom(JSON.parse(data)));
     }
   }, []);
+  const handleReservationClick = async () => {
+    try {
+      await getReservationJsonLikeEzeeWebBooking(reservationInfo).unwrap();
+      router.push("booking-page");
+    } catch (error) {
+      console.log(error);
+      toast.error("An error occurred while processing your reservation.");
+    }
+  };
   return (
     <div className="mb-3 border rounded mt-3 p-2 ">
       <h2 className="text-18 fw-500 mb-20">Reservation Summary</h2>
@@ -63,7 +80,7 @@ export const ReservationSummary = () => {
       <div className="p-2">
         <button
           className="button -dark-1 py-20 col-12 rounded bg-blue-1 text-white"
-          onClick={() => router.push("booking-page")}
+          onClick={handleReservationClick}
           disabled={rooms.length < roomsOptions.length}
         >
           Book Reservation

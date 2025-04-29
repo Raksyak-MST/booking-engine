@@ -105,13 +105,14 @@ const HotelPropertyDetails = (props) => {
                 onClick={handleMealPlanSelection}
                 name={pack?.packageCode}
               >
-                <p
+                <button
                   className={`d-flex gap-1 items-center radio-label border-light rounded-100 px-3 py-1 text-14 ${
                     selectedMealPlan[pack?.packageCode]
                       ? "bg-blue-1 text-white"
                       : ""
                   }`}
                   name={pack?.packageCode}
+                  disabled={hotel?.soldOut}
                 >
                   {pack?.packageDescription}{" "}
                   {`(${new Intl.NumberFormat("en-IN", {
@@ -119,12 +120,17 @@ const HotelPropertyDetails = (props) => {
                     style: "currency",
                     currencyDisplay: "symbol",
                   }).format(pack?.packageRate)})`}
-                </p>
+                </button>
               </div>
             ))}
           </div>
         </div>
         <div className="col-md-4 d-flex flex-column gap-md-2">
+          {!hotel?.soldOut ? null : (
+            <span className="bg-red-1 p-2 rounded text-12 text-white fw-500 align-self-start align-self-md-end">
+              Sold out
+            </span>
+          )}
           <div>
             <p className="text-18 fw-500 text-md-end">
               {new Intl.NumberFormat("en-IN", {
@@ -143,12 +149,13 @@ const HotelPropertyDetails = (props) => {
             </p>
             <p className="text-12 text-md-end">tax excluded</p>
           </div>
-          <div
+          <button
             className="button -md -dark-1 bg-blue-1 text-white cursor-pointer align-self-md-end"
             onClick={handleRoomSelection}
+            disabled={hotel?.soldOut}
           >
             Select
-          </div>
+          </button>
         </div>
       </div>
       {/* End room Grid horizontal content */}

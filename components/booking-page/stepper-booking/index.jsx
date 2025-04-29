@@ -21,6 +21,9 @@ const Index = () => {
   const [addReservationFromWeb, addReservationOptions] =
     Actions.api.useAddReservationFromWebMutation();
 
+  const [getReservationJsonLikeEzeeWebBooking] =
+    Actions.api.useGetReservationJsonLikeEzeeWebBookingMutation();
+
   const pickedPackageId = useSelector(
     (state) => state?.bookingQuery?.selectedPackageID,
   );
@@ -134,14 +137,16 @@ const Index = () => {
 
         toast.success("Guest details saved successfully");
 
-        const response = await cashFreePaymentCreateOrder({
+        const payload = {
           guestDetails: updatedGuestDetails,
           arrivalDate: searchQuery.arrivalDate,
           departureDate: searchQuery.departureDate,
           quantity: searchQuery.quantity,
           hotelID: searchQuery.hotelID,
           sameName: false,
-        });
+        };
+
+        const response = await cashFreePaymentCreateOrder(payload);
 
         if (options.isError) {
           toast.error("Cashfree payment creation failed");
@@ -153,6 +158,22 @@ const Index = () => {
           toast.error("Not able to get Cashfree payment details");
           return;
         }
+
+        await getReservationJsonLikeEzeeWebBooking(payload);
+
+        await addReservationFromWeb(payload).unwrap();
+
+        if (addReservationOptions.isError) {
+          toast.error("Reservation creation failed");
+          // don't initiate payment if reservation api failed.
+          return;
+        }
+
+        if (addReservationOptions.isSuccess) {
+          toast.success("Your reservation has been created successfully");
+        }
+
+        // [[ cash free integration ]]
         const cashFree = Cashfree({ mode: "sendbox" });
 
         const checkoutResponse = await cashFree.checkout({
@@ -165,10 +186,12 @@ const Index = () => {
           toast.error(checkoutResponse.error.message);
           return;
         }
+        // [[ cash free integration ]]
+        //
         setPaymentInitiated(true); // used to diable the confirm booking button.
-        await addReservationFromWeb(reservationInfo).unwrap();
         router.replace("/order-submitted");
       } catch (error) {
+        console.log(error);
         toast.error("Cashfree payment failed");
         setPaymentInitiated(false);
       }
