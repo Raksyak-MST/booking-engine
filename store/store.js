@@ -407,7 +407,6 @@ const pricingSlice = createSlice({
     builder.addMatcher(
       api.endpoints.getReservationJsonLikeEzeeWebBooking.matchFulfilled,
       (state, action) => {
-        console.log(action.payload);
         const overallTotals = action.payload.map(
           (reservation) => reservation?.Reservations?.Reservation?.OverallTotal,
         );
@@ -519,7 +518,14 @@ storageMiddleware.startListening({
 storageMiddleware.startListening({
   matcher: api.endpoints.addReservationFromWeb.matchFulfilled,
   effect: (_, api) => {
-    sessionStorage.clear();
+    [
+      "guestDetails",
+      "roomSelection",
+      "roomChooises",
+      "roomPick",
+      "reservationConfirmation",
+      "tempGuestDetails",
+    ].forEach((item) => sessionStorage.removeItem(item));
   },
 });
 
@@ -555,10 +561,8 @@ stateActionListenerMiddleware.startListening({
     const {
       guestRoom: { roomPicked },
     } = state;
-    console.log("dispatching add guest to reservationinfo");
     let guestDetails = [];
     Object.entries(roomPicked).map(([key, room]) => {
-      console.log(room);
       guestDetails.push({
         selectedPackageID: room.selectedPackageID,
         selectedRoomTypeID: room.roomTypeID,

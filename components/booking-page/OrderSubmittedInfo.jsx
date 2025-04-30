@@ -28,7 +28,6 @@ const OrderSubmittedInfo = () => {
   useEffect(() => {
     const data = sessionStorage.getItem("orderDetails");
     if (data) {
-      console.log(data);
       const parsedData = JSON.parse(data);
       dispatch(Actions.orderDetailsActions.setOrderDetails(parsedData));
       cashFreePaymentVerifyQuery(parsedData?.order_id);
@@ -195,6 +194,9 @@ const OrderSubmittedInfo = () => {
             <button
               className="button -md -dark-1 bg-blue-1 px-20 text-white"
               type="button"
+              onClick={() => {
+                globalThis.print();
+              }}
             >
               Print
             </button>

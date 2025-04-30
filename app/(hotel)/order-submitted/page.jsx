@@ -1,9 +1,8 @@
-import CallToActions from "@/components/common/CallToActions";
 import Header11 from "@/components/header/header-11";
 import OrderSubmittedInfo from "@/components/booking-page/OrderSubmittedInfo";
 
 export const metadata = {
-  title: "Hotel order info page", 
+  title: "Hotel order info page",
   description: "GoTrip - Travel & Tour React NextJS Template",
 };
 
@@ -26,7 +25,6 @@ const index = () => {
       </section>
       {/* End stepper */}
 
-      <CallToActions />
       {/* End Call To Actions Section */}
 
       {/* <DefaultFooter /> */}

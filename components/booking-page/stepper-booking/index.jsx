@@ -146,6 +146,18 @@ const Index = () => {
           sameName: false,
         };
 
+        await addReservationFromWeb(payload).unwrap();
+
+        if (addReservationOptions.isError) {
+          toast.error("Reservation creation failed");
+          // don't initiate payment if reservation api failed.
+          return;
+        }
+
+        if (addReservationOptions.isSuccess) {
+          toast.success("Your reservation has been created successfully");
+        }
+
         const response = await cashFreePaymentCreateOrder(payload);
 
         if (options.isError) {
@@ -160,18 +172,6 @@ const Index = () => {
         }
 
         await getReservationJsonLikeEzeeWebBooking(payload);
-
-        await addReservationFromWeb(payload).unwrap();
-
-        if (addReservationOptions.isError) {
-          toast.error("Reservation creation failed");
-          // don't initiate payment if reservation api failed.
-          return;
-        }
-
-        if (addReservationOptions.isSuccess) {
-          toast.success("Your reservation has been created successfully");
-        }
 
         // [[ cash free integration ]]
         const cashFree = Cashfree({ mode: "sendbox" });
@@ -191,7 +191,6 @@ const Index = () => {
         setPaymentInitiated(true); // used to diable the confirm booking button.
         router.replace("/order-submitted");
       } catch (error) {
-        console.log(error);
         toast.error("Cashfree payment failed");
         setPaymentInitiated(false);
       }
