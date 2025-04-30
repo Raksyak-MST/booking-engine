@@ -15,10 +15,10 @@ const Index = () => {
   const [paymentInitiated, setPaymentInitiated] = useState(false);
   const router = useRouter();
   const dispatch = useDispatch();
-  const [cashFreePaymentCreateOrder, options] =
+  const [cashFreePaymentCreateOrder, cashFreePaymentResponseOptions] =
     Actions.api.useCashFreePaymentCreateOrderMutation();
 
-  const [addReservationFromWeb, addReservationOptions] =
+  const [addReservationFromWeb, addReservationResponseOptions] =
     Actions.api.useAddReservationFromWebMutation();
 
   const [getReservationJsonLikeEzeeWebBooking] =
@@ -103,6 +103,7 @@ const Index = () => {
       }),
     }),
     onSubmit: async (values) => {
+      setPaymentInitiated(true); // used to diable the confirm booking button.
       try {
         const errors = await formik.validateForm();
 
@@ -148,19 +149,19 @@ const Index = () => {
 
         await addReservationFromWeb(payload).unwrap();
 
-        if (addReservationOptions.isError) {
+        if (addReservationResponseOptions.isError) {
           toast.error("Reservation creation failed");
           // don't initiate payment if reservation api failed.
           return;
         }
 
-        if (addReservationOptions.isSuccess) {
+        if (addReservationResponseOptions.isSuccess) {
           toast.success("Your reservation has been created successfully");
         }
 
         const response = await cashFreePaymentCreateOrder(payload);
 
-        if (options.isError) {
+        if (cashFreePaymentResponseOptions.isError) {
           toast.error("Cashfree payment creation failed");
           return;
         }
@@ -183,12 +184,13 @@ const Index = () => {
         });
 
         if (checkoutResponse.error) {
+          // payment aborted by the user.
           toast.error(checkoutResponse.error.message);
+          setPaymentInitiated(false); // given options to submit the reservation again for the user.
           return;
         }
         // [[ cash free integration ]]
         //
-        setPaymentInitiated(true); // used to diable the confirm booking button.
         router.replace("/order-submitted");
       } catch (error) {
         toast.error("Cashfree payment failed");
@@ -413,14 +415,17 @@ const Index = () => {
                      * otherwise all actions will be handled by singe handler which was causing data sync issue
                      */}
                     <button
-                      className="button -md -outline-blue-1 px-24 gap-2 text-blue-1"
+                      className="button -md bg-blue-1 px-24 gap-2 text-white"
                       onClick={handleFieldValidation}
                       type="submit"
-                      disabled={
-                        addReservationOptions.isLoading || paymentInitiated
-                      }
+                      disabled={[
+                        addReservationResponseOptions.isLoading,
+                        cashFreePaymentResponseOptions.isLoading,
+                        paymentInitiated,
+                      ].some((state) => Boolean(state))}
                     >
-                      {options.isLoading ? (
+                      {cashFreePaymentResponseOptions.isLoading ||
+                      addReservationResponseOptions.isLoading ? (
                         <div
                           className="spinner-border spinner-border-sm"
                           role="status"

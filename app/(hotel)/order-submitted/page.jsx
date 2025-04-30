@@ -1,5 +1,6 @@
 import Header11 from "@/components/header/header-11";
 import OrderSubmittedInfo from "@/components/booking-page/OrderSubmittedInfo";
+import { Invoice } from "@/components/booking-page/Invoice";
 
 export const metadata = {
   title: "Hotel order info page",
@@ -19,7 +20,7 @@ const index = () => {
 
       <section className="pt-40 layout-pb-md">
         <div className="container">
-          <OrderSubmittedInfo />
+          <Invoice />
         </div>
         {/* End container */}
       </section>

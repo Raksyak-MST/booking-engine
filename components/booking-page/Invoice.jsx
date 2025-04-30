@@ -1,0 +1,662 @@
+"use client";
+
+import { Check, Download, Home, Printer } from "lucide-react";
+import { useSelector, useDispatch } from "react-redux";
+import { useEffect, useRef } from "react";
+import * as Actions from "@/store/store";
+import moment from "moment";
+import Link from "next/link";
+
+export const Invoice = () => {
+  const contentRef = useRef(null);
+
+  const dispatch = useDispatch();
+  const orderDetails = useSelector((state) => state.orderDetails);
+  const { customer_details } = orderDetails?.order || {};
+  const { reservationResults } = orderDetails?.reservation || {};
+
+  const reservationInfo = useSelector((state) => state.reservationInfo);
+
+  const [cashFreePaymentVerifyQuery, options] =
+    Actions.api.useLazyCashFreePaymentVerifyQuery();
+  const [paymentDetails] = options.data || [];
+  const {
+    cf_payment_id,
+    order_amount,
+    payment_group,
+    payment_completion_time,
+    payment_status,
+  } = paymentDetails ?? {};
+
+  useEffect(() => {
+    const data = sessionStorage.getItem("reservationConfirmation");
+    if (data) {
+      dispatch(Actions.orderDetailsActions.setReservation(JSON.parse(data)));
+    }
+  }, []);
+
+  useEffect(() => {
+    const data = sessionStorage.getItem("orderDetails");
+    if (data) {
+      const parsedData = JSON.parse(data);
+      dispatch(Actions.orderDetailsActions.setOrderDetails(parsedData));
+    }
+  }, []);
+
+  useEffect(() => {
+    const orderID = sessionStorage.getItem("orderID");
+    if (orderID) {
+      cashFreePaymentVerifyQuery(orderID);
+    }
+  }, []);
+
+  const handlePrint = async () => {
+    const html2pdf = (await import("html2pdf.js")).default;
+    const element = contentRef.current;
+    const options = {
+      filename: `Invoice_${cf_payment_id}_(${customer_details?.customer_name}).pdf`,
+      margin: 0.5,
+      image: { type: "jpeg", quality: 0.98 },
+      html2canvas: { scale: 2 },
+      jsPDF: { unit: "in", format: "a4", orientation: "portrait" },
+    };
+    html2pdf().set(options).from(element).save();
+  };
+
+  const renderMessage = () => {
+    switch (payment_status) {
+      case "SUCCESS":
+        return (
+          <div
+            style={{
+              backgroundColor: "#f0fdf4",
+              border: "1px solid #bbf7d0",
+              borderRadius: "8px",
+              padding: "16px",
+              display: "flex",
+              alignItems: "center",
+              gap: "12px",
+              marginBottom: "24px",
+            }}
+          >
+            <div
+              style={{
+                backgroundColor: "#22c55e",
+                borderRadius: "50%",
+                padding: "4px",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+              }}
+            >
+              <Check
+                style={{
+                  height: "16px",
+                  width: "16px",
+                  color: "white",
+                }}
+              />
+            </div>
+            <p
+              style={{
+                color: "#166534",
+                fontWeight: "500",
+                margin: "0",
+              }}
+            >
+              Your reservation was submitted successfully!
+            </p>
+          </div>
+        );
+    }
+  };
+
+  return (
+    <div
+      style={{
+        minHeight: "100vh",
+        backgroundColor: "#f8fafc",
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
+        justifyContent: "center",
+        padding: "16px",
+      }}
+    >
+      <div
+        style={{
+          width: "100%",
+          maxWidth: "768px",
+          boxShadow:
+            "0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)",
+          borderRadius: "8px",
+          backgroundColor: "white",
+          overflow: "hidden",
+        }}
+      >
+        {/* Header */}
+        <div
+          style={{
+            background: "var(--color-dark-3)",
+            color: "white",
+            padding: "24px",
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+          }}
+        >
+          <div
+            style={{
+              width: "100%",
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "center",
+            }}
+          >
+            <div>
+              <h1
+                style={{
+                  fontSize: "24px",
+                  fontWeight: "bold",
+                  margin: "0",
+                }}
+              >
+                LUXURY STAYS
+              </h1>
+              <p
+                style={{
+                  color: "#bfdbfe",
+                  margin: "4px 0 0 0",
+                }}
+              >
+                Premium Hotel & Resorts
+              </p>
+            </div>
+            <div
+              style={{
+                backgroundColor: "white",
+                color: "#1e40af",
+                padding: "8px 16px",
+                borderRadius: "6px",
+                fontWeight: "bold",
+              }}
+            >
+              INVOICE
+            </div>
+          </div>
+        </div>
+
+        {/* Content */}
+        <div ref={contentRef} style={{ padding: "24px" }}>
+          {/* Customer and Invoice Info */}
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "flex-start",
+              marginBottom: "24px",
+            }}
+          >
+            <div>
+              <h2
+                style={{
+                  fontWeight: "600",
+                  color: "#374151",
+                  margin: "0 0 8px 0",
+                }}
+              >
+                Invoice To:
+              </h2>
+              <div style={{ marginTop: "8px" }}>
+                <p
+                  style={{
+                    fontWeight: "500",
+                    margin: "0 0 4px 0",
+                  }}
+                >
+                  {customer_details?.customer_name}
+                </p>
+                <p
+                  style={{
+                    color: "#4b5563",
+                    margin: "0 0 4px 0",
+                  }}
+                >
+                  {customer_details?.customer_email}
+                </p>
+                <p
+                  style={{
+                    color: "#4b5563",
+                    margin: "0",
+                  }}
+                >
+                  {customer_details?.customer_phone}
+                </p>
+              </div>
+            </div>
+            <div style={{ textAlign: "right" }}>
+              <div>
+                <div
+                  style={{
+                    display: "flex",
+                    justifyContent: "flex-end",
+                    gap: "16px",
+                    margin: "0 0 4px 0",
+                  }}
+                >
+                  <span style={{ color: "#6b7280" }}>Invoice Number:</span>
+                  <span style={{ fontWeight: "500" }}>INV-{cf_payment_id}</span>
+                </div>
+                <div
+                  style={{
+                    display: "flex",
+                    justifyContent: "flex-end",
+                    gap: "16px",
+                    margin: "0 0 4px 0",
+                  }}
+                >
+                  <span style={{ color: "#6b7280" }}>Invoice Date:</span>
+                  <span style={{ fontWeight: "500" }}>
+                    {payment_completion_time
+                      ? moment(payment_completion_time).format(
+                          "ddd DD MMM YYYY",
+                        )
+                      : "N/A"}
+                  </span>
+                </div>
+                <div
+                  style={{
+                    display: "flex",
+                    justifyContent: "flex-end",
+                    gap: "16px",
+                    margin: "0 0 4px 0",
+                  }}
+                >
+                  <span style={{ color: "#6b7280" }}>Booking Date:</span>
+                  <span style={{ fontWeight: "500" }}>
+                    {payment_completion_time
+                      ? moment(payment_completion_time).format(
+                          "ddd DD MMM YYYY",
+                        )
+                      : "N/A"}
+                  </span>
+                </div>
+                <div
+                  style={{
+                    display: "flex",
+                    justifyContent: "flex-end",
+                    gap: "16px",
+                  }}
+                >
+                  <span style={{ color: "#6b7280" }}>Payment Status:</span>
+                  <span
+                    style={{
+                      backgroundColor: "#dcfce7",
+                      color: "#166534",
+                      padding: "2px 8px",
+                      borderRadius: "4px",
+                      fontSize: "14px",
+                      fontWeight: "500",
+                    }}
+                  >
+                    Paid
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Success Message */}
+          {renderMessage()}
+          {/* Invoice Table */}
+          <div
+            style={{
+              border: "1px solid #e5e7eb",
+              borderRadius: "8px",
+              overflow: "hidden",
+              marginBottom: "24px",
+            }}
+          >
+            <table
+              style={{
+                width: "100%",
+                borderCollapse: "collapse",
+              }}
+            >
+              <thead style={{ backgroundColor: "#f3f4f6" }}>
+                <tr>
+                  <th
+                    style={{
+                      padding: "12px 16px",
+                      textAlign: "left",
+                      width: "50%",
+                      borderBottom: "1px solid #e5e7eb",
+                    }}
+                  >
+                    Description
+                  </th>
+                  <th
+                    style={{
+                      padding: "12px 16px",
+                      textAlign: "left",
+                      borderBottom: "1px solid #e5e7eb",
+                    }}
+                  >
+                    Check-in
+                  </th>
+                  <th
+                    style={{
+                      padding: "12px 16px",
+                      textAlign: "left",
+                      borderBottom: "1px solid #e5e7eb",
+                    }}
+                  >
+                    Check-out
+                  </th>
+                  <th
+                    style={{
+                      padding: "12px 16px",
+                      textAlign: "right",
+                      borderBottom: "1px solid #e5e7eb",
+                    }}
+                  >
+                    Amount
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td
+                    style={{
+                      padding: "12px 16px",
+                      fontWeight: "500",
+                      borderBottom: "1px solid #e5e7eb",
+                    }}
+                  >
+                    Deluxe Room - Ocean View
+                  </td>
+                  <td
+                    style={{
+                      padding: "12px 16px",
+                      borderBottom: "1px solid #e5e7eb",
+                    }}
+                  >
+                    {moment(reservationInfo?.arrivalDate).format(
+                      "ddd DD MMM YYYY",
+                    )}
+                  </td>
+                  <td
+                    style={{
+                      padding: "12px 16px",
+                      borderBottom: "1px solid #e5e7eb",
+                    }}
+                  >
+                    {moment(reservationInfo?.departureDate).format(
+                      "ddd DD MMM YYYY",
+                    )}
+                  </td>
+                  <td
+                    style={{
+                      padding: "12px 16px",
+                      textAlign: "right",
+                      borderBottom: "1px solid #e5e7eb",
+                    }}
+                  >
+                    ₹22,000.00
+                  </td>
+                </tr>
+                <tr>
+                  <td
+                    style={{
+                      padding: "12px 16px",
+                      fontWeight: "500",
+                      borderBottom: "1px solid #e5e7eb",
+                    }}
+                  >
+                    Breakfast Buffet (3 days)
+                  </td>
+                  <td
+                    style={{
+                      padding: "12px 16px",
+                      borderBottom: "1px solid #e5e7eb",
+                    }}
+                  ></td>
+                  <td
+                    style={{
+                      padding: "12px 16px",
+                      borderBottom: "1px solid #e5e7eb",
+                    }}
+                  ></td>
+                  <td
+                    style={{
+                      padding: "12px 16px",
+                      textAlign: "right",
+                      borderBottom: "1px solid #e5e7eb",
+                    }}
+                  >
+                    ₹1,800.00
+                  </td>
+                </tr>
+                <tr>
+                  <td
+                    style={{
+                      padding: "12px 16px",
+                      fontWeight: "500",
+                    }}
+                  >
+                    Airport Transfer
+                  </td>
+                  <td style={{ padding: "12px 16px" }}></td>
+                  <td style={{ padding: "12px 16px" }}></td>
+                  <td
+                    style={{
+                      padding: "12px 16px",
+                      textAlign: "right",
+                    }}
+                  >
+                    ₹980.00
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          {/* Totals */}
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "flex-end",
+              marginBottom: "24px",
+            }}
+          >
+            <div style={{ width: "320px" }}>
+              <div
+                style={{
+                  display: "flex",
+                  justifyContent: "space-between",
+                  marginBottom: "8px",
+                }}
+              >
+                <span style={{ color: "#4b5563" }}>Subtotal:</span>
+                <span>₹24,780.00</span>
+              </div>
+              <div
+                style={{
+                  display: "flex",
+                  justifyContent: "space-between",
+                  marginBottom: "8px",
+                }}
+              >
+                <span style={{ color: "#4b5563" }}>Taxes (Included):</span>
+                <span>₹2,980.00</span>
+              </div>
+              <hr
+                style={{
+                  border: "none",
+                  borderTop: "1px solid #e5e7eb",
+                  margin: "8px 0",
+                }}
+              />
+              <div
+                style={{
+                  display: "flex",
+                  justifyContent: "space-between",
+                  fontWeight: "bold",
+                  fontSize: "18px",
+                  marginBottom: "8px",
+                }}
+              >
+                <span>Total:</span>
+                <span>
+                  {new Intl.NumberFormat("en-IN", {
+                    style: "currency",
+                    currency: "INR",
+                    currencyDisplay: "symbol",
+                  }).format(order_amount)}
+                </span>
+              </div>
+              <div
+                style={{
+                  display: "flex",
+                  justifyContent: "space-between",
+                  fontSize: "14px",
+                  color: "#6b7280",
+                  marginBottom: "4px",
+                }}
+              >
+                <span>Payment Method:</span>
+                <span>{payment_group}</span>
+              </div>
+              <div
+                style={{
+                  display: "flex",
+                  justifyContent: "space-between",
+                  fontSize: "14px",
+                  color: "#6b7280",
+                }}
+              >
+                <span>Payment ID:</span>
+                <span>{cf_payment_id}</span>
+              </div>
+            </div>
+          </div>
+
+          {/* Policies */}
+          <div
+            style={{
+              backgroundColor: "#f9fafb",
+              padding: "16px",
+              borderRadius: "8px",
+              border: "1px solid #e5e7eb",
+              marginBottom: "24px",
+            }}
+          >
+            <h3
+              style={{
+                fontWeight: "500",
+                marginTop: "0",
+                marginBottom: "8px",
+              }}
+            >
+              Booking Policies:
+            </h3>
+            <ul
+              style={{
+                fontSize: "14px",
+                color: "#4b5563",
+                paddingLeft: "0",
+                listStyle: "none",
+                margin: "0",
+              }}
+            >
+              <li>• Check-in time: 2:00 PM, Check-out time: 12:00 PM</li>
+              <li>• Free cancellation up to 48 hours before check-in</li>
+              <li>• Photo ID required at check-in</li>
+            </ul>
+          </div>
+        </div>
+
+        {/* Footer */}
+        <div
+          style={{
+            backgroundColor: "#f9fafb",
+            padding: "24px",
+            display: "flex",
+            flexDirection: "column",
+            gap: "12px",
+            justifyContent: "space-between",
+            alignItems: "center",
+            borderTop: "1px solid #e5e7eb",
+            textAlign: "center",
+          }}
+        >
+          <div>
+            <p
+              style={{
+                color: "#6b7280",
+                fontSize: "14px",
+                margin: "0 0 4px 0",
+              }}
+            >
+              Thank you for choosing us!
+            </p>
+            {/* <p
+              style={{
+                color: "#6b7280",
+                fontSize: "14px",
+                margin: "0",
+              }}
+            >
+              For any inquiries, please contact: support@luxurystays.com
+            </p> */}
+          </div>
+          <div
+            style={{
+              display: "flex",
+              gap: "8px",
+            }}
+          >
+            <button
+              style={{
+                display: "flex",
+                alignItems: "center",
+                gap: "8px",
+                padding: "8px 16px",
+                backgroundColor: "var(--color-dark-3)",
+                color: "white",
+                border: "none",
+                borderRadius: "6px",
+                cursor: "pointer",
+                fontWeight: "500",
+              }}
+              onClick={handlePrint}
+            >
+              <Download style={{ height: "16px", width: "16px" }} />
+              Download
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <Link
+        href="/"
+        style={{
+          display: "flex",
+          alignItems: "center",
+          gap: "8px",
+          marginTop: "24px",
+          padding: "8px 16px",
+          backgroundColor: "transparent",
+          color: "#374151",
+          border: "none",
+          borderRadius: "6px",
+          cursor: "pointer",
+          fontWeight: "500",
+        }}
+      >
+        <Home style={{ height: "16px", width: "16px" }} />
+        Back Home
+      </Link>
+    </div>
+  );
+};

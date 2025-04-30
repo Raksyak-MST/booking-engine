@@ -394,7 +394,6 @@ const orderDetailsSlice = createSlice({
 const pricingSlice = createSlice({
   name: "pricings",
   initialState: {
-    priceSummary: {},
     OverallTotal: {},
     BookingTran: [],
   },
@@ -450,7 +449,6 @@ const pricingSlice = createSlice({
             },
           };
         });
-        state.priceSummary = action.payload.map((resrevation) => ({}));
         state.OverallTotal = overallTotals[0];
         state.BookingTran = BookingTran;
       },
@@ -516,7 +514,7 @@ storageMiddleware.startListening({
 });
 
 storageMiddleware.startListening({
-  matcher: api.endpoints.addReservationFromWeb.matchFulfilled,
+  matcher: api.endpoints.cashFreePaymentVerify.matchFulfilled,
   effect: (_, api) => {
     [
       "guestDetails",

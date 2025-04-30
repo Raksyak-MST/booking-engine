@@ -40,10 +40,6 @@ export default function RootLayout({ children }) {
           rel="stylesheet"
         />
         <link rel="icon" href="./favicon.ico" />
-        <link
-          rel="stylesheet"
-          href="https://i.icomoon.io/public/temp/c6cf462891/UntitledProject/style.css"
-        />
         <Script src="https://sdk.cashfree.com/js/v3/cashfree.js"></Script>
       </head>
       <body>
