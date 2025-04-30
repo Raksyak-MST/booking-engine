@@ -20,8 +20,8 @@ const index = () => {
 
       <section className="pt-40 layout-pb-md">
         <div className="container">
-          {/* <Invoice /> */}
-          <OrderSubmittedInfo />
+          <Invoice />
+          {/* <OrderSubmittedInfo /> */}
         </div>
         {/* End container */}
       </section>
