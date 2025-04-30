@@ -1,6 +1,13 @@
 "use client";
 
-import { Check, Download, Home, Printer } from "lucide-react";
+import {
+  Check,
+  Download,
+  Home,
+  Printer,
+  Clock,
+  AlertTriangle,
+} from "lucide-react";
 import { useSelector, useDispatch } from "react-redux";
 import { useEffect, useRef } from "react";
 import * as Actions from "@/store/store";
@@ -63,53 +70,44 @@ export const Invoice = () => {
     html2pdf().set(options).from(element).save();
   };
 
-  const renderMessage = () => {
-    switch (payment_status) {
-      case "SUCCESS":
-        return (
-          <div
-            style={{
-              backgroundColor: "#f0fdf4",
-              border: "1px solid #bbf7d0",
-              borderRadius: "8px",
-              padding: "16px",
-              display: "flex",
-              alignItems: "center",
-              gap: "12px",
-              marginBottom: "24px",
-            }}
-          >
-            <div
-              style={{
-                backgroundColor: "#22c55e",
-                borderRadius: "50%",
-                padding: "4px",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-              }}
-            >
-              <Check
-                style={{
-                  height: "16px",
-                  width: "16px",
-                  color: "white",
-                }}
-              />
-            </div>
-            <p
-              style={{
-                color: "#166534",
-                fontWeight: "500",
-                margin: "0",
-              }}
-            >
-              Your reservation was submitted successfully!
-            </p>
-          </div>
-        );
-    }
+  const statusConfig = {
+    SUCCESS: {
+      color: "#166534",
+      bgColor: "#f0fdf4",
+      borderColor: "#bbf7d0",
+      iconBgColor: "#22c55e",
+      icon: Check,
+      label: "Paid",
+      message: "Your reservation was submitted successfully!",
+      labelBgColor: "#dcfce7",
+      labelTextColor: "#166534",
+    },
+    PENDING: {
+      color: "#854d0e",
+      bgColor: "#fefce8",
+      borderColor: "#fef08a",
+      iconBgColor: "#eab308",
+      icon: Clock,
+      label: "Pending",
+      message: "Your reservation is pending payment confirmation.",
+      labelBgColor: "#fef9c3",
+      labelTextColor: "#854d0e",
+    },
+    FAILED: {
+      color: "#9f1239",
+      bgColor: "#fef2f2",
+      borderColor: "#fecaca",
+      iconBgColor: "#ef4444",
+      icon: AlertTriangle,
+      label: "Failed",
+      message: "Your payment was unsuccessful. Please try again.",
+      labelBgColor: "#fee2e2",
+      labelTextColor: "#9f1239",
+    },
   };
+
+  const config = statusConfig[payment_status] ?? {};
+  const StatusIcon = config.icon;
 
   return (
     <div
@@ -291,23 +289,64 @@ export const Invoice = () => {
                   <span style={{ color: "#6b7280" }}>Payment Status:</span>
                   <span
                     style={{
-                      backgroundColor: "#dcfce7",
-                      color: "#166534",
+                      backgroundColor: config.labelBgColor,
+                      color: config.labelTextColor,
                       padding: "2px 8px",
                       borderRadius: "4px",
                       fontSize: "14px",
                       fontWeight: "500",
                     }}
                   >
-                    Paid
+                    {config.label}
                   </span>
                 </div>
               </div>
             </div>
           </div>
 
-          {/* Success Message */}
-          {renderMessage()}
+          {/* Message */}
+          <div
+            style={{
+              backgroundColor: config.bgColor,
+              border: `1px solid ${config.borderColor}`,
+              borderRadius: "8px",
+              padding: "16px",
+              display: "flex",
+              alignItems: "center",
+              gap: "12px",
+              marginBottom: "24px",
+            }}
+          >
+            <div
+              style={{
+                backgroundColor: config.iconBgColor,
+                borderRadius: "50%",
+                padding: "4px",
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+              }}
+            >
+              {!StatusIcon ? null : (
+                <StatusIcon
+                  style={{
+                    height: "16px",
+                    width: "16px",
+                    color: "white",
+                  }}
+                />
+              )}
+            </div>
+            <p
+              style={{
+                color: config.color,
+                fontWeight: "500",
+                margin: "0",
+              }}
+            >
+              {config.message}
+            </p>
+          </div>
           {/* Invoice Table */}
           <div
             style={{
@@ -540,6 +579,53 @@ export const Invoice = () => {
               </div>
             </div>
           </div>
+
+          {/* Payment Action for Pending/Failed */}
+          {payment_status !== "SUCCESS" && (
+            <div
+              style={{
+                backgroundColor:
+                  payment_status === "PENDING" ? "#fefce8" : "#fef2f2",
+                padding: "16px",
+                borderRadius: "8px",
+                border: `1px solid ${payment_status === "PENDING" ? "#fef08a" : "#fecaca"}`,
+                marginBottom: "24px",
+                textAlign: "center",
+              }}
+            >
+              <p
+                style={{
+                  color: payment_status === "PENDING" ? "#854d0e" : "#9f1239",
+                  marginTop: "0",
+                  marginBottom: "12px",
+                  fontWeight: "500",
+                }}
+              >
+                {payment_status === "PENDING"
+                  ? "Please complete your payment to confirm your reservation."
+                  : "Your payment was unsuccessful. Please try again with a different payment method."}
+              </p>
+              <button
+                style={{
+                  display: "inline-flex",
+                  alignItems: "center",
+                  gap: "8px",
+                  padding: "8px 16px",
+                  backgroundColor:
+                    payment_status === "PENDING" ? "#eab308" : "#ef4444",
+                  color: "white",
+                  border: "none",
+                  borderRadius: "6px",
+                  cursor: "pointer",
+                  fontWeight: "500",
+                }}
+              >
+                {payment_status === "PENDING"
+                  ? "Complete Payment"
+                  : "Try Again"}
+              </button>
+            </div>
+          )}
 
           {/* Policies */}
           <div
