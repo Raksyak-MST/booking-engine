@@ -103,6 +103,13 @@ export const api = createApi({
         url: `/cashFreePaymentVerify?orderID=${orderID}`,
       }),
     }),
+    getFinalReservationDetailsWeb: builder.mutation({
+      query: (data) => ({
+        method: "POST",
+        url: "/getFinalReservationDetailsWeb",
+        body: data,
+      }),
+    }),
   }),
 });
 
@@ -301,6 +308,7 @@ const reservationInfoSlice = createSlice({
         children: 0,
       },
     ],
+    reservationIDs: []
   },
   reducers: {
     addPromoCode: (state, action) => {
@@ -332,6 +340,9 @@ const reservationInfoSlice = createSlice({
       };
       return state;
     },
+    setReservationIDs: (state, action) => {
+      state.reservationIDs = action.payload;
+    },
   },
   extraReducers: (builder) => {
     builder.addCase(
@@ -342,6 +353,18 @@ const reservationInfoSlice = createSlice({
         Object.assign(state, action.payload);
       },
     );
+    builder.addMatcher(
+      api.endpoints.addReservationFromWeb.matchFulfilled,
+      (state, action) => {
+        const {reservationResults } = action.payload;
+        let ids = []
+        reservationResults.forEach((reservation) => {
+          ids.push(reservation.reservationDetails)
+        })
+        console.log(ids);
+        localStorage.setItem("reservationIDs", JSON.stringify(ids))
+      }
+    )
   },
 });
 
@@ -396,10 +419,14 @@ const pricingSlice = createSlice({
   initialState: {
     OverallTotal: {},
     BookingTran: [],
+    finalReservationDetails: [],
   },
   reducers: {
     setPriceSummary: (state, action) => {
       state.priceSummary = action.payload;
+    },
+    setFinalReservationDetails: (state, action) => {
+      state.finalReservationDetails = action.payload;
     },
   },
   extraReducers: (builder) => {
