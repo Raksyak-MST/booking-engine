@@ -13,7 +13,7 @@ export const ReservationSummary = () => {
   const rooms = Object.entries(roomPicked);
   const reservationInfo = useSelector((state) => state.reservationInfo);
 
-  const [getReservationJsonLikeEzeeWebBooking] =
+  const [getReservationJsonLikeEzeeWebBooking, reservationJsonLikeEzeeWebBookingoptions] =
     api.useGetReservationJsonLikeEzeeWebBookingMutation();
 
   useEffect(() => {
@@ -80,7 +80,7 @@ export const ReservationSummary = () => {
         <button
           className="button -dark-1 py-20 col-12 rounded bg-blue-1 text-white"
           onClick={handleReservationClick}
-          disabled={rooms.length < roomsOptions.length}
+          disabled={(rooms.length < roomsOptions.length) || reservationJsonLikeEzeeWebBookingoptions.isLoading}
         >
           Book Reservation
         </button>

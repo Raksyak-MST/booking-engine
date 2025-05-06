@@ -308,7 +308,7 @@ const reservationInfoSlice = createSlice({
         children: 0,
       },
     ],
-    reservationIDs: []
+    reservationIDs: [],
   },
   reducers: {
     addPromoCode: (state, action) => {
@@ -356,15 +356,15 @@ const reservationInfoSlice = createSlice({
     builder.addMatcher(
       api.endpoints.addReservationFromWeb.matchFulfilled,
       (state, action) => {
-        const {reservationResults } = action.payload;
-        let ids = []
+        const { reservationResults } = action.payload;
+        let ids = [];
         reservationResults.forEach((reservation) => {
-          ids.push(reservation.reservationDetails)
-        })
+          ids.push(reservation.reservationDetails);
+        });
         console.log(ids);
-        localStorage.setItem("reservationIDs", JSON.stringify(ids))
-      }
-    )
+        localStorage.setItem("reservationIDs", JSON.stringify(ids));
+      },
+    );
   },
 });
 
@@ -428,6 +428,12 @@ const pricingSlice = createSlice({
     setFinalReservationDetails: (state, action) => {
       state.finalReservationDetails = action.payload;
     },
+    setBookingTran: (state, action) => {
+      state.BookingTran = action.payload;
+    },
+    setOverallTotal: (state, action) => {
+      state.OverallTotal = action.payload;
+    }
   },
   extraReducers: (builder) => {
     builder.addMatcher(
@@ -478,6 +484,8 @@ const pricingSlice = createSlice({
         });
         state.OverallTotal = overallTotals[0];
         state.BookingTran = BookingTran;
+        sessionStorage.setItem("pricing:BookingTran", JSON.stringify(BookingTran))
+        sessionStorage.setItem("pricing:OverallTotal", JSON.stringify(overallTotals[0]))
       },
     );
   },
@@ -543,14 +551,14 @@ storageMiddleware.startListening({
 storageMiddleware.startListening({
   matcher: api.endpoints.cashFreePaymentVerify.matchFulfilled,
   effect: (_, api) => {
-    [
-      "guestDetails",
-      "roomSelection",
-      "roomChooises",
-      "roomPick",
-      "reservationConfirmation",
-      "tempGuestDetails",
-    ].forEach((item) => sessionStorage.removeItem(item));
+    // [
+    //   "guestDetails",
+    //   "roomSelection",
+    //   "roomChooises",
+    //   "roomPick",
+    //   "reservationConfirmation",
+    //   "tempGuestDetails",
+    // ].forEach((item) => sessionStorage.removeItem(item));
   },
 });
 
@@ -598,6 +606,21 @@ stateActionListenerMiddleware.startListening({
     api.dispatch(reservationInfoSlice.actions.setGuestDetails(guestDetails));
   },
 });
+
+stateActionListenerMiddleware.startListening({
+  actionCreator: pricingSlice.actions.setPriceSummary,
+  effect: (action, api) => {
+    const state = api.getState();
+    localStorage.setItem("pricing", state.pricing)
+  },
+});
+
+stateActionListenerMiddleware.startListening({
+  actionCreator: pricingSlice.actions.setFinalReservationDetails,
+  effect: (action, api) => {
+    sessionStorage.setItem("pricing:finalReservationDetails", JSON.stringify(action.payload));
+  }
+})
 
 apiHandlerListenerMiddleware.startListening({
   matcher: api.endpoints.cashFreePaymentCreateOrder.matchFulfilled,

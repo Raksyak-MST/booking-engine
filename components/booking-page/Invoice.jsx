@@ -22,15 +22,14 @@ export const Invoice = () => {
   const { customer_details } = orderDetails?.order || {};
   const { reservationResults } = orderDetails?.reservation || {};
 
-  const finalReservation = useSelector(
-    (state) => state.pricing.finalReservationDetails,
+  const { finalReservationDetails, BookingTran, OverallTotal } = useSelector(
+    (state) => state.pricing,
   );
-
-  const reservationInfo = useSelector((state) => state.reservationInfo);
 
   const [cashFreePaymentVerifyQuery, options] =
     Actions.api.useLazyCashFreePaymentVerifyQuery();
   const [paymentDetails] = options.data || [];
+
   const {
     cf_payment_id,
     order_amount,
@@ -78,6 +77,26 @@ export const Invoice = () => {
     const orderID = sessionStorage.getItem("orderID");
     if (orderID) {
       cashFreePaymentVerifyQuery(orderID);
+    }
+  }, []);
+
+  useEffect(() => {
+    const BookingTran = sessionStorage.getItem("pricing:BookingTran");
+    const OverallTotal = sessionStorage.getItem("pricing:OverallTotal");
+    const finalReservation = sessionStorage.getItem(
+      "pricing:finalReservationDetails",
+    );
+    if (BookingTran) {
+      const data = JSON.parse(BookingTran);
+      dispatch(Actions.pricingActions.setBookingTran(data));
+    }
+    if (OverallTotal) {
+      const data = JSON.parse(OverallTotal);
+      dispatch(Actions.pricingActions.setOverallTotal(data));
+    }
+    if (finalReservation) {
+      const data = JSON.parse(finalReservation);
+      dispatch(Actions.pricingActions.setFinalReservationDetails(data));
     }
   }, []);
 
@@ -148,7 +167,7 @@ export const Invoice = () => {
       <div
         style={{
           width: "100%",
-          maxWidth: "768px",
+          maxWidth: "960px",
           boxShadow:
             "0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)",
           borderRadius: "8px",
@@ -236,7 +255,7 @@ export const Invoice = () => {
                     margin: "0 0 4px 0",
                   }}
                 >
-                  {customer_details?.customer_name}
+                  {customer_details?.customer_name ?? "N/A"}
                 </p>
                 <p
                   style={{
@@ -244,7 +263,7 @@ export const Invoice = () => {
                     margin: "0 0 4px 0",
                   }}
                 >
-                  {customer_details?.customer_email}
+                  {customer_details?.customer_email ?? "N/A"}
                 </p>
                 <p
                   style={{
@@ -252,7 +271,7 @@ export const Invoice = () => {
                     margin: "0",
                   }}
                 >
-                  {customer_details?.customer_phone}
+                  {customer_details?.customer_phone ?? "N/A"}
                 </p>
               </div>
             </div>
@@ -269,6 +288,14 @@ export const Invoice = () => {
                   <span style={{ color: "#6b7280" }}>Invoice Number:</span>
                   <span style={{ fontWeight: "500" }}>INV-{cf_payment_id}</span>
                 </div>
+                <div
+                  style={{
+                    display: "flex",
+                    justifyContent: "flex-end",
+                    gap: "16px",
+                    margin: "0 0 4px 0",
+                  }}
+                ></div>
                 <div
                   style={{
                     display: "flex",
@@ -321,7 +348,7 @@ export const Invoice = () => {
                       fontWeight: "500",
                     }}
                   >
-                    {config.label}
+                    {config.label ?? "N/A"}
                   </span>
                 </div>
               </div>
@@ -372,66 +399,116 @@ export const Invoice = () => {
             </p>
           </div>
           {/* Invoice Table */}
-          {false
-            ? null
-            : finalReservation?.map((reservation) => (
-                <div
-                  key={reservation.bookingID}
-                  style={{
-                    border: "1px solid #e5e7eb",
-                    borderRadius: "8px",
-                    overflow: "hidden",
-                    marginBottom: "24px",
-                  }}
-                >
-                  <table
+          <div
+            style={{
+              border: "1px solid #e5e7eb",
+              borderRadius: "8px",
+              overflow: "hidden",
+              marginBottom: "34px",
+            }}
+          >
+            <table
+              style={{
+                width: "100%",
+                borderCollapse: "collapse",
+              }}
+            >
+              <thead style={{ backgroundColor: "#f3f4f6" }}>
+                <tr>
+                  <th
                     style={{
-                      width: "100%",
-                      borderCollapse: "collapse",
+                      padding: "12px 16px",
+                      textAlign: "left",
+                      borderBottom: "1px solid #e5e7eb",
                     }}
                   >
-                    <thead style={{ backgroundColor: "#f3f4f6" }}>
-                      <tr>
-                        <th
-                          style={{
-                            padding: "12px 16px",
-                            textAlign: "left",
-                            width: "50%",
-                            borderBottom: "1px solid #e5e7eb",
-                          }}
-                        >
-                          Description
-                        </th>
-                        <th
-                          style={{
-                            padding: "12px 16px",
-                            textAlign: "left",
-                            borderBottom: "1px solid #e5e7eb",
-                          }}
-                        >
-                          Check-in
-                        </th>
-                        <th
-                          style={{
-                            padding: "12px 16px",
-                            textAlign: "left",
-                            borderBottom: "1px solid #e5e7eb",
-                          }}
-                        >
-                          Check-out
-                        </th>
-                        <th
-                          style={{
-                            padding: "12px 16px",
-                            textAlign: "right",
-                            borderBottom: "1px solid #e5e7eb",
-                          }}
-                        >
-                          Amount
-                        </th>
-                      </tr>
-                    </thead>
-                    <tbody>
+                    Confirmation Number
+                  </th>
+                  <th
+                    style={{
+                      padding: "12px 16px",
+                      textAlign: "left",
+                      borderBottom: "1px solid #e5e7eb",
+                    }}
+                  >
+                    Description
+                  </th>
+                  <th
+                    style={{
+                      padding: "12px 16px",
+                      textAlign: "left",
+                      borderBottom: "1px solid #e5e7eb",
+                    }}
+                  >
+                    Check-in
+                  </th>
+                  <th
+                    style={{
+                      padding: "12px 16px",
+                      textAlign: "left",
+                      borderBottom: "1px solid #e5e7eb",
+                    }}
+                  >
+                    Check-out
+                  </th>
+                  <th
+                    style={{
+                      padding: "12px 16px",
+                      textAlign: "right",
+                      borderBottom: "1px solid #e5e7eb",
+                    }}
+                  >
+                    Amount
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                {BookingTran?.length == 0 ? (
+                  <tr>
+                    <td
+                      style={{
+                        padding: "12px 16px",
+                        borderBottom: "1px solid #e5e7eb",
+                      }}
+                    >
+                      N/A
+                    </td>
+                    <td
+                      style={{
+                        padding: "12px 16px",
+                        borderBottom: "1px solid #e5e7eb",
+                      }}
+                    >
+                      N/A
+                    </td>
+                    <td
+                      style={{
+                        padding: "12px 16px",
+                        borderBottom: "1px solid #e5e7eb",
+                      }}
+                    >
+                      N/A
+                    </td>
+                    <td
+                      style={{
+                        padding: "12px 16px",
+                        borderBottom: "1px solid #e5e7eb",
+                      }}
+                    >
+                      N/A
+                    </td>
+                    <td
+                      style={{
+                        padding: "12px 16px",
+                        borderBottom: "1px solid #e5e7eb",
+                      }}
+                    >
+                      N/A
+                    </td>
+                  </tr>
+                ) : (
+                  BookingTran?.map((reservation, index) => (
+                    <>
                       <tr>
                         <td
                           style={{
@@ -440,7 +517,16 @@ export const Invoice = () => {
                             borderBottom: "1px solid #e5e7eb",
                           }}
                         >
-                          {reservation?.roomType}
+                          {finalReservationDetails[index]?.bookingID}
+                        </td>
+                        <td
+                          style={{
+                            padding: "12px 16px",
+                            fontWeight: "500",
+                            borderBottom: "1px solid #e5e7eb",
+                          }}
+                        >
+                          {reservation?.RentalInfo?.roomType}
                         </td>
                         <td
                           style={{
@@ -448,9 +534,7 @@ export const Invoice = () => {
                             borderBottom: "1px solid #e5e7eb",
                           }}
                         >
-                          {moment(reservation?.arrivalDate).format(
-                            "ddd DD MMM YYYY",
-                          )}
+                          {moment(reservation?.Start).format("ddd DD MMM YYYY")}
                         </td>
                         <td
                           style={{
@@ -458,9 +542,7 @@ export const Invoice = () => {
                             borderBottom: "1px solid #e5e7eb",
                           }}
                         >
-                          {moment(reservation?.departureDate).format(
-                            "ddd DD MMM YYYY",
-                          )}
+                          {moment(reservation?.End).format("ddd DD MMM YYYY")}
                         </td>
                         <td
                           style={{
@@ -473,45 +555,60 @@ export const Invoice = () => {
                             currency: "INR",
                             style: "currency",
                             currencyDisplay: "symbol",
-                          }).format(reservation?.totalCostOfStay)}
+                          }).format(
+                            reservation?.RentalInfo?.baseprice ?? 0.0,
+                          )}
                         </td>
                       </tr>
-                      {/* <tr>
-                    <td
-                      style={{
-                        padding: "12px 16px",
-                        fontWeight: "500",
-                        borderBottom: "1px solid #e5e7eb",
-                      }}
-                    >
-                      {reservation?.roomType}
-                    </td>
-                    <td
-                      style={{
-                        padding: "12px 16px",
-                        borderBottom: "1px solid #e5e7eb",
-                      }}
-                    ></td>
-                    <td
-                      style={{
-                        padding: "12px 16px",
-                        borderBottom: "1px solid #e5e7eb",
-                      }}
-                    ></td>
-                    <td
-                      style={{
-                        padding: "12px 16px",
-                        textAlign: "right",
-                        borderBottom: "1px solid #e5e7eb",
-                      }}
-                    >
-                      ₹1,800.00
-                    </td>
-                  </tr> */}
-                    </tbody>
-                  </table>
-                </div>
-              ))}
+                      <tr>
+                        <td
+                          style={{
+                            padding: "12px 16px",
+                            fontWeight: "500",
+                            borderBottom: "1px solid #e5e7eb",
+                          }}
+                        ></td>
+                        <td
+                          style={{
+                            padding: "12px 16px",
+                            fontWeight: "500",
+                            borderBottom: "1px solid #e5e7eb",
+                          }}
+                        >
+                          {reservation?.RentalInfo?.webDescription}
+                        </td>
+                        <td
+                          style={{
+                            padding: "12px 16px",
+                            borderBottom: "1px solid #e5e7eb",
+                          }}
+                        ></td>
+                        <td
+                          style={{
+                            padding: "12px 16px",
+                            borderBottom: "1px solid #e5e7eb",
+                          }}
+                        ></td>
+                        <td
+                          style={{
+                            padding: "12px 16px",
+                            textAlign: "right",
+                            borderBottom: "1px solid #e5e7eb",
+                          }}
+                        >
+                          {new Intl.NumberFormat("en-IN", {
+                            style: "currency",
+                            currency: "INR",
+                            currencyDisplay: "symbol",
+                          }).format(reservation?.RentalInfo?.packageRate)}
+                        </td>
+                      </tr>
+                    </>
+                  ))
+                )}
+              </tbody>
+            </table>
+          </div>
           {/* Totals */}
           <div
             style={{
@@ -528,8 +625,14 @@ export const Invoice = () => {
                   marginBottom: "8px",
                 }}
               >
-                {/* <span style={{ color: "#4b5563" }}>Subtotal:</span>
-                <span>₹24,780.00</span> */}
+                <span style={{ color: "#4b5563" }}>Subtotal:</span>
+                <span>
+                  {new Intl.NumberFormat("en-IN", {
+                    style: "currency",
+                    currency: "INR",
+                    currencyDisplay: "symbol",
+                  }).format(OverallTotal?.OverAllTotalAmountBeforeTax ?? 0.0)}
+                </span>
               </div>
               <div
                 style={{
@@ -538,8 +641,14 @@ export const Invoice = () => {
                   marginBottom: "8px",
                 }}
               >
-                {/* <span style={{ color: "#4b5563" }}>Taxes (Included):</span>
-                <span>₹2,980.00</span> */}
+                <span style={{ color: "#4b5563" }}>Taxes (Included):</span>
+                <span>
+                  {new Intl.NumberFormat("en-IN", {
+                    style: "currency",
+                    currency: "INR",
+                    currencyDisplay: "symbol",
+                  }).format(OverallTotal?.OverAllTotalTax ?? 0.0)}
+                </span>
               </div>
               <hr
                 style={{
@@ -563,7 +672,7 @@ export const Invoice = () => {
                     style: "currency",
                     currency: "INR",
                     currencyDisplay: "symbol",
-                  }).format(order_amount)}
+                  }).format(OverallTotal.OverAllTotalAmountAfterTax ?? 0.0)}
                 </span>
               </div>
               <div
@@ -576,7 +685,7 @@ export const Invoice = () => {
                 }}
               >
                 <span>Payment Method:</span>
-                <span>{payment_group}</span>
+                <span>{payment_group ?? "N/A"}</span>
               </div>
               <div
                 style={{
@@ -587,7 +696,7 @@ export const Invoice = () => {
                 }}
               >
                 <span>Payment ID:</span>
-                <span>{cf_payment_id}</span>
+                <span>{cf_payment_id ?? "N/A"}</span>
               </div>
             </div>
           </div>
