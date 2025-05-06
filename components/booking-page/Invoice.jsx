@@ -9,7 +9,7 @@ import {
   AlertTriangle,
 } from "lucide-react";
 import { useSelector, useDispatch } from "react-redux";
-import { useEffect, useRef } from "react";
+import React, { useEffect, useRef } from "react";
 import * as Actions from "@/store/store";
 import moment from "moment";
 import Link from "next/link";
@@ -508,7 +508,7 @@ export const Invoice = () => {
                   </tr>
                 ) : (
                   BookingTran?.map((reservation, index) => (
-                    <>
+                    <React.Fragment key={finalReservationDetails[index]?.id}>
                       <tr>
                         <td
                           style={{
@@ -603,7 +603,7 @@ export const Invoice = () => {
                           }).format(reservation?.RentalInfo?.packageRate)}
                         </td>
                       </tr>
-                    </>
+                    </React.Fragment>
                   ))
                 )}
               </tbody>
